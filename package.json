@@ -1,0 +1,73 @@
+{
+    "name": "vs-system",
+    "version": "1.0.1",
+    "description": "VS System stock and sales POS software",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "dev": "electronmon --ignore yard.db --ignore \"*.pdf\" --ignore Cache --ignore \"Code Cache\" --ignore GPUCache --ignore Network --ignore \"Local Storage\" .",
+        "web": "node server.js",
+        "web:lan": "node server.js --lan",
+        "web:password": "node server.js --browser-password",
+        "build": "electron-builder --win --x64",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "dependencies": {
+        "chart.js": "^4.5.1",
+        "jsbarcode": "^3.12.3",
+        "jspdf": "^4.2.1",
+        "sqlite3": "^6.0.1",
+        "xlsx": "^0.18.5"
+    },
+    "devDependencies": {
+    "electron": "^41.5.0",
+    "electron-builder": "^26.15.0",
+    "electronmon": "^2.0.4"
+},
+    "productName": "VS System",
+    "build": {
+    "appId": "com.vssoftwaredevelopers.vssystem",
+    "productName": "VS System",
+    "directories": {
+        "output": "dist"
+    },
+    "files": [
+        "**/*",
+        "!dist/**",
+        "!*.pdf",
+        "!*.codex-*",
+        "!renderer-errors.log",
+        "!yard.db",
+        "!Cache/**",
+        "!GPUCache/**",
+        "!Code Cache/**",
+        "!Network/**",
+        "!Local State"
+    ],
+    "asarUnpack": [
+        "node_modules/sqlite3/**"
+    ],
+    "win": {
+        "icon": "app-icon.ico",
+        "target": [
+            {
+                "target": "nsis",
+                "arch": [
+                    "x64"
+                ]
+            }
+        ]
+    },
+    "nsis": {
+        "oneClick": false,
+        "allowToChangeInstallationDirectory": true,
+        "createDesktopShortcut": true,
+        "createStartMenuShortcut": true,
+        "shortcutName": "VS System"
+    }
+}
+}

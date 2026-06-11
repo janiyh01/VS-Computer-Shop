@@ -1,0 +1,231 @@
+/* Web/mobile polish for the browser version. Desktop layout stays close to the Electron UI. */
+html,
+body{
+    max-width:100%;
+}
+
+button,
+input,
+select,
+textarea{
+    font:inherit;
+}
+
+table{
+    border-collapse:collapse;
+}
+
+#billTable,
+#list,
+#salesHistory,
+#repairHistory,
+#balanceDueResult,
+#customerProfileResult{
+    max-width:100%;
+}
+
+.billing-helper-tools,
+#productLabelTools{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-items:center;
+}
+
+#generateBarcodeBtn{
+    margin-left:6px;
+}
+
+@media(max-width:1100px){
+    body.vs-logged-in{
+        overflow:auto !important;
+    }
+
+    body.vs-logged-in #app,
+    body.vs-logged-in .main{
+        display:flex !important;
+        min-height:100vh;
+        height:auto !important;
+        overflow:visible !important;
+    }
+
+    .content{
+        min-width:0 !important;
+        width:calc(100vw - 220px) !important;
+        overflow:visible !important;
+    }
+
+    #products .card,
+    #invoice.card,
+    #report.card,
+    #settings.card,
+    #repairs.card,
+    #repairs{
+        max-width:100% !important;
+        overflow-x:auto !important;
+    }
+}
+
+@media(max-width:760px){
+    html,
+    body{
+        height:auto !important;
+        overflow:auto !important;
+    }
+
+    body.vs-logged-in #app,
+    body.vs-logged-in .main,
+    #app.main{
+        display:block !important;
+        height:auto !important;
+        min-height:100vh;
+        overflow:visible !important;
+    }
+
+    .sidebar{
+        position:sticky !important;
+        top:0 !important;
+        z-index:1000 !important;
+        width:100% !important;
+        min-height:0 !important;
+        height:auto !important;
+        padding:10px !important;
+        display:flex !important;
+        flex-direction:row !important;
+        gap:8px !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        white-space:nowrap !important;
+        border-right:0 !important;
+    }
+
+    .sidebar button{
+        flex:0 0 auto !important;
+        width:auto !important;
+        min-width:112px !important;
+        height:42px !important;
+        margin:0 !important;
+        padding:8px 12px !important;
+    }
+
+    #developerWatermarkFixed{
+        display:none !important;
+    }
+
+    .content{
+        width:100% !important;
+        margin:0 !important;
+        padding:14px !important;
+        min-width:0 !important;
+        overflow:visible !important;
+    }
+
+    .topbar,
+    #mainTopbar{
+        display:flex !important;
+        flex-wrap:wrap !important;
+        gap:10px !important;
+        align-items:center !important;
+        margin-bottom:14px !important;
+    }
+
+    .topbar > div,
+    #mainTopbar > div{
+        min-width:0 !important;
+    }
+
+    .stats,
+    .report-grid{
+        display:grid !important;
+        grid-template-columns:1fr !important;
+        gap:10px !important;
+    }
+
+    .card,
+    #invoice.card,
+    #report.card,
+    #settings.card{
+        width:100% !important;
+        max-width:100% !important;
+        margin-left:0 !important;
+        margin-right:0 !important;
+        padding:14px !important;
+        box-sizing:border-box !important;
+        overflow-x:auto !important;
+    }
+
+    #products input,
+    #products select,
+    #products button,
+    #invoice input,
+    #invoice select,
+    #invoice button,
+    #repairs input,
+    #repairs select,
+    #repairs textarea,
+    #repairs button,
+    #settings input,
+    #settings select,
+    #settings textarea,
+    #settings button{
+        max-width:100% !important;
+        box-sizing:border-box !important;
+    }
+
+    #products .card input,
+    #products .card select,
+    #invoice input,
+    #invoice select{
+        width:100% !important;
+        margin:6px 0 !important;
+    }
+
+    #products .card button,
+    #invoice button,
+    #repairs button,
+    #settings button{
+        margin:6px 4px 6px 0 !important;
+    }
+
+    #billTable{
+        min-width:680px;
+    }
+
+    #invoice{
+        overflow-x:auto !important;
+    }
+
+    #settings .settings-layout{
+        display:block !important;
+    }
+
+    #settings .settings-menu{
+        width:100% !important;
+        display:flex !important;
+        flex-direction:row !important;
+        overflow-x:auto !important;
+        gap:8px !important;
+        margin-bottom:12px !important;
+    }
+
+    #settings .settings-menu button{
+        flex:0 0 auto !important;
+        width:auto !important;
+        min-width:150px !important;
+        text-align:center !important;
+    }
+
+    #settings .pref-grid,
+    #settings .campaign-panel{
+        display:grid !important;
+        grid-template-columns:1fr !important;
+    }
+
+    #repairs .repair-form,
+    #repairs .repair-grid,
+    #repairs form{
+        display:grid !important;
+        grid-template-columns:1fr !important;
+        gap:8px !important;
+    }
+}

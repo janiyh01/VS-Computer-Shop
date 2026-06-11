@@ -1,0 +1,4924 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>VS System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="./node_modules/chart.js/dist/chart.umd.js"></script>
+  <script src="./node_modules/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="./node_modules/jspdf/dist/jspdf.umd.min.js"></script>
+  <script src="./node_modules/jsbarcode/dist/JsBarcode.all.min.js"></script>
+  <link rel="stylesheet" href="./web-mobile-polish.css">
+  <script src="./web-adapter.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+  --bg:#07161d;
+  --panel:#13262f;
+  --panel2:#1b323c;
+  --primary:#ffb020;
+  --accent:#f6b73c;
+  --danger:#ff4d4d;
+  --text:#f4f7fb;
+  --muted:#9fb2bd;
+  --border:rgba(255,255,255,0.10);
+  --shadow:0 18px 45px rgba(0,0,0,0.35);
+}
+    .card{
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(6px);
+  border-radius:20px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.6);
+  transform:none;
+}
+
+.card:hover{
+  transform:translateY(0px);
+}
+
+.product{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    position:relative;
+
+    padding:12px;
+
+    margin:10px;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,0.05);
+
+    font-size:13px;
+    
+    transition:0.2s;
+}
+    *{box-sizing:border-box; transition:0.2s;}
+
+    body{
+  margin:0;
+  font-family:'Segoe UI';
+  background: #0f2027; /*  solid color */
+  color:white;
+}
+body.light{
+    background:#eef3f8;
+    color:#111;
+}
+
+body.light .sidebar{
+    background:#ffffff;
+    border-right:1px solid #ddd;
+}
+body.light .sidebar i,
+body.light .sidebar span,
+body.light .menu-item{
+    color:#222 !important;
+}
+body.light button{
+    background:#fbbf24;
+    color:white;
+}
+
+body.light input{
+    background:#f3f6fa;
+    color:#111;
+    border:1px solid #dbe3ea;
+}
+body.light .sidebar i{
+    color:#555;
+}
+
+body.light .menu-item{
+    color:#111;
+}
+
+body.light .menu-item.active{
+    background:#fbbf24;
+    color:#fff !important;
+}
+body.light .main-content{
+    background:#eef3f8;
+}
+body.light .menu-item.active i{
+    color:#fff !important;
+}
+body.light .card{
+    background:white;
+    color:#111;
+}
+
+body.light canvas{
+    background:white;
+}
+    .main{display:flex;height:100vh;}
+
+    .sidebar{
+  width:240px;
+  background:#111; /*  solid */
+  padding:20px;
+}
+
+    .sidebar button{
+      width:100%;
+      margin:8px 0;
+      padding:12px;
+      border:none;
+      border-radius:10px;
+      background:rgba(255,255,255,0.08);
+      color:white;
+      cursor:pointer;
+    }
+
+    .sidebar button.active{
+      background:#ffb020;
+      color:black;
+    }
+
+    .content{
+      flex:1;
+      padding:20px 40px;
+      overflow-y:auto;
+      position: relative;
+      z-index: 1;
+      overflow-x:hidden;
+      margin-left:0;
+    }
+    .topbar{
+  display:flex;
+  align-items:center;
+  width:100%;
+  margin-bottom:25px;
+}
+
+    .card{
+      background:rgba(255,255,255,0.06);
+      backdrop-filter:blur(6px);
+      padding:20px;
+      border-radius:15px;
+      margin-bottom:20px;
+    }
+
+    input,select{
+      padding:10px;
+      margin:5px;
+      border:none;
+      border-radius:8px;
+      background:#0f2027;
+      color:white;
+    }
+
+    button{
+      padding:10px;
+      border:none;
+      border-radius:8px;
+      background:#ffb020;
+      cursor:pointer;
+      font-weight:bold;
+      transition:0.2s;
+    }
+
+  
+    .deleteBtn{
+      position:absolute;
+      top:8px;
+      right:8px;
+      background:red;
+      color:white;
+      border:none;
+      padding:4px 8px;
+      border-radius:5px;
+      cursor:pointer;
+    }
+
+    .fade-in{
+      animation:fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(10px);}
+      to{opacity:1; transform:translateY(0);}
+    }
+
+.product img{
+    width:50px;
+    height:50px;
+
+    object-fit:cover;
+
+    border-radius:10px;
+
+    margin-right:12px;
+}
+
+.product button{
+  background:#ff4d4d;
+  color:white;
+}
+
+.product:hover{
+transform:translateX(4px);
+}
+/*  LESS BLUR + CLEAN LOOK */
+.card{
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(6px);
+
+    padding:20px;
+    border-radius:20px;
+    margin-bottom:20px;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,0.4),
+    inset 0 1px 1px rgba(255,255,255,0.05);
+
+    border:1px solid rgba(255,255,255,0.05);
+
+    transition: box-shadow 0.3s;
+}
+
+/*  3D EFFECT */
+.card:hover{
+    box-shadow:
+    0 20px 40px rgba(0,0,0,0.5),
+    inset 0 1px 1px rgba(255,255,255,0.08);
+}
+/*  PRODUCT STYLE */
+
+.product:hover{
+  transform:scale(1.02);
+  background:rgba(255,255,255,0.08);
+}
+
+.saleCard{
+    background:#1b2b34;
+    color:#f8fafc !important;
+    padding:10px;
+    border-radius:10px;
+    margin-top:4px;
+}
+.saleCard *{
+    color:#f8fafc !important;
+}
+.saleCard button{
+    color:#ffffff !important;
+}
+.product b{
+    font-size:15px;
+}
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    margin-bottom:30px;
+}
+.stat-card{
+    min-height:120px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.stat-card h3{
+    font-size:28px;
+    margin:0;
+    color:#ffb020;
+}
+
+.stat-card p{
+    opacity:0.8;
+    margin-top:8px;
+}
+canvas{
+    max-width:100%;
+    margin-top:20px;
+}
+input,
+textarea,
+select{
+    pointer-events:auto !important;
+    user-select:text !important;
+    position:relative;
+    z-index:9999;
+}
+
+canvas{
+    pointer-events:none !important;
+}
+input{
+pointer-events:auto !important;
+user-select:auto !important;
+}
+input, textarea {
+pointer-events: auto !important;
+user-select: auto !important;
+opacity: 1 !important;
+}
+#toast{
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+
+    background: #ffb020;
+    color: white;
+
+    padding: 14px 22px;
+
+    border-radius: 12px;
+
+    font-weight: bold;
+
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+
+    opacity: 0;
+
+    transform: translateY(30px);
+
+    transition: 0.3s;
+
+    z-index: 9999;
+}
+#billTable{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+#billTable th{
+    background:#d97706;
+    color:white;
+    padding:10px;
+    text-align:left;
+}
+
+#billTable td{
+    padding:10px;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+#billTable tr:hover{
+    background:rgba(255,255,255,0.05);
+}
+#fullBtn{
+    background:rgba(255,255,255,0.08);
+    border:none;
+    color:white;
+    padding:8px 12px;
+    border-radius:10px;
+    cursor:pointer;
+    margin-left:10px;
+    font-size:16px;
+    transition:0.2s;
+}
+
+#fullBtn:hover{
+    background:#d97706;
+    transform:scale(1.05);
+}
+#recentTable{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+#recentTable th{
+    background:#ffb020;
+    padding:12px;
+    text-align:left;
+}
+
+#recentTable td{
+    padding:10px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+#settings input{
+    width: 220px;
+    margin: 10px;
+}
+
+#settings button{
+    margin: 10px;
+}
+
+#settings .settings-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+}
+.danger-btn{
+    background:#ff4d4d;
+    color:white;
+}
+
+.danger-btn:hover{
+    background:#ff2e2e;
+}
+.settings-box{
+    max-width:500px;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    margin-top:20px;
+}
+
+.settings-box input{
+    width:100%;
+}
+
+.settings-buttons{
+    display:flex;
+    gap:10px;
+}
+
+.danger-btn{
+    background:#ff4d4d;
+    color:white;
+}
+.settings-layout{
+    display:flex;
+    align-items:flex-start;
+    gap:40px;
+
+    width:100%;
+    max-width:1100px;
+
+    margin-top:30px;
+}
+
+.settings-menu{
+    width:220px;
+    min-width:220px;
+
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+.settings-menu button{
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+
+.settings-content{
+    flex:1;
+
+    display:flex;
+    flex-direction:column;
+}
+#settings{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#071b25;
+    z-index:99999;
+    padding:30px;
+    overflow:auto;
+}
+.setting-tab{
+    animation:fadeIn .2s ease;
+    display:none;
+    width:100%;
+}
+
+.setting-tab.active{
+    display:block;
+}
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(5px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+#topBrand{
+    margin-top:2px;
+}
+.online-status{
+    margin-top:8px;
+    font-size:14px;
+    opacity:0.8;
+}
+body{
+    overflow-x: hidden;
+}
+.main{
+    overflow-x: hidden;
+}
+
+.content{
+    flex:1;
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+.settings-card{
+    background:#1c2b36;
+    padding:30px;
+    border-radius:20px;
+}
+
+.settings-layout{
+    display:flex;
+    gap:30px;
+    align-items:flex-start;
+}
+#settings{
+    display:none;
+    width:100%;
+    min-height:100vh;
+    background:#071b25;
+    padding:30px;
+    box-sizing:border-box;
+    overflow:hidden;
+}
+
+.settings-layout{
+    display:flex;
+    gap:30px;
+    align-items:flex-start;
+}
+
+.settings-menu{
+    width:220px;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.settings-content{
+    flex:1;
+}
+
+.settings-box{
+    max-width:500px;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+#loginPage{
+    width:100vw;
+    height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:#071b25;
+}
+
+.login-box{
+    width:350px;
+
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(6px);
+
+    padding:40px;
+
+    border-radius:20px;
+
+    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.login-box h1{
+    text-align:center;
+    margin-bottom:10px;
+}
+
+.login-box input{
+    padding:14px;
+}
+
+.login-box button{
+    padding:14px;
+
+    background:#ffb020;
+
+    border:none;
+    border-radius:10px;
+
+    font-weight:bold;
+    cursor:pointer;
+}
+#toast{
+
+    position:fixed;
+    right:20px;
+    bottom:20px;
+
+    background:#fbbf24;
+    color:white;
+
+    padding:14px 22px;
+
+    border-radius:12px;
+
+    font-weight:bold;
+
+    opacity:0;
+    pointer-events:none;
+
+    transition:0.3s;
+
+    z-index:99999;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.3);
+
+}
+
+#toast.show{
+    opacity:1;
+}
+
+.confirmPopup{
+    position:fixed;
+    inset:0;
+
+    display:flex;
+    justify-content:flex-end;
+    align-items:flex-end;
+
+    padding:25px;
+
+    z-index:99999;
+
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:0.3s;
+}
+
+.confirmPopup.show{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+.confirmBox{
+    width:300px;
+
+    background:#182734;
+
+    border-radius:14px;
+
+    padding:20px;
+
+    box-shadow:
+    0 0 20px rgba(0,0,0,.4);
+
+    pointer-events:auto;
+}
+
+.confirmBox h3{
+    margin-bottom:10px;
+    color:#fff;
+}
+
+.confirmBox p{
+    color:#ccc;
+    margin-bottom:20px;
+}
+
+.confirmButtons{
+    display:flex;
+    gap:10px;
+}
+
+.yesBtn,
+.noBtn{
+    flex:1;
+
+    border:none;
+
+    padding:10px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+}
+
+.yesBtn{
+    background:#ffb020;
+    color:#fff;
+}
+
+.noBtn{
+    background:#333;
+    color:#fff;
+}
+#confirmPopup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+padding-right:0;
+    z-index:99999;
+}
+
+.confirmBox{
+    width:280px;
+    background:#142632;
+    padding:22px;
+    border-radius:14px;
+    box-shadow:0 10px 35px rgba(0,0,0,0.45);
+    color:white;
+}
+
+.confirmBox button{
+    background:#ffb020;
+    border:none;
+    padding:8px 18px;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+}
+.settings-page{
+  padding:35px;
+}
+
+.settings-layout{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:25px;
+  max-width:900px;
+  margin:0 auto;
+}
+
+.settings-menu{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.settings-menu button{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  background:#ffb020;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.25s;
+}
+
+.settings-menu button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(0,200,255,0.35);
+}
+
+.settings-content{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;
+  padding:25px;
+  min-height:360px;
+}
+#loginPage{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:radial-gradient(circle at top, #123044, #061820 65%);
+}
+
+.login-box{
+  width:330px;
+  padding:35px;
+  border-radius:22px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(0,200,255,0.25);
+  box-shadow:
+    0 0 8px rgba(0,200,255,0.25),
+    inset 0 0 20px rgba(255,255,255,0.04);
+  transform-style:preserve-3d;
+  animation:loginFloat 4s ease-in-out infinite;
+}
+
+@keyframes loginFloat{
+  0%,100%{ transform:translateY(0) rotateX(0deg); }
+  50%{ transform:translateY(-10px) rotateX(3deg); }
+}
+
+.login-box h1,
+.login-box h2{
+  text-align:center;
+  text-shadow:0 0 15px rgba(0,200,255,0.7);
+}
+
+.login-box input{
+  width:100%;
+  padding:14px;
+  margin:10px 0;
+  border:none;
+  border-radius:10px;
+  background:#0b202b;
+  color:white;
+  outline:none;
+  box-shadow:inset 0 0 10px rgba(0,0,0,0.4);
+}
+
+.login-box input:focus{
+  box-shadow:0 0 15px rgba(0,200,255,0.8);
+}
+
+.login-box button{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  border:none;
+  border-radius:12px;
+  background:#ffb020;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 0 18px rgba(0,200,255,0.5);
+  transition:0.25s;
+}
+
+.login-box button:hover{
+  transform:scale(1.04);
+  box-shadow:0 0 28px rgba(0,200,255,0.9);
+}
+/* ================= PREMIUM FINAL THEME ================= */
+
+body{
+  margin:0;
+  font-family:'Segoe UI';
+  background:
+    radial-gradient(circle at top left, rgba(246,183,60,.12), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(0,200,255,.12), transparent 35%),
+    #07161d !important;
+  color:#f4f7fb !important;
+}
+
+.sidebar{
+    width:220px;
+    height:100vh;
+
+    background:rgba(15,20,30,0.88);
+
+    backdrop-filter:blur(6px);
+
+    border-right:1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+    0 0 12px rgba(0,0,0,0.45),
+    inset 0 0 8px rgba(255,255,255,0.02);
+
+    padding-top:20px;
+
+    position:sticky;
+    top:0;
+}
+
+.sidebar button{
+
+    width:85%;
+
+    margin:14px auto;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    padding:18px;
+
+    border:none;
+
+    border-radius:16px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    font-size:15px;
+
+    color:white;
+
+    background:
+    linear-gradient(
+    145deg,
+    rgba(255,255,255,0.06),
+    rgba(255,255,255,0.02)
+    );
+
+    box-shadow:
+    0 0 15px rgba(0,0,0,0.35),
+    inset 0 0 10px rgba(255,255,255,0.03);
+
+    transition:0.25s;
+}
+
+.active{
+
+    background:
+    linear-gradient(
+    145deg,
+    #ffb020,
+    #ff8a00
+    ) !important;
+
+    color:#111 !important;
+
+    box-shadow:
+    0 0 8px rgba(255,170,0,0.55) !important;
+
+    transform:scale(1.03);
+}
+
+button{
+  background:linear-gradient(135deg,#ffb020,#b45309) !important;
+  color:#021018 !important;
+  border:none !important;
+  border-radius:10px !important;
+  font-weight:800 !important;
+  box-shadow:0 8px 18px rgba(0,200,255,.22) !important;
+}
+
+.sidebar button:hover{
+
+    transform:
+    translateY(-3px)
+    scale(1.02);
+
+    box-shadow:
+    0 0 10px rgba(0,200,255,0.25);
+
+    background:
+    linear-gradient(
+    145deg,
+    #1ec8ff,
+    #0ea5ff
+    );
+
+    color:#041018;
+}
+
+.card,
+.stat-card,
+.settings-content,
+.login-box{
+  background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025)) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  box-shadow:0 18px 45px rgba(0,0,0,.35) !important;
+  backdrop-filter:blur(6px) !important;
+  border-radius:20px !important;
+}
+
+/* LOGIN PREMIUM */
+#loginPage{
+  width:100vw;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.login-box{
+  width:350px !important;
+  padding:38px !important;
+  animation:loginFloat 4s ease-in-out infinite !important;
+}
+
+.login-box h1,
+.login-box h2{
+  text-align:center !important;
+  text-shadow:
+    0 0 15px rgba(0,200,255,.7),
+    0 0 8px rgba(246,183,60,.25) !important;
+}
+
+.login-box input{
+  width:100% !important;
+  padding:14px !important;
+  margin:8px 0 !important;
+  border:none !important;
+  border-radius:10px !important;
+  background:#0b202b !important;
+  color:white !important;
+  outline:none !important;
+}
+
+.login-box input:focus{
+  box-shadow:
+    0 0 15px rgba(0,200,255,.75),
+    0 0 8px rgba(246,183,60,.18) !important;
+}
+
+@keyframes loginFloat{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-8px); }
+}
+
+/* SETTINGS CLEAN */
+#settings{
+  background:#07161d !important;
+}
+
+.settings-layout{
+  display:grid !important;
+  grid-template-columns:220px 1fr !important;
+  gap:25px !important;
+  max-width:900px !important;
+  margin:25px auto 0 auto !important;
+}
+
+.settings-menu button{
+  background:linear-gradient(135deg,#ffb020,#b45309) !important;
+}
+
+.settings-content{
+  min-height:360px !important;
+  padding:25px !important;
+}
+.settings-layout{
+  margin-top:10px !important;
+}
+
+.settings-menu{
+    width:220px !important;
+
+    display:flex !important;
+    flex-direction:column !important;
+    gap:18px !important;
+
+    align-items:flex-start !important;
+
+    margin-top:55px !important;
+    margin-left:-280px !important;
+}
+.settings-layout{
+    justify-content:flex-start !important;
+}
+.settings-content{
+  max-width:520px !important;
+}
+
+#notificationTab label{
+  display:grid !important;
+  grid-template-columns: 1fr 25px !important;
+  align-items:center !important;
+  width:100% !important;
+  gap:10px !important;
+  margin-bottom:12px !important;
+}
+
+#notificationTab span{
+  white-space:nowrap !important;
+}
+.sidebar button{
+  font-weight:600 !important;
+  font-size:14px !important;
+  padding:15px !important;
+}
+
+.settings-menu button{
+  font-weight:600 !important;
+  font-size:14px !important;
+}
+/* SETTINGS FINAL CLEAN LAYOUT */
+
+.settings-layout{
+  display:grid !important;
+  grid-template-columns:220px 600px !important;
+  gap:28px !important;
+  align-items:start !important;
+  justify-content:start !important;
+  margin:20px 0 0 170px !important;
+  padding:0 !important;
+}
+
+.settings-menu{
+  width:220px !important;
+  margin:45px 0 0 0 !important;
+  transform:none !important;
+}
+
+.settings-content{
+  width:600px !important;
+  max-width:600px !important;
+  min-height:430px !important;
+  margin:0 !important;
+  transform:none !important;
+  padding:28px !important;
+  overflow:hidden !important;
+}
+
+#notificationTab label{
+  display:grid !important;
+  grid-template-columns: 1fr 24px !important;
+  align-items:center !important;
+  width:100% !important;
+  gap:12px !important;
+  margin-bottom:18px !important;
+}
+
+#notificationTab input[type="checkbox"]{
+  justify-self:end !important;
+}
+
+#notificationTab span{
+  white-space:normal !important;
+}
+
+@media(max-width:1100px){
+  .settings-layout{
+    margin-left:40px !important;
+    grid-template-columns:200px 1fr !important;
+  }
+
+  .settings-content{
+    width:100% !important;
+    max-width:560px !important;
+  }
+}
+/* SETTINGS NEW CLEAN UI */
+
+.settings-layout{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:22px !important;
+  margin:25px auto 0 auto !important;
+  max-width:900px !important;
+  padding:0 !important;
+}
+
+.settings-menu{
+  width:100% !important;
+  display:grid !important;
+  grid-template-columns:repeat(3, 1fr) !important;
+  gap:14px !important;
+  margin:0 !important;
+  transform:none !important;
+}
+
+.settings-menu button{
+  width:100% !important;
+  height:55px !important;
+  margin:0 !important;
+  border-radius:14px !important;
+  font-size:13px !important;
+  font-weight:600 !important;
+}
+
+.settings-content{
+  width:100% !important;
+  max-width:900px !important;
+  min-height:360px !important;
+  margin:0 !important;
+  padding:30px !important;
+  transform:none !important;
+}
+
+.settings-box{
+  max-width:520px !important;
+}
+
+#notificationTab label{
+  display:grid !important;
+  grid-template-columns:1fr 24px !important;
+  align-items:center !important;
+  width:100% !important;
+  max-width:520px !important;
+  margin-bottom:16px !important;
+}
+
+#notificationTab input[type="checkbox"]{
+  justify-self:end !important;
+}
+#settings h2{
+  max-width:900px !important;
+  margin:0 auto 20px auto !important;
+}
+.settings-menu button{
+  height:48px !important;
+  font-size:13px !important;
+}
+
+.settings-content{
+  margin-top:-5px !important;
+  padding:32px 40px !important;
+}
+
+.settings-box input{
+  width:320px !important;
+}
+/* PRODUCT DELETE BUTTON RED */
+
+.product button:last-child{
+  background:#ff3b3b !important;
+  color:white !important;
+  box-shadow:0 6px 16px rgba(255,59,59,.35) !important;
+}
+
+.product button:last-child:hover{
+  background:#ff1f1f !important;
+  color:white !important;
+}
+/* INVOICE DELETE BUTTON */
+
+.invoice-delete-btn{
+  background:#ff3b3b !important;
+  border:none;
+  padding:6px 12px;
+  border-radius:8px;
+  color:white !important;
+  cursor:pointer;
+  font-weight:bold;
+  box-shadow:0 6px 16px rgba(255,59,59,.35);
+}
+
+.invoice-delete-btn:hover{
+  background:#ff1f1f !important;
+}
+/* RESET BUTTON */
+
+.reset-btn{
+  background:#ff3b3b !important;
+  color:white !important;
+  box-shadow:0 6px 16px rgba(255,59,59,.35) !important;
+}
+
+.reset-btn:hover{
+  background:#ff1f1f !important;
+}
+.confirm-box{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+
+  pointer-events:none;
+}
+
+.confirm-content{
+  width:320px;
+  background:#0f1f2e;
+  border-radius:16px;
+  padding:25px;
+
+  pointer-events:auto;
+}
+
+.confirm-content h3{
+  margin-bottom:10px;
+  color:white;
+  pointer-events:auto;
+}
+
+.confirm-content p{
+  color:#d7d7d7;
+  margin-bottom:20px;
+  pointer-events:auto;
+}
+
+.confirm-buttons{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+}
+
+#confirmYes{
+  background:#ff3b3b;
+  color:white;
+  border:none;
+  padding:10px 16px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+
+  pointer-events:auto;
+  position:relative;
+  z-index:10000;
+}
+
+#confirmNo{
+  background:#f59e0b;
+  color:white;
+  border:none;
+  padding:10px 16px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+
+  pointer-events:auto;
+  position:relative;
+  z-index:10000;
+}
+.confirm-toast{
+  position:fixed;
+  right:25px;
+  bottom:90px;
+  width:300px;
+  background:#102638;
+  color:white;
+  padding:18px;
+  border-radius:14px;
+  z-index:999999;
+  box-shadow:0 10px 35px rgba(0,0,0,.45);
+}
+
+.confirm-toast p{
+  margin:0 0 14px 0;
+}
+
+.confirm-toast button{
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+  margin-right:8px;
+}
+
+.confirm-toast .yes{
+  background:#ff3b3b;
+  color:white;
+}
+
+.confirm-toast .no{
+  background:#ffb020;
+  color:white;
+}
+.confirm-toast{
+  position:fixed !important;
+  right:25px !important;
+  bottom:25px !important;
+  top:auto !important;
+  left:auto !important;
+
+  width:300px !important;
+  background:#102638 !important;
+  color:white !important;
+  padding:18px !important;
+  border-radius:14px !important;
+  z-index:999999 !important;
+  box-shadow:0 10px 35px rgba(0,0,0,.45) !important;
+}
+.category-popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.5);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+}
+
+.category-popup-box{
+    width:420px;
+    background:#071c2f;
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:16px;
+    padding:20px;
+    color:white;
+    box-shadow:0 0 30px rgba(0,0,0,0.4);
+}
+
+.category-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(255,255,255,0.05);
+    padding:10px;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+.category-actions button{
+    margin-left:5px;
+}
+.report-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+  margin-bottom:24px;
+}
+.report-chart-box{
+  background:#10232d;
+  padding:18px;
+  border-radius:14px;
+  min-height:300px;
+}
+.report-chart-wrap{
+  position:relative;
+  width:100%;
+  height:260px;
+}
+.report-bottom{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-top:18px;
+}
+.report-panel{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  padding:16px;
+}
+.report-list{
+  display:grid;
+  gap:10px;
+}
+.report-list-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  background:#102638;
+  border-radius:10px;
+}
+#report > h3:nth-of-type(2),
+#report > h3:nth-of-type(3){
+  display:none;
+}
+@media(max-width:1000px){
+  .report-grid,
+  .report-bottom{
+    grid-template-columns:1fr;
+  }
+}
+  
+
+/* VS Software 2 yellow theme override */
+:root{
+  --primary:#ffb020;
+  --accent:#f59e0b;
+  --yellow-primary:#ffb020;
+  --yellow-primary-dark:#d97706;
+  --yellow-soft:#fbbf24;
+}
+button,
+.menu-item,
+.settings-tab-btn,
+.clean-category-btn,
+.product-action-btn:not(.delete),
+#reportMonthCurrentBtn,
+#reportMonthAllBtn{
+  background:linear-gradient(135deg,#ffb020,#f59e0b) !important;
+  color:#111 !important;
+}
+button.active,
+.menu-item.active,
+.settings-tab-btn.active,
+.sidebar button.active{
+  background:linear-gradient(135deg,#fbbf24,#f59e0b) !important;
+  color:#111 !important;
+  box-shadow:0 0 18px rgba(245,158,11,.45) !important;
+}
+h3[id],
+.stat h3,
+.monthly-stat b,
+#invoiceTotal,
+#todaySales,
+#dashboardProfit,
+#totalProducts,
+#lowStock,
+#reportDailySales,
+#reportIncome,
+#reportProfit,
+#lowStockCount{
+  color:#ffb020 !important;
+}
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:#ffb020 !important;
+  box-shadow:0 0 0 2px rgba(255,176,32,.18) !important;
+}
+
+</style>
+
+<style id="premiumLoginAndBackupPickerStyle">
+#loginPage{
+  min-height:100vh !important;
+  width:100% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:28px !important;
+  background:
+    radial-gradient(circle at 22% 22%, rgba(20,184,166,.18), transparent 28%),
+    radial-gradient(circle at 78% 18%, rgba(14,165,233,.22), transparent 30%),
+    linear-gradient(135deg,#06141b 0%,#092231 48%,#061018 100%) !important;
+  position:relative !important;
+  overflow:hidden !important;
+}
+#loginPage::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size:48px 48px;
+  mask-image:linear-gradient(to bottom, rgba(0,0,0,.65), transparent 85%);
+  pointer-events:none;
+}
+#loginPage::after{
+  content:"VS";
+  position:absolute;
+  right:7vw;
+  bottom:5vh;
+  font-size:180px;
+  font-weight:900;
+  color:rgba(255,255,255,.025);
+  letter-spacing:0;
+  pointer-events:none;
+}
+#loginPage .login-box{
+  width:min(430px, calc(100vw - 42px)) !important;
+  min-height:auto !important;
+  padding:34px !important;
+  border-radius:18px !important;
+  background:linear-gradient(145deg, rgba(18,46,62,.92), rgba(8,26,36,.88)) !important;
+  border:1px solid rgba(255,255,255,.13) !important;
+  box-shadow:0 30px 90px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08) !important;
+  backdrop-filter:blur(18px) !important;
+  animation:none !important;
+  position:relative !important;
+  overflow:hidden !important;
+}
+#loginPage .login-box::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  width:100%;
+  height:4px;
+  background:linear-gradient(90deg,#fbbf24,#14c784,#ffb020);
+}
+#loginPage .login-box::after{
+  content:"Stock • Billing • Reports";
+  display:block;
+  margin-top:16px;
+  text-align:center;
+  color:rgba(222,242,249,.58);
+  font-size:12px;
+  font-weight:700;
+}
+#loginPage .login-box h1,
+#loginPage .login-box h2{
+  margin:8px 0 8px !important;
+  text-align:center !important;
+  color:#f7fbff !important;
+  font-size:34px !important;
+  line-height:1 !important;
+  text-shadow:0 0 22px rgba(24,198,255,.42) !important;
+}
+#loginPage .login-box h1::before,
+#loginPage .login-box h2::before{
+  content:"";
+  display:block;
+  width:78px;
+  height:78px;
+  margin:0 auto 18px;
+  border-radius:22px;
+  background:url('./app-icon.png') center/cover no-repeat, linear-gradient(135deg,#f59e0b,#14c784);
+  box-shadow:0 18px 44px rgba(14,165,233,.32);
+}
+#loginPage .login-box h1::after,
+#loginPage .login-box h2::after{
+  content:"Business Management Suite";
+  display:block;
+  margin-top:10px;
+  color:#a8c7d4;
+  font-size:13px;
+  font-weight:700;
+  text-shadow:none;
+}
+#loginPage .login-box input{
+  width:100% !important;
+  height:48px !important;
+  margin:12px 0 !important;
+  padding:0 15px !important;
+  border-radius:12px !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  background:#0a202d !important;
+  color:#f5fbff !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+#loginPage .login-box input:focus{
+  outline:none !important;
+  border-color:#fbbf24 !important;
+  box-shadow:0 0 0 3px rgba(24,198,255,.16), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+#loginPage .login-box button{
+  width:100% !important;
+  height:50px !important;
+  margin:18px 0 0 !important;
+  border-radius:12px !important;
+  background:linear-gradient(135deg,#fbbf24,#f59e0b) !important;
+  color:#021019 !important;
+  box-shadow:0 16px 34px rgba(14,165,216,.28) !important;
+}
+#loginPage .login-box button:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.05);
+}
+.backup-folder-row{
+  display:grid;
+  grid-template-columns:minmax(220px, 1fr) auto;
+  gap:10px;
+  align-items:center;
+  max-width:700px;
+}
+.backup-folder-row input{max-width:none !important;margin:0 !important;}
+.backup-folder-row button{white-space:nowrap;min-height:42px;}
+</style>
+
+
+<style id="loginNoScrollFixStyle">
+html, body{
+  width:100% !important;
+  height:100% !important;
+  margin:0 !important;
+  overflow:hidden !important;
+}
+#loginPage{
+  position:fixed !important;
+  inset:0 !important;
+  z-index:999999 !important;
+  overflow:hidden !important;
+}
+body.vs-logged-in #loginPage{
+  display:none !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+body.vs-logged-in #app{
+  display:flex !important;
+  height:100vh !important;
+  overflow:hidden !important;
+}
+body.vs-logged-in .content{
+  height:100vh !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+}
+body.vs-logged-in .sidebar{
+  height:100vh !important;
+  overflow:hidden !important;
+}
+</style>
+
+</head>
+
+<body tabindex="0">
+
+<div id="loginPage">
+
+    <div class="login-box">
+
+        <h1>VS System</h1>
+
+        <input id="username" placeholder="Username">
+
+        <input id="password"
+               type="password"
+               placeholder="Password">
+
+        <button onclick="login()">
+            Login
+        </button>
+
+    </div>
+
+</div>
+
+<div id="app" style="display:none;" class="main">
+
+  <div class="sidebar">
+    <button onclick="nav(this,'dashboard')" class="active">📊 Dashboard</button>
+    <button onclick="nav(this,'products')">📦 Products</button>
+    <button onclick="nav(this,'invoice')">🧾 Billing</button>
+    <button onclick="nav(this,'report')">📈 Report</button>
+    <button id="repairsNavBtn" type="button" onclick="return window.forceOpenRepairsPage ? window.forceOpenRepairsPage(this) : false">🔧 Repairs</button>
+    <button onclick="nav(this,'settings')">⚙️ Settings</button>
+    <button onclick="logout()">🚪 Logout</button>
+    <div id="developerWatermarkFixed" onclick="openDeveloperAbout()">
+      <span>Software by</span>
+      <img src="./developer-logo.png" alt="VS Software Developers">
+    </div>
+  </div>
+
+  <div class="content">
+
+<div class="topbar" id="mainTopbar">
+
+  <div id="topBrand">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <img id="topLogo"
+        style="width:35px; height:35px; border-radius:8px; display:none;">
+      <h2 id="topCompanyName">VS System</h2>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:12px; margin-left:auto;">
+    <span id="dateTimeBox" style="color:#d7e3ea; font-size:13px; font-weight:600;"></span>
+
+    <div class="online-status">Online</div>
+
+    <button onclick="refreshApp()" id="refreshBtn">🔄</button>
+    <button onclick="toggleSound()" id="soundBtn">🔊</button>
+    <button onclick="toggleFullScreen()" id="fullBtn">⛶</button>
+  </div>
+
+</div>
+
+<div id="dashboard" class="page">
+  <h3>📊 Dashboard</h3>
+  <div class="stats">
+
+    <div class="card stat-card">
+        <h3 id="totalProducts">0</h3>
+        <p>Total Products</p>
+    </div>
+
+    <div class="card stat-card">
+        <h3 id="todaySales">Rs.0</h3>
+        <p>Today Income</p>
+    </div>
+
+    <div class="card stat-card">
+        <h3 id="lowStock">0</h3>
+        <p>Low Stock</p>
+    </div>
+
+</div>
+
+
+<canvas id="salesChart" height="120"></canvas>
+
+  <canvas id="chart" height="100"></canvas>
+
+  <div id="topProducts"></div>
+
+<div id="reportLow"></div>
+</div>
+
+
+<div id="products" class="page" style="display:none;">
+
+  <h3>📦 Product Manager</h3>
+
+<div class="card" style="
+padding:12px;
+margin-bottom:12px;
+max-width:520px;
+">
+
+  <div style="
+  display:flex;
+  align-items:center;
+  gap:10px;
+  ">
+
+    <div class="categoryBar">
+
+    <select id="categoryFilter" onchange="loadProducts()">
+        <option value="All">All Categories</option>
+    </select>
+
+<button id="manageCategoriesBtn" type="button" onclick="window.openCleanCategoryManager()">
+  ⚙️ Manage Categories
+</button>
+
+</div>
+
+  </div>
+
+</div>
+
+  <div class="card">
+
+  <input id="name" placeholder="Product Name">
+
+  <input id="code" placeholder="Code">
+
+  <input id="barcode" placeholder="Barcode / Scan Code">
+
+  <input id="price" type="number" placeholder="Price">
+<input id="stock" type="number" placeholder="Stock Qty">
+
+  <input id="category" placeholder="Category">
+
+</select>
+
+  <br><br>
+
+  <input id="img" placeholder="Image URL">
+
+  <button id="addBtn" onclick="addProduct()">
+    Add Product
+</button>
+
+  <input type="file" id="imgFile">
+
+<input
+id="search"
+placeholder="Search Product"
+onkeyup="searchProduct()"
+style="margin-bottom:15px;"
+>
+
+  <hr style="margin:20px 0;">
+
+  <div id="list"></div>
+
+  </div>
+
+</div>
+
+
+<div id="invoice" class="card" style="display:none;">
+
+  <h3>🧾 Billing System</h3>
+  <div style="margin-bottom:15px;">
+  Bill No:
+  <span id="invoiceNumber">INV-1001</span>
+  </div>
+
+  <div style="margin-bottom:15px;">
+
+<h4>Customer Details</h4>
+
+<input id="customerName"
+placeholder="Customer Name"
+style="
+width:250px;
+padding:12px;
+margin-bottom:10px;
+border:none;
+border-radius:10px;
+background:#1e2d3b;
+color:white;
+display:block;
+">
+
+<input id="customerPhone"
+placeholder="Customer Phone"
+style="
+width:250px;
+padding:12px;
+margin-bottom:10px;
+border:none;
+border-radius:10px;
+background:#1e2d3b;
+color:white;
+display:block;
+">
+
+<input id="customerAddress"
+placeholder="Customer Address"
+style="
+width:250px;
+padding:12px;
+margin-bottom:10px;
+border:none;
+border-radius:10px;
+background:#1e2d3b;
+color:white;
+display:block;
+">
+
+<input id="customerId"
+placeholder="Customer ID"
+style="
+width:250px;
+padding:12px;
+margin-bottom:10px;
+border:none;
+border-radius:10px;
+background:#1e2d3b;
+color:white;
+display:block;
+">
+
+</div>
+  
+  <input id="invoiceCode"
+    style="position:relative; z-index:9999;"
+    placeholder="Scan Barcode / Enter Code">
+
+  <input id="invoiceQty"
+    style="position:relative; z-index:9999;"
+    type="text"
+    placeholder="Quantity"
+    value="1">
+
+  <button onclick="addInvoiceItem()">Add Item</button>
+  <button onclick="saveCustomer()">Save Customer</button>
+
+  <table width="100%" id="billTable">
+
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+
+    <tbody id="invoiceList"></tbody>
+
+</table>
+  <div id="salesHistory" style="display:none;"></div>
+
+  <h2>Total: Rs.<span id="invoiceTotal">0</span></h2>
+
+  <button onclick="saveInvoice()">Save Invoice</button>
+  <button onclick="saveInvoicePDF()">📄 PDF</button>
+  <button onclick="loadSalesHistory()">History</button>
+  <button onclick="resetInvoice()">🆕 New Invoice</button>
+
+
+</div>
+
+
+<div id="repairsStaticPlaceholder" class="page" style="display:none;"></div>
+
+<div id="report" class="card" style="display:none; margin-top:20px;">
+
+  <h3>🧾 Report</h3>
+
+  <div class="report-grid">
+
+    <div class="card stat-card">
+      <h3 id="reportDailySales">Rs.0</h3>
+      <p>Daily Sales</p>
+    </div>
+
+    <div class="card stat-card">
+      <h3 id="reportIncome">Rs.0</h3>
+      <p>Total Income</p>
+    </div>
+
+    <div class="card stat-card">
+      <h3 id="lowStockCount">0</h3>
+      <p>Low Stock Items</p>
+    </div>
+
+  </div>
+
+ <h3 style="margin-top:25px;">📈 Sales Graph</h3>
+
+<div class="report-chart-box">
+  <h3 style="margin:0 0 14px 0;">Sales Graph</h3>
+  <div class="report-chart-wrap">
+    <canvas id="reportSalesChart"></canvas>
+  </div>
+</div>
+
+  <h3 style="margin-top:25px;">⚠️ Low Stock Products</h3>
+
+<div class="report-bottom">
+  <div class="report-panel">
+    <h3 style="margin:0 0 14px 0;">Recent Sales</h3>
+    <div id="recentSalesList" class="report-list"></div>
+  </div>
+
+  <div class="report-panel">
+    <h3 style="margin:0 0 14px 0;">Low Stock Products</h3>
+    <div id="lowStockList" class="report-list"></div>
+  </div>
+</div>
+
+</div>
+
+
+<script>
+
+function nav(btn, section){
+  
+  console.log("NAV CLICK:", section);
+
+  // remove active
+  document.querySelectorAll(".sidebar button").forEach(b=>{
+    b.classList.remove("active");
+  });
+
+  btn.classList.add("active");
+
+  // hide ALL sections
+  let sections = ["dashboard","products","invoice","report","settings","repairs"];
+
+  sections.forEach(id=>{
+    let el = document.getElementById(id);
+    if(el){
+      el.style.display = "none";
+    }
+  });
+
+  let current = document.getElementById(section);
+
+  if(current){
+    current.style.display = "block";
+     if(section === "settings"){
+        document.getElementById("mainTopbar").style.display = "none";
+    }else{
+        document.getElementById("mainTopbar").style.display = "flex";
+    }
+
+  } else {
+    console.log("❌ section not found:", section);
+  }
+
+  //  reload data when needed
+  if(section === "products"){
+    loadProducts();
+  }
+
+  if(section === "report"){
+    loadAll();
+  }
+  if(section === "report"){
+    loadReport();
+}
+
+}
+</script>
+
+<link rel="stylesheet" href="./web-mobile-polish.css">
+<script src="./renderer.js"></script>
+<script src="./web-login-fix.js"></script>
+<script src="./web-finalize.js"></script>
+<script>
+</script>
+<script>
+window.addEventListener("load", () => {
+
+  // first sidebar button click auto
+  let firstBtn = document.querySelector(".sidebar button");
+
+  if(firstBtn){
+    firstBtn.click();
+  } else {
+    console.log("❌ sidebar button not found");
+  }
+
+});
+</script>
+<script>
+
+function nav(btn, section){
+
+  document.querySelectorAll(".sidebar button").forEach(b=>{
+    b.classList.remove("active");
+  });
+
+  if(btn){
+    btn.classList.add("active");
+  }
+
+  let sections = [
+    "dashboard",
+    "products",
+    "invoice",
+    "report",
+    "settings",
+    "repairs"
+  ];
+
+  sections.forEach(id=>{
+    let el = document.getElementById(id);
+
+    if(el){
+      el.style.display = "none";
+    }
+  });
+
+  let current = document.getElementById(section);
+
+  if(current){
+    current.style.display = "block";
+  }
+
+  const mainTopbar = document.getElementById("mainTopbar");
+
+  if(mainTopbar){
+    mainTopbar.style.display =
+      section === "settings" ? "none" : "flex";
+  }
+
+  if(section === "products"){
+    loadProducts();
+  }
+
+  if(section === "report"){
+    loadReports();
+  }
+
+}
+
+window.addEventListener("load", ()=>{
+
+  let firstBtn =
+  document.querySelector(".sidebar button");
+
+  if(firstBtn){
+    firstBtn.click();
+  }
+
+});
+
+</script>
+<div id="toast"></div>
+
+<div id="settings" class="page settings-page" style="display:none;">
+
+   <div class="topbar" id="mainTopbar">
+
+    <div style="display:flex;align-items:center;gap:15px;">
+
+        <h2 style="margin:0;">⚙️ Settings</h2>
+
+    </div>
+
+</div>
+  <div class="settings-layout" style="display:flex; gap:25px; align-items:flex-start;">
+
+        <!-- LEFT MENU -->
+        <div class="settings-menu" style="width:210px; flex-shrink:0;">
+
+            <button data-tab="accountTab" onclick="openSettingTab('accountTab')">
+                🏢 Account Information
+            </button>
+
+            <button data-tab="invoiceTab" onclick="openSettingTab('invoiceTab')">
+                🧾 Invoice Settings
+            </button>
+
+            <button data-tab="backupTab" onclick="openSettingTab('backupTab')">
+                💾 Backup Settings
+            </button>
+
+            <button data-tab="securityTab" onclick="openSettingTab('securityTab')">
+                🔐 Security Settings
+            </button>
+
+            <button data-tab="notificationTab" onclick="openSettingTab('notificationTab')">
+                🔔 Notifications
+            </button>
+
+            <button id="businessPrefsMenuBtn" data-tab="businessPrefsTab" onclick="openSettingTab('businessPrefsTab')">
+                ⚙ Business Preferences
+            </button>
+
+            <button data-tab="autoBackupTab" onclick="openSettingTab('autoBackupTab')">
+                💾 Auto Backup
+            </button>
+
+        </div>
+
+        <!-- RIGHT CONTENT -->
+        <div class="settings-content" style="max-width:520px; width:100%;">
+
+            <!-- ACCOUNT -->
+            <div id="accountTab" class="settings-tab-content">
+
+                <h3>🏢 Account Information</h3>
+
+                <div class="settings-box">
+
+                    <input id="companyName" placeholder="Company Name">
+
+                    <input id="companyPhone" placeholder="Phone Number">
+
+                    <input id="companyEmail" placeholder="Email">
+
+                    <input id="companyAddress" placeholder="Address">
+
+                    <input type="file"
+                    id="companyLogoFile"
+                    accept="image/*">
+
+                    <div class="settings-buttons">
+
+                        <button onclick="saveSettings()">
+                            Save Settings
+                        </button>
+
+                        <button class="reset-btn" onclick="resetSettings()">Reset</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- INVOICE -->
+            <div id="invoiceTab"
+class="settings-tab-content"
+style="display:none;">
+
+                <h3>🧾 Invoice Settings</h3>
+
+                <div class="settingsBox">
+
+    <input
+        type="text"
+        id="invoicePrefix"
+        placeholder="Invoice Prefix (EX: INV)"
+        style="
+            width:250px;
+            padding:12px;
+            margin-bottom:15px;
+            border:none;
+            border-radius:10px;
+            background:#1e2d3b;
+            color:white;
+        "
+    >
+
+    <br>
+
+    <input
+        type="number"
+        id="invoiceStart"
+        placeholder="Starting Invoice Number"
+        style="
+            width:250px;
+            padding:12px;
+            margin-bottom:15px;
+            border:none;
+            border-radius:10px;
+            background:#1e2d3b;
+            color:white;
+        "
+    >
+
+    <br>
+
+    <button onclick="saveInvoiceSettings()">
+        Save Invoice Settings
+    </button>
+
+</div>
+
+            </div>
+
+            <!-- BACKUP -->
+<div id="backupTab"
+class="settings-tab-content"
+style="display:none;">
+
+    <h3>💾 Backup Settings</h3>
+
+    <div class="settings-box">  
+
+        <button onclick="exportBackup()">
+            📤 Export Backup
+        </button>
+
+        <input type="file"
+        id="importFile"
+        accept=".ysbackup">
+
+        <button onclick="importBackup()">
+            📥 Import Backup
+        </button>
+
+        <p>
+            📅 Last Backup:
+            <span id="lastBackupDate">
+                No backups yet
+            </span>
+        </p>
+    </div>
+
+    <hr style="margin: 20px 0;">
+
+    <h3>📜 Export History</h3>
+
+    <div id="backupHistory"></div>
+
+</div>
+
+
+<div id="autoBackupTab"
+class="settings-tab-content"
+style="display:none;">
+
+    <h3>💾 Auto Backup</h3>
+
+    <div class="settings-box">
+
+        <label style="display:flex;align-items:center;gap:12px;">
+            <span>Enable Auto Backup</span>
+            <input type="checkbox" id="autoBackupEnabled">
+        </label>
+
+        <select id="autoBackupInterval">
+            <option value="5">Every 5 minutes</option>
+            <option value="10">Every 10 minutes</option>
+            <option value="30">Every 30 minutes</option>
+            <option value="60">Every 1 hour</option>
+        </select>
+        <input id="autoBackupFolderName" placeholder="Backup folder name (auto-backups)">
+
+        <select id="autoBackupKeepCount">
+            <option value="5">Keep last 5 backups</option>
+            <option value="10">Keep last 10 backups</option>
+            <option value="25">Keep last 25 backups</option>
+            <option value="50">Keep last 50 backups</option>
+        </select>
+
+
+        <button onclick="saveAutoBackupSettings()">
+            Save Auto Backup
+        </button>
+
+        <button onclick="runAutoBackupNow()">
+            Run Backup Now
+        </button>
+
+        <p>
+            Last Auto Backup:
+            <span id="autoBackupLastRun">No auto backups yet</span>
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- SECURITY -->
+<div id="securityTab"
+class="settings-tab-content"
+style="display:none;">
+
+    <h3>🔐 Security Settings</h3>
+
+    <div class="settings-box">
+
+        <input id="currentPass"
+        type="password"
+        placeholder="Current Password">
+
+        <input id="newPass"
+        type="password"
+        placeholder="New Password">
+
+        <input id="confirmPass"
+        type="password"
+        placeholder="Confirm Password">
+
+        <button onclick="changePassword()">
+            Save Password
+        </button>
+
+    </div>
+
+</div>
+<div id="notificationTab" class="settings-tab-content" style="display:none;">
+
+<h3>🔔 Notification Settings</h3>
+
+<div style="
+display:flex;
+flex-direction:column;
+gap:14px;
+margin-top:20px;
+width:100%;
+max-width:420px;
+">
+
+<label style="
+display:grid;
+grid-template-columns: 1fr auto;
+align-items:center;
+gap:15px;
+width:100%;
+">
+<span>Low Stock Notifications</span>
+<input type="checkbox" id="lowStockNotify">
+</label>
+
+<label style="
+display:grid;
+grid-template-columns: 1fr auto;
+align-items:center;
+gap:15px;
+width:100%;
+">
+<span>Invoice Saved Notifications</span>
+<input type="checkbox" id="invoiceNotify">
+</label>
+
+<label style="
+display:grid;
+grid-template-columns: 1fr auto;
+align-items:center;
+gap:15px;
+width:100%;
+">
+<span>Backup Completed Notifications</span>
+<input type="checkbox" id="backupNotify">
+</label>
+
+<label style="
+display:grid;
+grid-template-columns: 1fr auto;
+align-items:center;
+gap:15px;
+width:100%;
+">
+<span>Product Added Notifications</span>
+<input type="checkbox" id="productAddNotify">
+</label>
+
+<label style="
+display:grid;
+grid-template-columns: 1fr auto;
+align-items:center;
+gap:15px;
+width:100%;
+">
+<span>Product Delete Notifications</span>
+<input type="checkbox" id="productDeleteNotify">
+</label>
+
+<label style="
+display:grid;
+grid-template-columns: 1fr auto;
+align-items:center;
+gap:15px;
+width:100%;
+">
+<span>New Invoice Notifications</span>
+<input type="checkbox" id="newInvoiceNotify">
+</label>
+
+<button onclick="saveNotificationSettings()" style="
+margin-top:10px;
+width:260px;
+">
+Save Notification Settings
+</button>
+
+</div>
+
+</div>
+
+<div id="businessPrefsTab" class="settings-tab-content" style="display:none;">
+
+<h3>⚙ Business Preferences</h3>
+
+<div class="settings-grid-card">
+    <div class="pref-grid">
+        <div class="pref-field">
+            <label for="prefLowStockLimit">Low Stock Limit</label>
+            <input id="prefLowStockLimit" type="number" min="0" placeholder="2">
+        </div>
+
+        <div class="pref-field">
+            <label for="prefDefaultCategory">Default Product Category</label>
+            <input id="prefDefaultCategory" placeholder="Uncategorized">
+        </div>
+
+        <div class="pref-field">
+            <label for="prefBusinessDescription">Business Description</label>
+            <input id="prefBusinessDescription" placeholder="Retail, service, repair shop, etc.">
+        </div>
+
+        <div class="pref-field">
+            <label for="prefCurrencyPrefix">Currency Prefix</label>
+            <input id="prefCurrencyPrefix" placeholder="Rs.">
+        </div>
+
+        <div class="pref-field">
+            <label for="prefThermalPaperWidth">Thermal Paper Width</label>
+            <select id="prefThermalPaperWidth">
+                <option value="80">80mm</option>
+                <option value="58">58mm</option>
+            </select>
+        </div>
+
+        <div class="pref-field">
+            <label>Sound Notifications</label>
+            <label style="display:flex;align-items:center;gap:10px;min-height:42px;">
+                <input id="prefSoundNotify" type="checkbox">
+                <span>Enable app sounds</span>
+            </label>
+        </div>
+
+        <div class="pref-field pref-wide">
+            <label for="prefRepairBusinessMode">Repair Business Type</label>
+            <select id="prefRepairBusinessMode">
+                <option value="all">All Repairs / Full Service</option>
+                <option value="mobile">Mobile Repair Shop</option>
+                <option value="mobile_tablet">Mobile & Tablet Shop</option>
+                <option value="electronics">Electronic Repair Shop</option>
+                <option value="computer">Computer / IT Repair Shop</option>
+                <option value="appliance">Appliance Repair Shop</option>
+                <option value="vehicle">Vehicle / Machinery Repair Shop</option>
+            </select>
+        </div>
+
+        <div class="pref-field pref-wide">
+            <label for="prefReceiptNote">Receipt Footer Note</label>
+            <textarea id="prefReceiptNote" placeholder="Goods once sold are not returnable."></textarea>
+        </div>
+
+        <div class="campaign-panel">
+            <div class="pref-field">
+                <label for="prefDiscountProductSearch">Product Discount Campaign</label>
+                <input id="prefDiscountProductSearch" list="prefDiscountProductList" placeholder="Search or select product" oninput="applySelectedProductDiscount()" onfocus="loadProductDiscountCampaign()">
+                <datalist id="prefDiscountProductList"></datalist>
+                <input id="prefDiscountProduct" type="hidden">
+            </div>
+            <div class="pref-field">
+                <label for="prefProductDiscountValue">Discount Value</label>
+                <input id="prefProductDiscountValue" type="number" min="0" placeholder="0">
+            </div>
+            <div class="pref-field">
+                <label for="prefProductDiscountType">Type</label>
+                <select id="prefProductDiscountType">
+                    <option value="amount">Rs</option>
+                    <option value="percent">%</option>
+                </select>
+            </div>
+            <div class="pref-field">
+                <label for="prefProductDiscountStart">Start Date</label>
+                <input id="prefProductDiscountStart" type="date">
+            </div>
+            <div class="pref-field">
+                <label for="prefProductDiscountEnd">End Date</label>
+                <input id="prefProductDiscountEnd" type="date">
+            </div>
+            <div class="campaign-actions">
+                <button type="button" onclick="saveProductDiscountCampaign()">Save Product Discount</button>
+                <button type="button" onclick="clearProductDiscountCampaign()" style="background:#ef4444 !important;color:white !important;">Clear Product Discount</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="pref-actions">
+        <button type="button" onclick="saveBusinessPreferences()">Save Preferences</button>
+    </div>
+</div>
+
+</div>
+
+</div> <!-- settings-content -->
+</div> <!-- settings-layout -->
+</div> <!-- settings -->
+<div id="toast"></div>
+
+<!-- CONFIRM POPUP -->
+
+<div id="confirmPopup" class="confirmPopup">
+
+    <div class="confirmBox">
+
+        <h3 id="confirmTitle">
+            Confirm Action
+        </h3>
+
+        <p id="confirmText">
+            Are you sure?
+        </p>
+
+        <div class="confirmButtons">
+
+            <button
+    class="yesBtn"
+    id="confirmYes"
+    onclick="if(confirmCallback){confirmCallback()} closeConfirm()"
+>
+    Yes
+</button>
+
+            <button
+    class="noBtn"
+    id="confirmNo"
+    onclick="closeConfirm()"
+>
+    No
+</button>
+
+        </div>
+
+    </div>
+
+</div>
+<div id="categoryPopup" class="category-popup" style="display:none;">
+
+    <div class="category-popup-box">
+
+        <h3>📂 Manage Categories</h3>
+
+        <div id="categoryList"></div>
+
+        <div style="margin-top:15px;">
+
+            <input
+                type="text"
+                id="newCategoryName"
+                placeholder="New Category"
+            >
+
+            <button onclick="addNewCategory()">
+                Add
+            </button>
+
+        </div>
+
+        <button
+            onclick="closeCategoryPopup()"
+            style="margin-top:15px;">
+            Close
+        </button>
+
+    </div>
+
+</div>
+<script>
+(function(){
+  function getCleanCats(){
+    try{
+      const cats = JSON.parse(localStorage.getItem("categories") || "[]");
+      return Array.isArray(cats) && cats.length ? cats : ["Uncategorized"];
+    }catch(e){
+      return ["Uncategorized"];
+    }
+  }
+
+  function saveCleanCats(cats){
+    localStorage.setItem("categories", JSON.stringify(cats));
+  }
+
+  function getCleanDb(){
+    if(window.__cleanCategoryDb) return window.__cleanCategoryDb;
+    const __cleanRequire = typeof require === "function" ? require : (name)=> window.VS_WEB_REQUIRE(name);
+    const sqlite3 = __cleanRequire("sqlite3").verbose();
+const { ipcRenderer } = __cleanRequire("electron");
+const cleanDbPath = ipcRenderer.sendSync("get-db-path-sync");
+window.__cleanCategoryDb = window.VS_WEB_APP && window.VS_WEB_DB ? window.VS_WEB_DB : new sqlite3.Database(cleanDbPath);
+return window.__cleanCategoryDb;
+  }
+
+  function refreshAppCategoryBits(){
+    if(typeof loadCategoryDropdown === "function") loadCategoryDropdown();
+    if(typeof loadProducts === "function") loadProducts();
+    if(typeof showToast === "function") showToast("Categories Updated");
+  }
+
+  window.closeCleanCategoryManager = function(){
+    const overlay = document.getElementById("cleanCategoryOverlay");
+    if(overlay) overlay.remove();
+  };
+
+  window.cleanAddCategory = function(){
+    const input = document.getElementById("cleanNewCategory");
+    const name = (input && input.value || "").trim();
+    if(!name) return;
+    const cats = getCleanCats();
+    if(!cats.includes(name)){
+      cats.push(name);
+      saveCleanCats(cats);
+    }
+    window.openCleanCategoryManager();
+    refreshAppCategoryBits();
+  };
+
+  window.cleanRenameCategory = function(oldName){
+    const input = document.getElementById("rename_" + oldName.replace(/\W/g, "_"));
+    const newName = (input && input.value || "").trim();
+    if(!newName || newName === oldName) return;
+    const cats = getCleanCats().map(cat => cat === oldName ? newName : cat);
+    saveCleanCats(cats);
+    getCleanDb().run(
+      "UPDATE products SET category=? WHERE category=?",
+      [newName, oldName],
+      function(){
+        window.openCleanCategoryManager();
+        refreshAppCategoryBits();
+      }
+    );
+  };
+
+  window.cleanDeleteCategory = function(cat){
+    if(cat === "Uncategorized"){
+      if(typeof showToast === "function") showToast("Default category cannot delete", "#ff4d4d");
+      return;
+    }
+    window.showCleanCategoryConfirm(
+      "Delete " + cat + "? Products will move to Uncategorized.",
+      function(){
+        const cats = getCleanCats().filter(item => item !== cat);
+        saveCleanCats(cats);
+        getCleanDb().run(
+          "UPDATE products SET category=? WHERE category=?",
+          ["Uncategorized", cat],
+          function(){
+            window.openCleanCategoryManager();
+            refreshAppCategoryBits();
+          }
+        );
+      }
+    );
+  };
+
+  window.showCleanCategoryConfirm = function(message, onYes){
+    const old = document.getElementById("cleanCategoryConfirm");
+    if(old) old.remove();
+
+    const box = document.createElement("div");
+    box.id = "cleanCategoryConfirm";
+    box.style.cssText = "position:fixed;right:28px;bottom:28px;width:330px;background:#071722;color:white;z-index:2147483647;border-radius:12px;padding:16px;box-shadow:0 18px 50px rgba(0,0,0,.45);";
+    box.innerHTML = `
+      <p style="margin:0 0 14px 0;line-height:1.35;">${message}</p>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button type="button" data-yes style="border:0;border-radius:8px;background:#ef4444;color:white;font-weight:bold;padding:9px 14px;">Delete</button>
+        <button type="button" data-no style="border:0;border-radius:8px;background:#334155;color:white;font-weight:bold;padding:9px 14px;">Cancel</button>
+      </div>
+    `;
+    box.querySelector("[data-yes]").onclick = function(){
+      box.remove();
+      onYes();
+    };
+    box.querySelector("[data-no]").onclick = function(){
+      box.remove();
+    };
+    document.body.appendChild(box);
+  };
+
+  window.cleanMoveProduct = function(){
+    const productId = document.getElementById("cleanMoveProduct")?.value;
+    const cat = document.getElementById("cleanMoveCategory")?.value;
+    if(!productId || !cat){
+      if(typeof showToast === "function") showToast("Select product and category", "#ff4d4d");
+      return;
+    }
+    getCleanDb().run(
+      "UPDATE products SET category=? WHERE id=?",
+      [cat, productId],
+      function(){
+        window.openCleanCategoryManager();
+        refreshAppCategoryBits();
+      }
+    );
+  };
+
+  window.openCleanCategoryManager = function(){
+    const old = document.getElementById("cleanCategoryOverlay");
+    if(old) old.remove();
+
+    const db = getCleanDb();
+    const cats = getCleanCats();
+
+    db.all("SELECT id,name,code,category FROM products ORDER BY name ASC", [], function(err, products){
+      products = products || [];
+
+      const overlay = document.createElement("div");
+      overlay.id = "cleanCategoryOverlay";
+      overlay.style.cssText = "position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:24px;";
+
+      overlay.innerHTML = `
+        <div style="width:620px;max-width:calc(100vw - 34px);max-height:calc(100vh - 44px);overflow:auto;background:#082033;color:white;border-radius:14px;padding:22px;box-shadow:0 25px 70px rgba(0,0,0,.45);">
+          <style>
+            #cleanCategoryOverlay button{
+              background:var(--clean-bg,#ffb020) !important;
+              color:var(--clean-fg,#fff) !important;
+              box-shadow:0 8px 18px rgba(0,0,0,.18) !important;
+              border:none !important;
+              border-radius:8px !important;
+              font-weight:800 !important;
+            }
+            #cleanCategoryOverlay button:hover{ filter:brightness(1.08); }
+            #cleanCategoryOverlay input,
+            #cleanCategoryOverlay select{
+              background:#edf5f8 !important;
+              color:#111827 !important;
+              border:1px solid #9fb9c7 !important;
+            }
+            #cleanCategoryOverlay input::placeholder{ color:#6b7f8e !important; }
+            #cleanCategoryOverlay .clean-category-row{
+              background:#e7f0f4 !important;
+              border:1px solid #a8c0cc !important;
+              color:#111827 !important;
+            }
+            #cleanCategoryOverlay .clean-category-name{
+              color:#0f172a !important;
+              font-weight:900 !important;
+            }
+            #cleanCategoryOverlay .clean-category-count{
+              color:#475569 !important;
+              opacity:1 !important;
+            }
+          </style>
+          <h2 style="margin:0 0 16px 0;">Manage Categories</h2>
+
+          <div style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:14px;">
+            <input id="cleanNewCategory" placeholder="New Category" style="margin:0;padding:11px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:#102638;color:white;">
+            <button type="button" onclick="cleanAddCategory()" style="--clean-bg:#16a34a;--clean-fg:white;padding:0 18px;">Add</button>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 170px auto;gap:10px;margin-bottom:18px;background:#102638;padding:12px;border-radius:10px;">
+            <select id="cleanMoveProduct" style="margin:0;padding:11px;border-radius:8px;background:#071722;color:white;border:1px solid rgba(255,255,255,.15);">
+              <option value="">Select product to move</option>
+              ${products.map(p => `<option value="${p.id}">${p.name || "-"} | Code: ${p.code || "-"} | ${p.category || "Uncategorized"}</option>`).join("")}
+            </select>
+            <select id="cleanMoveCategory" style="margin:0;padding:11px;border-radius:8px;background:#071722;color:white;border:1px solid rgba(255,255,255,.15);">
+              ${cats.map(cat => `<option value="${cat}">${cat}</option>`).join("")}
+            </select>
+            <button type="button" onclick="cleanMoveProduct()" style="--clean-bg:#d97706;--clean-fg:white;padding:0 18px;">Move</button>
+          </div>
+
+          <div style="display:grid;gap:10px;">
+            ${cats.map(cat => `
+              <div class="clean-category-row" style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px;border-radius:10px;">
+                <div>
+                  <b class="clean-category-name">${cat}</b>
+                  <small class="clean-category-count" style="display:block;margin-top:4px;">${products.filter(p => (p.category || "Uncategorized") === cat).length} products</small>
+                </div>
+                <div style="display:grid;grid-template-columns:160px auto auto;gap:8px;align-items:center;justify-content:flex-end;">
+                  <input id="rename_${cat.replace(/\W/g, "_")}" placeholder="New name" style="margin:0;padding:9px;border-radius:8px;background:#071722;color:white;border:1px solid rgba(255,255,255,.15);">
+                  <button type="button" onclick="cleanRenameCategory('${cat.replace(/'/g, "\\'")}')" style="--clean-bg:#f59e0b;--clean-fg:#111;padding:10px 14px;">Rename</button>
+                  ${cat !== "Uncategorized" ? `<button type="button" onclick="cleanDeleteCategory('${cat.replace(/'/g, "\\'")}')" style="--clean-bg:#ef4444;--clean-fg:white;padding:10px 14px;">Delete</button>` : ""}
+                </div>
+              </div>
+            `).join("")}
+          </div>
+
+          <button type="button" onclick="closeCleanCategoryManager()" style="margin-top:18px;--clean-bg:#0f766e;--clean-fg:white;padding:11px 18px;">Close</button>
+        </div>
+      `;
+
+      overlay.addEventListener("click", function(event){
+        if(event.target === overlay) window.closeCleanCategoryManager();
+      });
+
+      document.body.appendChild(overlay);
+    });
+  };
+
+  window.addEventListener("load", function(){
+    const btn = document.getElementById("manageCategoriesBtn");
+    if(!btn) return;
+    btn.onclick = function(event){
+      event.preventDefault();
+      event.stopPropagation();
+      window.openCleanCategoryManager();
+    };
+    btn.onpointerdown = btn.onclick;
+  });
+
+  window.showManageCategories = window.openCleanCategoryManager;
+  window.openCategoryPopupDirect = window.openCleanCategoryManager;
+})();
+</script>
+<style id="fixedDeveloperAndSettingsStyle">
+#settings{
+  padding:32px 36px !important;
+}
+#settings .topbar{
+  max-width:1180px !important;
+  margin:0 auto 22px auto !important;
+}
+#settings .topbar h2{
+  font-size:28px !important;
+  letter-spacing:0 !important;
+}
+#settings .settings-layout{
+  max-width:1180px !important;
+  margin:0 auto !important;
+  display:grid !important;
+  grid-template-columns:260px minmax(560px,1fr) !important;
+  gap:24px !important;
+  align-items:start !important;
+  padding:0 !important;
+}
+#settings .settings-menu{
+  width:260px !important;
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:10px !important;
+  margin:0 !important;
+  padding:14px !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  border-radius:16px !important;
+  background:rgba(12,31,42,.72) !important;
+  box-shadow:0 16px 40px rgba(0,0,0,.22) !important;
+}
+#settings .settings-menu button{
+  width:100% !important;
+  min-height:46px !important;
+  height:auto !important;
+  margin:0 !important;
+  border-radius:10px !important;
+  text-align:left !important;
+  padding:12px 14px !important;
+  background:#f59e0b !important;
+  color:#021018 !important;
+  box-shadow:none !important;
+}
+#settings .settings-menu button.active-setting-tab{
+  background:#ffae18 !important;
+  color:#071018 !important;
+  box-shadow:0 8px 18px rgba(255,174,24,.28) !important;
+}
+#settings .settings-content{
+  width:100% !important;
+  max-width:none !important;
+  min-height:520px !important;
+  margin:0 !important;
+  border-radius:16px !important;
+  padding:28px !important;
+  background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025)) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+}
+#settings .settings-tab-content h3{
+  margin:0 0 20px 0 !important;
+  font-size:22px !important;
+}
+#settings .settings-box,
+#settings .settingsBox,
+#settings .settings-grid-card{
+  background:rgba(8,24,34,.55) !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  border-radius:14px !important;
+  padding:20px !important;
+  max-width:760px !important;
+}
+#settings input,
+#settings select,
+#settings textarea{
+  width:100% !important;
+  max-width:520px !important;
+  min-height:42px !important;
+  margin:0 0 12px 0 !important;
+  border-radius:10px !important;
+  border:1px solid rgba(255,255,255,.09) !important;
+  background:#102638 !important;
+  color:white !important;
+  padding:10px 12px !important;
+  box-sizing:border-box !important;
+}
+#settings input[type="checkbox"]{
+  width:18px !important;
+  min-height:18px !important;
+  margin:0 !important;
+}
+#developerWatermark{display:none !important;}
+.sidebar{
+  position:relative !important;
+  display:flex !important;
+  flex-direction:column !important;
+}
+#developerWatermarkFixed{
+  margin:22px auto 10px auto !important;
+  margin-top:auto !important;
+  width:82% !important;
+  min-height:102px;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:7px !important;
+  opacity:.62;
+  cursor:pointer;
+  user-select:none;
+  padding:10px 8px;
+  border-radius:14px;
+  background:rgba(7,26,39,.72);
+  border:1px solid rgba(0,200,255,.16);
+  box-shadow:0 10px 26px rgba(0,0,0,.24), inset 0 0 18px rgba(0,190,255,.06);
+  transition:opacity .18s ease, transform .18s ease, border-color .18s ease;
+}
+#developerWatermarkFixed:hover{
+  opacity:.9;
+  transform:translateY(-2px);
+  border-color:rgba(0,200,255,.34);
+}
+#developerWatermarkFixed span{
+  color:#e9fbff;
+  font-size:12px;
+  font-weight:800;
+  text-shadow:0 2px 8px rgba(0,0,0,.5);
+  white-space:nowrap;
+}
+#developerWatermarkFixed img{
+  width:132px;
+  max-width:95%;
+  max-height:70px;
+  object-fit:contain;
+  border-radius:8px;
+  filter:brightness(1.45) contrast(1.12) saturate(1.24);
+  box-shadow:0 0 22px rgba(0,190,255,.32);
+}
+#developerAboutOverlay{
+  position:fixed;
+  inset:0;
+  z-index:2147483647;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:26px;
+  background:rgba(0,0,0,.68);
+  backdrop-filter:blur(3px);
+}
+#developerAboutBox{
+  width:720px;
+  max-width:calc(100vw - 34px);
+  max-height:calc(100vh - 44px);
+  overflow:auto;
+  color:#eef9ff;
+  background:#082033;
+  border:1px solid rgba(0,200,255,.20);
+  border-radius:16px;
+  box-shadow:0 30px 80px rgba(0,0,0,.48);
+  padding:26px 30px;
+}
+#developerAboutBox h2{
+  margin:0 0 16px 0;
+  font-size:28px;
+}
+#developerAboutBox h3{
+  margin:22px 0 10px 0;
+  font-size:18px;
+  color:#9eeaff;
+}
+#developerAboutBox p{
+  margin:0 0 13px 0;
+  line-height:1.58;
+  color:#d9edf5;
+}
+#developerAboutBox .aboutMeta{
+  display:grid;
+  grid-template-columns:180px 1fr;
+  gap:10px 16px;
+  margin-top:16px;
+  padding:16px;
+  border-radius:12px;
+  background:rgba(255,255,255,.05);
+}
+#developerAboutBox .aboutMeta b{
+  color:#fff;
+}
+#developerAboutBox button{
+  margin-top:20px !important;
+  background:#f59e0b !important;
+  color:#021018 !important;
+  min-width:130px;
+}
+@media(max-width:1100px){
+  #settings .settings-layout{
+    grid-template-columns:1fr !important;
+  }
+  #settings .settings-menu{
+    width:100% !important;
+    grid-template-columns:repeat(2,minmax(180px,1fr)) !important;
+  }
+}
+</style>
+<div id="developerAboutOverlay" onclick="if(event.target === this){closeDeveloperAbout()}">
+  <div id="developerAboutBox">
+    <h2>About VS System</h2>
+    <p>VS System is a modern and reliable business management solution designed to simplify and improve daily business operations.</p>
+    <p>The system provides an efficient platform for managing products, billing, invoices, customers, sales records, stock control, reports, and secure backups — all within a fast and user-friendly desktop application.</p>
+    <p>Designed with performance, stability, and simplicity in mind, VS System helps businesses operate more efficiently while reducing manual work and saving valuable time.</p>
+    <p>Whether for retail stores, machinery businesses, service centers, or growing enterprises, the software is built to deliver a smooth, professional, and dependable experience.</p>
+    <h3>Developer Information</h3>
+    <p>VS System was proudly designed and developed by VS Software Developers.</p>
+    <p>VS Software Developers focuses on creating professional, practical, and reliable software solutions tailored to modern business needs. Our mission is to build systems that are simple to use, visually clean, and powerful enough to support real-world business operations.</p>
+    <div class="aboutMeta">
+      <b>Developed By</b><span>VS Software Developers</span>
+      <b>Founder & Developer</b><span>Jayanith Sathsindu Vijerathna</span>
+      <b>Version</b><span>VS System v1.0.0</span>
+    </div>
+    <p style="margin-top:16px;">© 2026 VS Software Developers. All Rights Reserved.</p>
+    <button type="button" onclick="closeDeveloperAbout()">Close</button>
+  </div>
+</div>
+<script>
+(function(){
+  window.openDeveloperAbout = function(){
+    var overlay = document.getElementById("developerAboutOverlay");
+    if(overlay){
+      overlay.style.display = "flex";
+    }
+  };
+  window.closeDeveloperAbout = function(){
+    var overlay = document.getElementById("developerAboutOverlay");
+    if(overlay){
+      overlay.style.display = "none";
+    }
+  };
+
+  function forceSettingsFresh(){
+    if(typeof ensureSettingsEnhancements === "function"){
+      ensureSettingsEnhancements();
+    }
+    if(typeof ensureAutoBackupTab === "function"){
+      ensureAutoBackupTab();
+    }
+    var settings = document.getElementById("settings");
+    if(!settings || settings.style.display === "none"){
+      return;
+    }
+    
+  }
+
+  function hookNavHard(){
+    if(window.__fixedSettingsNavHardHooked){
+      return;
+    }
+    var oldNav = window.nav;
+    if(typeof oldNav === "function"){
+      window.nav = function(btn, section){
+        oldNav(btn, section);
+        if(section === "settings"){
+          setTimeout(forceSettingsFresh, 0);
+          setTimeout(forceSettingsFresh, 120);
+        }
+      };
+      window.__fixedSettingsNavHardHooked = true;
+    }
+  }
+
+  document.addEventListener("click", function(event){
+    var btn = event.target.closest ? event.target.closest(".sidebar button") : null;
+    if(btn && btn.innerText.toLowerCase().includes("settings")){
+      setTimeout(forceSettingsFresh, 0);
+      setTimeout(forceSettingsFresh, 120);
+    }
+  }, true);
+
+  window.addEventListener("load", function(){
+    hookNavHard();
+    var watermark = document.getElementById("developerWatermarkFixed");
+    if(watermark){
+      watermark.style.display = "flex";
+    }
+  });
+  setInterval(function(){
+    hookNavHard();
+    var watermark = document.getElementById("developerWatermarkFixed");
+    if(watermark){
+      watermark.style.display = "flex";
+    }
+  }, 1000);
+})();
+</script>
+
+<script id="settingsTabEmergencyFix">
+(function(){
+  function switchSettingsTab(tabId){
+    var settings = document.getElementById("settings");
+    if(!settings){ return; }
+
+    if(!document.getElementById(tabId)){
+      if(typeof window.ensureSettingsEnhancements === "function") window.ensureSettingsEnhancements();
+      if(typeof window.ensureAutoBackupTab === "function") window.ensureAutoBackupTab();
+    }
+
+    settings.querySelectorAll(".settings-tab-content").forEach(function(tab){
+      tab.style.display = "none";
+    });
+
+    var tab = document.getElementById(tabId);
+    if(tab){
+      tab.style.display = "block";
+    }
+
+    settings.querySelectorAll(".settings-menu button").forEach(function(button){
+      button.classList.toggle("active-setting-tab", button.getAttribute("data-tab") === tabId);
+    });
+
+    if(tabId === "backupTab" && typeof window.loadBackupHistory === "function") window.loadBackupHistory();
+    if(tabId === "autoBackupTab" && typeof window.loadAutoBackupSettings === "function") window.loadAutoBackupSettings();
+    if(tabId === "businessPrefsTab" && typeof window.loadBusinessPreferences === "function") window.loadBusinessPreferences();
+  }
+
+  window.openSettingTab = switchSettingsTab;
+
+  function bind(){
+    var settings = document.getElementById("settings");
+    if(!settings){ return; }
+
+    settings.querySelectorAll(".settings-menu button").forEach(function(button){
+      var text = (button.innerText || "").toLowerCase();
+      var tabId = button.getAttribute("data-tab");
+      if(!tabId){
+        if(text.indexOf("account") >= 0) tabId = "accountTab";
+        else if(text.indexOf("invoice") >= 0) tabId = "invoiceTab";
+        else if(text.indexOf("backup settings") >= 0) tabId = "backupTab";
+        else if(text.indexOf("security") >= 0) tabId = "securityTab";
+        else if(text.indexOf("notifications") >= 0) tabId = "notificationTab";
+        else if(text.indexOf("business") >= 0) tabId = "businessPrefsTab";
+        else if(text.indexOf("auto backup") >= 0) tabId = "autoBackupTab";
+      }
+      if(!tabId){ return; }
+      button.setAttribute("data-tab", tabId);
+      button.onclick = function(event){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        switchSettingsTab(tabId);
+        return false;
+      };
+    });
+  }
+
+  document.addEventListener("click", function(event){
+    var button = event.target.closest ? event.target.closest("#settings .settings-menu button") : null;
+    if(!button){ return; }
+    var tabId = button.getAttribute("data-tab");
+    if(!tabId){ bind(); tabId = button.getAttribute("data-tab"); }
+    if(tabId){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      switchSettingsTab(tabId);
+    }
+  }, true);
+
+  window.addEventListener("load", function(){ setTimeout(bind, 50); setTimeout(bind, 500); });
+  setInterval(bind, 1000);
+})();
+</script>
+
+
+<script id="backupFolderChooseHtmlHelper">
+window.addEventListener("load", function(){
+  function upgradeBackupFolderInput(){
+    var input = document.getElementById("autoBackupFolderName");
+    if(!input || input.closest(".backup-folder-row")){ return; }
+    var wrap = document.createElement("div");
+    wrap.className = "backup-folder-row";
+    input.parentNode.insertBefore(wrap, input);
+    wrap.appendChild(input);
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = "Choose Folder";
+    btn.onclick = function(event){
+      event.preventDefault();
+      if(typeof window.chooseAutoBackupFolder === "function"){
+        window.chooseAutoBackupFolder();
+      }
+    };
+    wrap.appendChild(btn);
+  }
+  setTimeout(upgradeBackupFolderInput, 100);
+  setInterval(upgradeBackupFolderInput, 1200);
+});
+</script>
+
+
+<script id="repairsButtonHardFix">
+(function(){
+  const repairTypes = ["Mobile Repair","Tablet Repair","Computer Repair","Laptop Repair","Printer Repair","CCTV Repair","Network Repair","TV Repair","Audio Repair","Camera Repair","POS / Barcode Repair","UPS / Inverter Repair","Appliance Repair","AC / Refrigerator Repair","Washing Machine Repair","Vehicle Repair","Machinery Repair","Electronic Items Repair","Other Repair"];
+  const repairBusinessTypeMap = {
+    all: repairTypes,
+    mobile: ["Mobile Repair"],
+    mobile_tablet: ["Mobile Repair","Tablet Repair"],
+    electronics: ["Electronic Items Repair","TV Repair","Audio Repair","Camera Repair","CCTV Repair","POS / Barcode Repair","UPS / Inverter Repair","Other Repair"],
+    computer: ["Computer Repair","Laptop Repair","Printer Repair","Network Repair","CCTV Repair","POS / Barcode Repair","UPS / Inverter Repair","Other Repair"],
+    appliance: ["Appliance Repair","AC / Refrigerator Repair","Washing Machine Repair","UPS / Inverter Repair","Other Repair"],
+    vehicle: ["Vehicle Repair","Machinery Repair","Electronic Items Repair","Other Repair"]
+  };
+  function getPresetRepairTypes(){
+    try {
+      if(typeof window.getAllowedRepairTypes === "function"){
+        var allowed = window.getAllowedRepairTypes();
+        if(Array.isArray(allowed) && allowed.length) return allowed;
+      }
+    } catch(e) { console.error(e); }
+    var mode = localStorage.getItem("repairBusinessMode") || "all";
+    return repairBusinessTypeMap[mode] || repairTypes;
+  }
+  function ensureStaticRepairsPage(){
+    if(document.getElementById("repairs")) return;
+    const content = document.querySelector(".content");
+    if(!content) return;
+    const section = document.createElement("div");
+    section.id = "repairs";
+    section.className = "page repairs-page";
+    section.style.display = "none";
+    section.innerHTML = `
+      <div class="repairs-shell">
+        <div class="repairs-header">
+          <div>
+            <h3>🔧 Repairs</h3>
+            <p>Manage service jobs, device details, repair bills, and repair history.</p>
+          </div>
+          <div class="repair-no-box"><span>Repair No</span><b id="repairNumber">RP-1001</b></div>
+        </div>
+        <div class="repairs-top-grid">
+          <div class="repairs-form-panel">
+            <div class="repairs-form-grid">
+              <label style="display:none;">Repair Type<select id="repairType">${getPresetRepairTypes().map(t=>`<option value="${t}">${t}</option>`).join("")}</select></label>
+              <label>Customer Name<input id="repairCustomerName" placeholder="Customer Name"></label>
+              <label>Phone Number<input id="repairCustomerPhone" placeholder="Phone Number"></label>
+              <label>Address<input id="repairCustomerAddress" placeholder="Address"></label>
+              <label>Customer ID<input id="repairCustomerId" placeholder="Customer ID (optional)"></label>
+              <label><span id="repairDeviceIdLabel">IMEI No</span><input id="repairDeviceId" placeholder="IMEI / Serial / Vehicle No"></label>
+              <label><span id="repairBrandLabel">Brand</span><input id="repairBrand" placeholder="Brand"></label>
+              <label><span id="repairModelLabel">Model</span><input id="repairModel" placeholder="Model"></label>
+              <label>Status<select id="repairStatus"><option>Received</option><option>Checking</option><option>Waiting Parts</option><option>Ready</option><option>Delivered</option><option>Cancelled</option></select></label>
+              <label class="repair-wide">Issue<div class="repair-issue-combo"><input id="repairIssue" placeholder="Describe the issue"><button type="button" class="repair-issue-arrow" onclick="window.toggleRepairIssueSuggestions && toggleRepairIssueSuggestions()">▼</button></div></label>
+              <label>Estimated Cost<input id="repairEstimate" type="number" placeholder="0"></label>
+              <label>Advance Paid<input id="repairAdvance" type="number" placeholder="0"></label>
+              <label>Final Amount<input id="repairTotal" type="number" placeholder="0"></label>
+              <label>Repair Profit<input id="repairCost" type="number" placeholder="0"></label>
+              <label>Warranty Days<input id="repairWarrantyDays" type="number" placeholder="0"></label>
+              <label>Warranty Until<input id="repairWarrantyUntil" type="date"></label>
+              <label class="repair-wide">Parts / Work Done<textarea id="repairParts" placeholder="Display replacement, battery service, charging port repair..."></textarea></label>
+              <label class="repair-wide">Notes<textarea id="repairNotes" placeholder="Accessories, password, condition, warranty note..."></textarea></label>
+            </div>
+            <div class="repair-actions">
+              <button type="button" onclick="window.saveRepair && saveRepair()">Save Repair</button>
+              <button type="button" onclick="window.previewCurrentRepairBill && previewCurrentRepairBill()">Bill Preview</button>
+              <button type="button" onclick="window.printCurrentRepairBill && printCurrentRepairBill()">Print Bill</button>
+              <button type="button" onclick="window.clearRepairForm && clearRepairForm()">New Repair</button>
+            </div>
+          </div>
+          <div class="repairs-side-panel">
+            <h3>Repair Filters</h3>
+            <label>Status<select id="repairFilterStatus" onchange="window.loadRepairs && loadRepairs()"><option value="All">All Status</option><option>Received</option><option>Checking</option><option>Waiting Parts</option><option>Ready</option><option>Delivered</option><option>Cancelled</option></select></label>
+            <input id="repairSearch" oninput="window.loadRepairs && loadRepairs()" placeholder="Search name, phone, IMEI, issue">
+            <div class="repair-total-card"><span>Total Repair Value</span><b id="repairTotalValue">Rs. 0</b></div>
+          </div>
+        </div>
+        <div class="repairs-history-panel">
+          <div class="repairs-history-title"><h3>Repair History</h3><span id="repairCountText">0 records</span></div>
+          <div id="repairHistoryList"></div>
+        </div>
+      </div>`;
+    content.appendChild(section);
+  }
+  function openRepairsHard(btn){
+    try { if(typeof window.ensureRepairTables === "function") window.ensureRepairTables(); } catch(e) { console.error(e); }
+    try { if(typeof window.ensureRepairsStyles === "function") window.ensureRepairsStyles(); } catch(e) { console.error(e); }
+    ensureStaticRepairsPage();
+    try { if(typeof window.refreshRepairTypeControls === "function") window.refreshRepairTypeControls(); } catch(e) { console.error(e); }
+    try { if(typeof window.setupRepairCustomerLookup === "function") window.setupRepairCustomerLookup(); } catch(e) { console.error(e); }
+    try { if(typeof window.setupRepairIssueAutocomplete === "function") window.setupRepairIssueAutocomplete(); } catch(e) { console.error(e); }
+    try { if(typeof window.setupRepairPartsAndWarranty === "function") window.setupRepairPartsAndWarranty(); } catch(e) { console.error(e); }
+    document.querySelectorAll(".sidebar button").forEach(b=>b.classList.remove("active"));
+    if(btn) btn.classList.add("active");
+    ["dashboard","products","invoice","report","settings","repairsStaticPlaceholder"].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.style.display="none";
+    });
+    const repairs=document.getElementById("repairs");
+    if(repairs) repairs.style.display="block";
+    const topbar=document.getElementById("mainTopbar");
+    if(topbar) topbar.style.display="flex";
+    try { if(typeof window.updateRepairLabels === "function") window.updateRepairLabels(); } catch(e) { console.error(e); }
+    try { if(typeof window.loadRepairs === "function") window.loadRepairs(); } catch(e) { console.error(e); }
+    return false;
+  }
+  function bindRepairsButton(){
+    const btn=document.getElementById("repairsNavBtn");
+    if(!btn) return;
+    btn.innerHTML="🔧 Repairs";
+    btn.onclick=function(event){
+      if(event){ event.preventDefault(); event.stopPropagation(); }
+      return openRepairsHard(btn);
+    };
+  }
+  window.forceOpenRepairsPage=openRepairsHard;
+  window.openRepairsPageHard=openRepairsHard;
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", bindRepairsButton);
+  else bindRepairsButton();
+  window.addEventListener("load", bindRepairsButton);
+  setInterval(bindRepairsButton, 700);
+})();
+</script>
+
+
+
+
+<style id="vs2CleanEnterpriseTheme">
+/* VS Software 2 - unified frosted graphite theme */
+:root {
+  --vs-bg-0: #dbe5eb;
+  --vs-bg-1: #f3f7f9;
+  --vs-bg-2: #cfdde5;
+  --vs-sidebar: #101b2b;
+  --vs-sidebar-2: #162638;
+  --vs-panel: rgba(255, 255, 255, 0.76);
+  --vs-panel-strong: rgba(255, 255, 255, 0.9);
+  --vs-panel-soft: rgba(255, 255, 255, 0.58);
+  --vs-stroke: rgba(100, 116, 139, 0.24);
+  --vs-stroke-strong: rgba(15, 23, 42, 0.14);
+  --vs-text: #101827;
+  --vs-muted: #64748b;
+  --vs-cyan: #14a9c5;
+  --vs-cyan-2: #0f8faa;
+  --vs-amber: #f59e0b;
+  --vs-orange: #de7a00;
+  --vs-red: #ef4444;
+  --vs-green: #16a34a;
+  --vs-field: #102536;
+  --vs-field-border: #29475c;
+  --vs-shadow: 0 24px 58px rgba(15, 23, 42, 0.16);
+  --vs-soft-shadow: 0 14px 32px rgba(15, 23, 42, 0.1);
+  --vs-radius: 16px;
+}
+
+html,
+body {
+  background: linear-gradient(135deg, var(--vs-bg-0), var(--vs-bg-1) 52%, var(--vs-bg-2)) !important;
+  color: var(--vs-text) !important;
+  font-family: "Segoe UI", Inter, Arial, sans-serif !important;
+  letter-spacing: 0 !important;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 14%, rgba(20, 169, 197, 0.18), transparent 30%),
+    radial-gradient(circle at 82% 18%, rgba(245, 158, 11, 0.09), transparent 32%),
+    linear-gradient(rgba(255, 255, 255, 0.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.28) 1px, transparent 1px);
+  background-size: auto, auto, 34px 34px, 34px 34px;
+}
+
+* {
+  box-sizing: border-box;
+  letter-spacing: 0 !important;
+  text-shadow: none !important;
+}
+
+.container,
+.main-content,
+#app,
+.app,
+.content,
+.page,
+#dashboard,
+#products,
+#billing,
+#report,
+#settings,
+#repairs {
+  background: transparent !important;
+  color: var(--vs-text) !important;
+}
+
+.sidebar {
+  background: linear-gradient(180deg, var(--vs-sidebar), var(--vs-sidebar-2)) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 10px 0 32px rgba(15, 23, 42, 0.24) !important;
+}
+
+.sidebar button,
+#dashboardBtn,
+#productsBtn,
+#billingBtn,
+#reportBtn,
+#repairsNavBtn,
+#settingsBtn,
+#logoutBtn,
+.nav-btn {
+  background: linear-gradient(135deg, var(--vs-cyan), var(--vs-cyan-2)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 10px 24px rgba(14, 147, 173, 0.2) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.sidebar button.active,
+#dashboardBtn.active,
+#productsBtn.active,
+#billingBtn.active,
+#reportBtn.active,
+#repairsNavBtn.active,
+#settingsBtn.active,
+.nav-btn.active {
+  background: linear-gradient(135deg, #fbbf24, var(--vs-amber)) !important;
+  box-shadow: 0 12px 26px rgba(245, 158, 11, 0.26) !important;
+  color: #111827 !important;
+}
+
+.topbar,
+.header,
+.app-header,
+.page-header {
+  background: transparent !important;
+  color: var(--vs-text) !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+#settings h1,
+#settings h2,
+#settings h3,
+#repairs h1,
+#repairs h2,
+#repairs h3,
+#report h1,
+#report h2,
+#report h3,
+#products h1,
+#products h2,
+#products h3,
+#billing h1,
+#billing h2,
+#billing h3 {
+  color: var(--vs-text) !important;
+}
+
+p,
+label,
+small,
+.muted,
+.subtitle,
+.section-subtitle,
+#repairs p,
+#repairs label,
+#report p,
+#report label,
+#settings p,
+#settings label {
+  color: var(--vs-muted) !important;
+}
+
+.card,
+.stat-card,
+.dashboard-card,
+.summary-card,
+.panel,
+.settings-card,
+.product-card,
+.history-card,
+.report-card,
+.repair-card,
+.repairs-header,
+.repairs-form-panel,
+.repairs-side-panel,
+.repairs-history-panel,
+.repair-record,
+.repair-total-card,
+#settings > div:not(.settings-menu),
+#report > div,
+#products > div,
+#billing > div,
+#repairs > div {
+  background: var(--vs-panel) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--vs-stroke) !important;
+  border-radius: var(--vs-radius) !important;
+  box-shadow: var(--vs-soft-shadow) !important;
+  color: var(--vs-text) !important;
+}
+
+.stat-card,
+.dashboard-card,
+.summary-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.66)) !important;
+}
+
+.stat-card .value,
+.dashboard-card .value,
+.summary-card .value,
+.repair-total-card strong,
+.total,
+.amount,
+.price,
+.profit {
+  color: var(--vs-amber) !important;
+}
+
+input:not([type="file"]):not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  background: var(--vs-field) !important;
+  border: 1px solid var(--vs-field-border) !important;
+  border-radius: 8px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  color: #f8fafc !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+input[type="file"] {
+  background: rgba(255, 255, 255, 0.48) !important;
+  border-radius: 8px !important;
+  color: var(--vs-text) !important;
+}
+
+button,
+.btn,
+.action-btn {
+  border: none !important;
+  border-radius: 9px !important;
+  font-weight: 700 !important;
+}
+
+button:not(.active):not(.delete-btn):not(.danger):not(.btn-danger):not(.export-btn):not(.import-btn):not(.success):not(.green-btn),
+.btn-primary,
+.primary-btn {
+  background: linear-gradient(135deg, var(--vs-cyan), var(--vs-cyan-2)) !important;
+  color: #ffffff !important;
+}
+
+.delete-btn,
+.danger,
+.btn-danger,
+.del-btn,
+[onclick*="delete"],
+[id*="Delete"],
+[id*="delete"] {
+  background: linear-gradient(135deg, #fb7185, var(--vs-red)) !important;
+  color: #ffffff !important;
+}
+
+.export-btn,
+.warning,
+.btn-warning {
+  background: linear-gradient(135deg, #fbbf24, var(--vs-amber)) !important;
+  color: #111827 !important;
+}
+
+.import-btn,
+.success,
+.green-btn {
+  background: linear-gradient(135deg, #22c55e, var(--vs-green)) !important;
+  color: #ffffff !important;
+}
+
+table,
+thead,
+tbody,
+tr,
+td,
+th {
+  border-color: var(--vs-stroke) !important;
+  color: var(--vs-text) !important;
+}
+
+thead,
+th,
+.table-header,
+.invoice-table-header {
+  background: linear-gradient(135deg, #102536, #18364a) !important;
+  color: #ffffff !important;
+}
+
+tbody tr,
+.product-item,
+.sale-item,
+.history-item,
+.customer-suggestion,
+.suggestion-item {
+  background: rgba(255, 255, 255, 0.56) !important;
+  color: var(--vs-text) !important;
+}
+
+.customer-suggestions,
+.suggestions,
+.dropdown-menu {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid var(--vs-stroke-strong) !important;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.18) !important;
+  color: var(--vs-text) !important;
+}
+
+.customer-suggestions *,
+.suggestions *,
+.dropdown-menu * {
+  color: var(--vs-text) !important;
+}
+
+.settings-menu {
+  background: rgba(255, 255, 255, 0.58) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--vs-shadow) !important;
+  padding: 14px !important;
+}
+
+.settings-menu button,
+.setting-tab {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: none !important;
+  color: var(--vs-text) !important;
+  justify-content: flex-start !important;
+}
+
+.settings-menu button.active-setting-tab,
+.settings-menu button.active,
+.setting-tab.active-setting-tab,
+.setting-tab.active {
+  background: linear-gradient(135deg, var(--vs-cyan), var(--vs-cyan-2)) !important;
+  box-shadow: 0 12px 24px rgba(14, 147, 173, 0.22) !important;
+  color: #ffffff !important;
+}
+
+#settings .settings-content,
+#accountTab,
+#invoiceTab,
+#backupTab,
+#securityTab,
+#notificationTab,
+#preferencesTab,
+#autoBackupTab {
+  background: var(--vs-panel) !important;
+  border: 1px solid var(--vs-stroke) !important;
+  border-radius: var(--vs-radius) !important;
+  box-shadow: var(--vs-shadow) !important;
+  color: var(--vs-text) !important;
+}
+
+#settings .settings-content *,
+#accountTab *,
+#invoiceTab *,
+#backupTab *,
+#securityTab *,
+#notificationTab *,
+#preferencesTab *,
+#autoBackupTab * {
+  color: var(--vs-text) !important;
+}
+
+#accountTab input,
+#invoiceTab input,
+#backupTab input,
+#securityTab input,
+#notificationTab input,
+#preferencesTab input,
+#autoBackupTab input,
+#accountTab select,
+#invoiceTab select,
+#backupTab select,
+#securityTab select,
+#notificationTab select,
+#preferencesTab select,
+#autoBackupTab select,
+#accountTab textarea,
+#invoiceTab textarea,
+#backupTab textarea,
+#securityTab textarea,
+#notificationTab textarea,
+#preferencesTab textarea,
+#autoBackupTab textarea {
+  color: #f8fafc !important;
+}
+
+#notificationTab label {
+  align-items: center !important;
+  color: var(--vs-text) !important;
+  display: grid !important;
+  gap: 16px !important;
+  grid-template-columns: minmax(260px, 1fr) auto !important;
+  max-width: 760px !important;
+}
+
+#notificationTab input[type="checkbox"],
+#preferencesTab input[type="checkbox"],
+#autoBackupTab input[type="checkbox"] {
+  accent-color: var(--vs-cyan) !important;
+  height: 18px !important;
+  width: 18px !important;
+}
+
+#repairs .repairs-header,
+#repairs .repairs-form-panel,
+#repairs .repairs-side-panel,
+#repairs .repairs-history-panel,
+#repairs .repair-record,
+#repairs .repair-total-card {
+  background: var(--vs-panel) !important;
+  color: var(--vs-text) !important;
+}
+
+#repairs label,
+#repairs h1,
+#repairs h2,
+#repairs h3,
+#repairs p,
+#repairs span,
+#repairs div {
+  color: var(--vs-text) !important;
+}
+
+#repairs .section-subtitle,
+#repairs .muted {
+  color: var(--vs-muted) !important;
+}
+
+#repairs input,
+#repairs select,
+#repairs textarea {
+  color: #f8fafc !important;
+}
+
+#report .report-filter,
+#report .report-summary,
+#report .report-card,
+#report .chart-card,
+#report .chart-container {
+  background: var(--vs-panel) !important;
+  color: var(--vs-text) !important;
+}
+
+#report .chart-container,
+canvas {
+  background: rgba(16, 37, 54, 0.94) !important;
+  border-radius: 14px !important;
+}
+
+#products .product-list,
+#products .product-row,
+#products .product-card,
+.product-list,
+.product-row {
+  background: rgba(255, 255, 255, 0.66) !important;
+  color: var(--vs-text) !important;
+}
+
+#products .product-card *,
+#products .product-row *,
+.product-list * {
+  color: var(--vs-text) !important;
+}
+
+#billing .billing-panel,
+#billing .billing-card,
+#billing .invoice-row,
+#billing .history-card,
+.billing-panel,
+.billing-card {
+  background: var(--vs-panel) !important;
+  color: var(--vs-text) !important;
+}
+
+#billing table th {
+  color: #ffffff !important;
+}
+
+#billing table td,
+#billing .invoice-row * {
+  color: var(--vs-text) !important;
+}
+
+#billing input,
+#billing select,
+#billing textarea {
+  color: #f8fafc !important;
+}
+
+.modal,
+.overlay,
+.preview-overlay,
+.invoice-preview-overlay,
+.repair-preview-overlay {
+  backdrop-filter: blur(10px) !important;
+  background: rgba(2, 6, 23, 0.58) !important;
+}
+
+.modal-content,
+.about-modal,
+.vs-about-modal,
+.developer-about-modal,
+.preview-modal,
+.invoice-preview,
+.thermal-preview,
+.repair-preview {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.28) !important;
+  color: var(--vs-text) !important;
+}
+
+.modal-content *,
+.about-modal *,
+.vs-about-modal *,
+.developer-about-modal * {
+  color: var(--vs-text) !important;
+}
+
+.toast,
+.toast * {
+  color: #ffffff !important;
+}
+
+@media print {
+  html,
+  body,
+  .invoice-print,
+  .thermal-print,
+  .repair-print {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
+</style>
+<script id="vs2CleanEnterpriseThemeScript">
+(function(){
+  const staleIds = [
+    "vs2FinalYellowThemeStyle",
+    "vs2YellowPolishStyle",
+    "vs2PremiumUiTheme",
+    "vs2BalancedBusinessTheme",
+    "vs2ServiceProTheme",
+    "vs2FullYellowTheme",
+    "vs2YellowPolishRuntime"
+  ];
+  function applyCleanEnterpriseTheme(){
+    document.documentElement.classList.remove("vs2-yellow-theme", "vs2-service-pro");
+    document.documentElement.classList.add("vs2-clean-enterprise");
+    if(document.body){
+      document.body.classList.remove("vs2-yellow-theme", "vs2-service-pro");
+      document.body.classList.add("vs2-clean-enterprise");
+    }
+    staleIds.forEach(function(id){
+      const el = document.getElementById(id);
+      if(el){ el.remove(); }
+    });
+    const style = document.getElementById("vs2CleanEnterpriseTheme");
+    if(style && style.parentElement && style !== document.head.lastElementChild){
+      document.head.appendChild(style);
+    }
+  }
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", applyCleanEnterpriseTheme);
+  } else {
+    applyCleanEnterpriseTheme();
+  }
+  window.addEventListener("load", applyCleanEnterpriseTheme);
+  setTimeout(applyCleanEnterpriseTheme, 250);
+  setTimeout(applyCleanEnterpriseTheme, 1200);
+  setInterval(applyCleanEnterpriseTheme, 1000);
+})();
+</script>
+
+
+<style id="vs2FinalAshTheme">
+  :root{
+    --ash-bg:#cbd6db;
+    --ash-bg-2:#d9e2e6;
+    --ash-panel:#dfe7eb;
+    --ash-panel-2:#d6e0e5;
+    --ash-border:#afc1ca;
+    --ash-text:#111827;
+    --ash-muted:#475862;
+    --ash-field:#102b3b;
+    --ash-field-text:#f7fbfd;
+    --ash-teal:#149db1;
+    --ash-teal-2:#0f8fa3;
+    --ash-amber:#f59e0b;
+    --ash-red:#ef4444;
+  }
+  html, body, body.light, body.vs-logged-in{
+    background:linear-gradient(135deg,#c7d3d9 0%,#dce5e8 48%,#cbd7dd 100%) !important;
+    color:var(--ash-text) !important;
+  }
+  .content,.main-content,#dashboard,#products,#invoice,#report,#settings,#repairs{
+    background:transparent !important;
+    color:var(--ash-text) !important;
+  }
+  .topbar,.card,#invoice,#products .card,#report .card,#settings .topbar,#settings .settings-content,#settings .settings-box,#settings .settingsBox,#settings .settings-grid-card,#repairs .repairs-header,#repairs .repairs-form-panel,#repairs .repairs-side-panel,#repairs .repairs-history-panel,#repairs .repair-total-card,#repairs .repair-record{
+    background:linear-gradient(180deg,#e1e8eb,#d6e0e5) !important;
+    color:var(--ash-text) !important;
+    border:1px solid var(--ash-border) !important;
+    box-shadow:0 22px 54px rgba(31,45,55,.18) !important;
+  }
+  h1,h2,h3,h4,h5,p,label,span,div,td,th,li,b,strong{
+    color:inherit;
+  }
+  body.vs-logged-in h1,body.vs-logged-in h2,body.vs-logged-in h3,body.vs-logged-in h4,
+  #settings h1,#settings h2,#settings h3,#settings h4,#settings label,#settings p,#settings span,
+  #repairs h1,#repairs h2,#repairs h3,#repairs h4,#repairs label,#repairs p,#repairs span,
+  #dashboard h1,#dashboard h2,#dashboard h3,#products h1,#products h2,#products h3,#report h1,#report h2,#report h3{
+    color:var(--ash-text) !important;
+  }
+  small,.muted,#repairCountText,#repairs .repair-record-meta,#repairs .repairs-header p{
+    color:var(--ash-muted) !important;
+  }
+  input,select,textarea,#settings input,#settings select,#settings textarea,#repairs input,#repairs select,#repairs textarea,#invoice input,#invoice select,#products input,#products select{
+    background:var(--ash-field) !important;
+    color:var(--ash-field-text) !important;
+    border:1px solid rgba(9,42,58,.25) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05) !important;
+  }
+  input::placeholder,textarea::placeholder{
+    color:#a9b8c0 !important;
+    opacity:1 !important;
+  }
+  select option{
+    background:#102b3b !important;
+    color:#f7fbfd !important;
+  }
+  button,#settings button,#repairs button,.repair-actions button,.repair-record-actions button{
+    background:linear-gradient(180deg,#18adc2,#0f8fa3) !important;
+    color:#061419 !important;
+    border:1px solid rgba(7,71,83,.24) !important;
+    box-shadow:0 10px 22px rgba(20,157,177,.20) !important;
+    font-weight:800 !important;
+  }
+  .sidebar,.sidebar *{
+    color:#ffffff !important;
+  }
+  .sidebar button{
+    background:#1599ad !important;
+    color:#ffffff !important;
+  }
+  .sidebar button.active,.settings-menu button.active-setting-tab,#repairsNavBtn.active,#settingsBtn.active{
+    background:linear-gradient(180deg,#ffb52e,#f59e0b) !important;
+    color:#111827 !important;
+  }
+  #settings .settings-menu{
+    background:linear-gradient(180deg,#4b575d,#3e4a50) !important;
+    border:1px solid rgba(255,255,255,.28) !important;
+  }
+  #settings .settings-menu button{
+    background:#18a4ba !important;
+    color:#06222a !important;
+  }
+  .deleteBtn,.repair-delete-btn,.product-action-btn.delete,#settings .campaign-actions button:last-child{
+    background:linear-gradient(180deg,#f87171,#ef4444) !important;
+    color:#ffffff !important;
+  }
+  #repairs .repair-no-box{
+    background:linear-gradient(145deg,#2a1602,#442704) !important;
+    color:#ffb52e !important;
+    border:1px solid rgba(245,158,11,.40) !important;
+  }
+  #repairs .repair-no-box *{color:inherit !important;}
+  #repairs .repair-no-box span{color:#e8f3f6 !important;}
+  #repairs .repair-total-card b{color:var(--ash-amber) !important;}
+  #repairs .repair-pill{
+    background:#dce7eb !important;
+    color:#18313b !important;
+    border:1px solid #c5d3da !important;
+  }
+  .modal,.overlay,.preview-overlay,.invoice-preview-overlay,.repair-preview-overlay,#invoicePreviewOverlay,#thermalPreviewOverlay,#repairBillOverlay,#forgotPasswordOverlay,#developerAboutOverlay,#cleanCategoryOverlay{
+    background:rgba(24,31,35,.68) !important;
+    backdrop-filter:blur(7px) !important;
+  }
+  .modal-content,.about-modal,.vs-about-modal,.developer-about-modal,.preview-modal,.invoice-preview,.thermal-preview,.repair-preview,#invoicePreviewOverlay > div,#thermalPreviewOverlay > div,#repairBillOverlay .repair-bill-modal,#forgotPasswordOverlay > div,#developerAboutBox,#cleanCategoryOverlay > div{
+    background:linear-gradient(180deg,#e1e8eb,#d6e0e5) !important;
+    color:var(--ash-text) !important;
+    border:1px solid var(--ash-border) !important;
+    box-shadow:0 30px 80px rgba(0,0,0,.34) !important;
+  }
+  .modal-content *,.about-modal *,.vs-about-modal *,.developer-about-modal *,#developerAboutBox *,#forgotPasswordOverlay *,#cleanCategoryOverlay *{
+    color:var(--ash-text) !important;
+  }
+  #developerAboutBox p,#developerAboutBox li{
+    color:#354852 !important;
+  }
+  #developerAboutBox .aboutMeta,#developerAboutBox .aboutMeta *{
+    background:#dce6ea !important;
+    color:#152833 !important;
+  }
+  #invoicePreviewOverlay table th,#thermalPreviewOverlay table th{
+    background:#173242 !important;
+    color:#f7fbfd !important;
+  }
+
+
+  /* vs2-ash-contrast-fix */
+  #dashboard .card,
+  #dashboard .chart-container,
+  #dashboard .summary-card,
+  #products .card,
+  #products .product-card,
+  #billing .card,
+  #report .card,
+  #report .chart-container,
+  #repairs .card,
+  #settings .card,
+  .settings-panel,
+  .settings-content,
+  .settings-section,
+  .setting-section,
+  .repair-form,
+  .repair-filter,
+  .repair-history,
+  .billing-card,
+  .product-manager,
+  .modal-content,
+  .about-modal,
+  .invoice-preview,
+  .thermal-preview{
+    background:linear-gradient(180deg,#e0e8ec,#d7e1e6) !important;
+    border-color:#afc1ca !important;
+    color:#111827 !important;
+  }
+
+  #dashboard .card *,
+  #products .card *,
+  #billing .card *,
+  #report .card *,
+  #repairs .card *,
+  #settings .card *,
+  .settings-panel *,
+  .settings-content *,
+  .settings-section *,
+  .repair-form *,
+  .repair-filter *,
+  .repair-history *,
+  .billing-card *,
+  .product-manager *,
+  .modal-content *,
+  .about-modal *{
+    color:#111827 !important;
+  }
+
+  input,
+  select,
+  textarea,
+  .dark-input,
+  .report-list > div,
+  #recentSalesList > div,
+  #topProductsList > div,
+  #lowStockList > div,
+  [style*="background:#102638"],
+  [style*="background: #102638"],
+  [style*="background:#071722"],
+  [style*="background: #071722"],
+  [style*="background:#071220"],
+  [style*="background: #071220"],
+  [style*="background:#0f2027"],
+  [style*="background: #0f2027"],
+  [style*="background:#111"],
+  [style*="background: #111"]{
+    background:#102b3a !important;
+    border-color:#24495a !important;
+    color:#f5fbff !important;
+  }
+
+  input *,
+  select *,
+  textarea *,
+  .report-list > div *,
+  #recentSalesList > div *,
+  #topProductsList > div *,
+  #lowStockList > div *,
+  [style*="background:#102638"] *,
+  [style*="background: #102638"] *,
+  [style*="background:#071722"] *,
+  [style*="background: #071722"] *,
+  [style*="background:#071220"] *,
+  [style*="background: #071220"] *,
+  [style*="background:#0f2027"] *,
+  [style*="background: #0f2027"] *,
+  [style*="background:#111"] *,
+  [style*="background: #111"] *{
+    color:#f5fbff !important;
+  }
+
+  input::placeholder,
+  textarea::placeholder{
+    color:#c7d3da !important;
+    opacity:1 !important;
+  }
+
+  input[type="file"]{
+    color:#f5fbff !important;
+  }
+
+  input[type="file"]::file-selector-button{
+    background:#eef3f5 !important;
+    color:#111827 !important;
+    border:1px solid #aebfc8 !important;
+    border-radius:4px !important;
+    padding:4px 10px !important;
+    font-weight:700 !important;
+  }
+
+  .stat-card,
+  .summary-card,
+  .metric-card,
+  .dashboard-stat,
+  .report-stat{
+    background:linear-gradient(180deg,#e0e8ec,#d6e0e5) !important;
+    border:1px solid #afc1ca !important;
+    color:#111827 !important;
+  }
+
+  .stat-card *,
+  .summary-card *,
+  .metric-card *,
+  .dashboard-stat *,
+  .report-stat *{
+    color:#111827 !important;
+  }
+
+  .report-list > div b,
+  #recentSalesList > div b,
+  #topProductsList > div b,
+  #lowStockList > div b,
+  .accent,
+  .amount,
+  .value{
+    color:#ffbd2e !important;
+  }
+
+  .btn,
+  button:not(.settings-tab):not(.nav-btn){
+    color:#04131a !important;
+  }
+
+
+  /* vs2-frame-contrast-fix */
+  body.vs-logged-in .content{
+    padding:28px 42px !important;
+  }
+
+  body.vs-logged-in .page,
+  body.vs-logged-in #dashboard,
+  body.vs-logged-in #products,
+  body.vs-logged-in #invoice,
+  body.vs-logged-in #report,
+  body.vs-logged-in #settings,
+  body.vs-logged-in #repairs{
+    max-width:1620px !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  body.vs-logged-in #mainTopbar,
+  body.vs-logged-in .topbar#mainTopbar{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    max-width:1620px !important;
+    margin:0 auto 26px auto !important;
+    padding:0 !important;
+    min-height:56px !important;
+    width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  body.vs-logged-in #topBrand{
+    min-width:0 !important;
+  }
+
+  body.vs-logged-in #topBrand h2,
+  body.vs-logged-in #mainTopbar h2{
+    margin:0 !important;
+    color:#111827 !important;
+  }
+
+  body.vs-logged-in #mainTopbar button{
+    width:40px !important;
+    height:40px !important;
+    min-width:40px !important;
+    padding:0 !important;
+    border-radius:10px !important;
+  }
+
+  #settings .topbar{
+    max-width:1180px !important;
+    margin:0 auto 22px auto !important;
+    box-sizing:border-box !important;
+  }
+
+  #settings .settings-layout{
+    align-items:start !important;
+  }
+
+  #settings .settings-content,
+  #settings .settings-tab-content,
+  #settings .settings-box,
+  #settings .settingsBox,
+  #settings .settings-grid-card,
+  #repairs .repairs-header,
+  #repairs .repairs-form-panel,
+  #repairs .repairs-side-panel,
+  #repairs .repairs-history-panel,
+  #products > .card,
+  #invoice,
+  #report > .card,
+  .card{
+    box-sizing:border-box !important;
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea,
+  #settings input:not([type="checkbox"]):not([type="radio"]),
+  #settings select,
+  #settings textarea,
+  #repairs input,
+  #repairs select,
+  #repairs textarea,
+  #invoice input,
+  #invoice select,
+  #products input,
+  #products select,
+  #report input,
+  #report select{
+    background:#102b3a !important;
+    color:#f4fbff !important;
+    -webkit-text-fill-color:#f4fbff !important;
+    caret-color:#f4fbff !important;
+    border:1px solid #24495a !important;
+  }
+
+  input:not([type="checkbox"]):not([type="radio"])::placeholder,
+  textarea::placeholder{
+    color:#c9d6dc !important;
+    -webkit-text-fill-color:#c9d6dc !important;
+    opacity:1 !important;
+  }
+
+  select option{
+    background:#102b3a !important;
+    color:#f4fbff !important;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  select{
+    color-scheme:dark !important;
+  }
+
+  #products select,
+  #settings select,
+  #repairs select,
+  #report select{
+    appearance:auto !important;
+  }
+
+  #products .product-card,
+  #repairs .repair-record,
+  #report .report-list-item,
+  #recentSalesList .report-list-item,
+  #topProductsList .report-list-item{
+    background:rgba(223,231,235,.72) !important;
+    border:1px solid #b4c5ce !important;
+    color:#111827 !important;
+  }
+
+  #products .product-card *,
+  #repairs .repair-record *,
+  #report .report-list-item *,
+  #recentSalesList .report-list-item *,
+  #topProductsList .report-list-item *{
+    color:#111827 !important;
+  }
+
+  #products .product-card img{
+    background:#f0f5f7 !important;
+  }
+
+  .settings-menu{
+    align-self:start !important;
+  }
+
+
+  /* vs2-settings-product-polish */
+  #settings .settings-tab-content > h3{
+    background:linear-gradient(180deg,#eef3f5,#dde7eb) !important;
+    border:1px solid #afc1ca !important;
+    border-radius:12px !important;
+    padding:14px 18px !important;
+    margin:0 0 18px 0 !important;
+    box-shadow:0 10px 22px rgba(30,45,55,.08) !important;
+    width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  #backupTab hr,
+  #backupTab > div[style*="border-top"]{
+    margin-left:22px !important;
+    margin-right:22px !important;
+  }
+
+  #backupHistory{
+    padding:0 22px 18px 34px !important;
+    line-height:1.45 !important;
+  }
+
+  #backupTab h3:nth-of-type(2){
+    margin-left:22px !important;
+    margin-right:22px !important;
+  }
+
+  input[type="file"]{
+    color:#f5fbff !important;
+    -webkit-text-fill-color:#f5fbff !important;
+  }
+
+  input[type="file"]::file-selector-button{
+    background:#eaf0f3 !important;
+    color:#0f172a !important;
+    -webkit-text-fill-color:#0f172a !important;
+    border:1px solid #9fb1bb !important;
+    border-radius:5px !important;
+    padding:5px 12px !important;
+    margin-right:8px !important;
+    font-weight:800 !important;
+  }
+
+  #report .summary-card,
+  #report .stat-card,
+  #report .metric-card,
+  #report .report-stat{
+    margin-top:10px !important;
+  }
+
+  #report .card:first-child{
+    padding-top:24px !important;
+    padding-bottom:22px !important;
+  }
+
+  #products #list{
+    display:block !important;
+    padding-top:6px !important;
+  }
+
+  #products .product-table-head,
+  #products .product-table-row{
+    display:grid !important;
+    grid-template-columns:72px 1.35fr .72fr 1fr .9fr .9fr .62fr 126px !important;
+    gap:14px !important;
+    align-items:center !important;
+    width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  #products .product-table-head{
+    padding:10px 14px !important;
+    margin:0 0 8px 0 !important;
+    border-bottom:1px solid #aebfc8 !important;
+    color:#24343d !important;
+    font-size:12px !important;
+    font-weight:900 !important;
+  }
+
+  #products .product-table-head span{
+    color:#24343d !important;
+  }
+
+  #products .product-table-row{
+    min-height:72px !important;
+    padding:10px 14px !important;
+    margin:0 0 8px 0 !important;
+  }
+
+  #products .product-image-cell img,
+  #products .product-table-row img{
+    width:52px !important;
+    height:52px !important;
+    object-fit:cover !important;
+    border-radius:10px !important;
+  }
+
+  #products .product-cell{
+    color:#111827 !important;
+    font-size:13px !important;
+    line-height:1.25 !important;
+    min-width:0 !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    white-space:nowrap !important;
+  }
+
+  #products .product-name-cell b{
+    color:#111827 !important;
+  }
+
+  #products .product-stock-cell.low{
+    color:#dc2626 !important;
+    font-weight:900 !important;
+  }
+
+  #products .product-actions{
+    justify-content:flex-end !important;
+    gap:8px !important;
+    min-width:0 !important;
+  }
+
+  #products .product-action-btn.delete{
+    background:linear-gradient(180deg,#f87171,#ef4444) !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    box-shadow:0 12px 22px rgba(239,68,68,.24) !important;
+  }
+
+  @media(max-width:1250px){
+    #products .product-table-head,
+    #products .product-table-row{
+      grid-template-columns:64px 1.3fr .7fr .9fr .82fr .82fr .56fr 116px !important;
+      gap:10px !important;
+    }
+  }
+
+
+  /* vs2-dashboard-backing-cleanup */
+  #dashboard .dashboard-list-item,
+  #topProducts .dashboard-list-item,
+  #reportLow .dashboard-list-item{
+    background:rgba(224,232,236,.86) !important;
+    border:1px solid #b1c2cb !important;
+    color:#111827 !important;
+    box-shadow:none !important;
+  }
+
+  #dashboard .dashboard-list-item *,
+  #topProducts .dashboard-list-item *,
+  #reportLow .dashboard-list-item *{
+    color:#111827 !important;
+  }
+
+  #topProducts .dashboard-list-item b,
+  #reportLow .dashboard-list-item b{
+    color:#d97706 !important;
+  }
+
+  #dashboard canvas#salesChart,
+  #dashboard canvas#chart{
+    background:#dfe8ec !important;
+    border:1px solid #b3c4cd !important;
+    border-radius:14px !important;
+  }
+
+  #categoryFilter option,
+  #category option,
+  #settings select option,
+  #repairs select option,
+  #report select option{
+    background:#e6eef2 !important;
+    color:#111827 !important;
+  }
+
+  #products #categoryFilter{
+    background:#102b3a !important;
+    color:#f4fbff !important;
+    -webkit-text-fill-color:#f4fbff !important;
+  }
+
+  #settings .settings-content{
+    background:transparent !important;
+    border-color:transparent !important;
+    box-shadow:none !important;
+  }
+
+  #settings .settings-tab-content{
+    background:transparent !important;
+    border-color:transparent !important;
+    box-shadow:none !important;
+  }
+
+  #settings .settings-box,
+  #settings .settingsBox,
+  #settings .settings-grid-card{
+    background:linear-gradient(180deg,#dfe8ec,#d7e1e6) !important;
+    border:1px solid #afc1ca !important;
+    box-shadow:0 14px 30px rgba(31,45,55,.10) !important;
+  }
+
+  #repairs,
+  #repairs.repairs-page,
+  #repairs .page,
+  #repairs .repairs-grid,
+  #repairs .repairs-main{
+    background:transparent !important;
+    border-color:transparent !important;
+    box-shadow:none !important;
+  }
+
+  #repairs .repairs-header,
+  #repairs .repairs-form-panel,
+  #repairs .repairs-side-panel,
+  #repairs .repairs-history-panel{
+    background:linear-gradient(180deg,#dfe8ec,#d7e1e6) !important;
+    border:1px solid #afc1ca !important;
+    box-shadow:0 14px 30px rgba(31,45,55,.10) !important;
+  }
+
+  #dashboard .summary-wrapper,
+  #dashboard .dashboard-stats,
+  #dashboard .stats-grid,
+  #dashboard .dashboard-summary,
+  #report .summary-wrapper,
+  #report .dashboard-stats,
+  #report .stats-grid,
+  #report .report-grid{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    padding:0 !important;
+  }
+
+  #dashboard .summary-card,
+  #dashboard .stat-card,
+  #dashboard .metric-card,
+  #report .summary-card,
+  #report .stat-card,
+  #report .metric-card,
+  #report .report-stat{
+    background:linear-gradient(180deg,#dfe8ec,#d7e1e6) !important;
+    border:1px solid #afc1ca !important;
+    box-shadow:0 12px 24px rgba(31,45,55,.10) !important;
+  }
+
+
+  /* vs2-light-controls-cleanup */
+  body.vs-logged-in input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  body.vs-logged-in select,
+  body.vs-logged-in textarea,
+  #settings input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  #settings select,
+  #settings textarea,
+  #repairs input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  #repairs select,
+  #repairs textarea,
+  #invoice input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  #invoice select,
+  #products input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  #products select,
+  #report input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  #report select{
+    background:linear-gradient(180deg,#f2f6f8,#e2ebef) !important;
+    border:1px solid #aebfc8 !important;
+    color:#111827 !important;
+    -webkit-text-fill-color:#111827 !important;
+    caret-color:#111827 !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.82), 0 6px 14px rgba(31,45,55,.06) !important;
+  }
+
+  body.vs-logged-in input::placeholder,
+  body.vs-logged-in textarea::placeholder,
+  #settings input::placeholder,
+  #settings textarea::placeholder,
+  #repairs input::placeholder,
+  #repairs textarea::placeholder,
+  #invoice input::placeholder,
+  #products input::placeholder,
+  #report input::placeholder{
+    color:#526674 !important;
+    -webkit-text-fill-color:#526674 !important;
+    opacity:1 !important;
+  }
+
+  body.vs-logged-in select option,
+  #settings select option,
+  #repairs select option,
+  #invoice select option,
+  #products select option,
+  #report select option{
+    background:#f2f6f8 !important;
+    color:#111827 !important;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="number"]::-webkit-inner-spin-button,
+  select{
+    color-scheme:light !important;
+  }
+
+  input[type="file"]{
+    background:linear-gradient(180deg,#f2f6f8,#e2ebef) !important;
+    border:1px solid #aebfc8 !important;
+    color:#111827 !important;
+    -webkit-text-fill-color:#111827 !important;
+  }
+
+  input[type="file"]::file-selector-button{
+    background:#ffffff !important;
+    color:#111827 !important;
+    -webkit-text-fill-color:#111827 !important;
+    border:1px solid #a7b8c1 !important;
+  }
+
+  #report .report-chart-box,
+  #dashboard .dashboard-panel,
+  #dashboard .chart-container{
+    background:linear-gradient(180deg,#f2f6f8,#e2ebef) !important;
+    border:1px solid #afc1ca !important;
+    color:#111827 !important;
+  }
+
+  #report .report-chart-box *,
+  #dashboard .dashboard-panel *,
+  #dashboard .chart-container *{
+    color:#111827 !important;
+  }
+
+  #report canvas,
+  #report canvas#reportSalesChart,
+  #dashboard canvas,
+  #dashboard canvas#salesChart,
+  #dashboard canvas#chart{
+    background:#edf3f5 !important;
+    border:1px solid #b3c4cd !important;
+    border-radius:14px !important;
+  }
+
+  html,
+  body,
+  .main,
+  body.vs-logged-in .main{
+    height:100vh !important;
+    overflow:hidden !important;
+  }
+
+  .content,
+  body.vs-logged-in .content{
+    height:100vh !important;
+    max-height:100vh !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    padding-bottom:90px !important;
+    scrollbar-gutter:stable !important;
+  }
+
+  #settings,
+  #repairs,
+  body.vs-logged-in #settings,
+  body.vs-logged-in #repairs{
+    min-height:calc(100vh - 1px) !important;
+    height:auto !important;
+    overflow:visible !important;
+    padding-bottom:110px !important;
+  }
+
+  #settings .settings-content,
+  #settings .settings-tab-content,
+  #settings .settings-grid-card{
+    max-height:none !important;
+    overflow:visible !important;
+  }
+
+  #repairType{
+    display:none !important;
+  }
+
+  #repairType:is(select) + *,
+  #repairType{
+    visibility:hidden !important;
+  }
+
+  body.vs-logged-in #mainTopbar,
+  body.vs-logged-in .topbar#mainTopbar{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+  }
+
+  #settings .settings-content,
+  #repairs,
+  #repairs.repairs-page,
+  #repairs > div,
+  #repairs .repairs-shell,
+  #settings .settings-layout{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+  }
+
+  body.vs-logged-in .content,
+  .content{
+    background:transparent !important;
+  }
+
+  #settings .settings-content::before,
+  #settings .settings-content::after,
+  #repairs::before,
+  #repairs::after{
+    display:none !important;
+    content:none !important;
+  }
+
+  #repairs .repair-record{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto !important;
+    align-items:center !important;
+    gap:14px !important;
+    position:relative !important;
+    overflow:hidden !important;
+  }
+
+  #repairs .repair-record-main{
+    min-width:0 !important;
+  }
+
+  #repairs .repair-record-actions{
+    display:flex !important;
+    justify-content:flex-end !important;
+    align-items:center !important;
+    gap:8px !important;
+    min-width:max-content !important;
+    align-self:center !important;
+  }
+
+  #salesHistory .saleCard{
+    background:#18313b !important;
+    color:#f8fafc !important;
+    border:1px solid rgba(255,255,255,.10) !important;
+  }
+
+  #salesHistory .saleCard *,
+  #salesHistory .saleCard b{
+    color:#f8fafc !important;
+  }
+
+  #salesHistory .saleCard button{
+    color:#ffffff !important;
+  }
+
+  #soundBtn{
+    width:42px !important;
+    min-width:42px !important;
+    height:42px !important;
+    padding:0 !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-size:18px !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    color:#06222a !important;
+  }
+
+  #soundBtn.sound-off{
+    background:linear-gradient(180deg,#ef4444,#dc2626) !important;
+    color:#ffffff !important;
+    border-color:rgba(127,29,29,.45) !important;
+  }
+</style>
+<script id="vs2FinalAshThemeRuntime">
+(function(){
+  function keepFinalAshThemeLast(){
+    var style = document.getElementById("vs2FinalAshTheme");
+    if(style && document.body && style !== document.body.lastElementChild){
+      document.body.appendChild(style);
+    }
+  }
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", keepFinalAshThemeLast);
+  }else{
+    keepFinalAshThemeLast();
+  }
+  window.addEventListener("load", keepFinalAshThemeLast);
+  setTimeout(keepFinalAshThemeLast, 300);
+  setTimeout(keepFinalAshThemeLast, 1200);
+  setInterval(keepFinalAshThemeLast, 1000);
+})();
+</script>
+
+</body>
+</html>
+<script>
+window.addEventListener("load", () => {
+  document.body.focus();
+});
+</script>
+
+
+
+

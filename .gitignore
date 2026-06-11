@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Runtime/cache folders created by Electron/Chromium
+Cache/
+Code Cache/
+GPUCache/
+DawnGraphiteCache/
+DawnWebGPUCache/
+Local Storage/
+Session Storage/
+Shared Dictionary/
+Network/
+blob_storage/
+auto-backups/
+
+# Runtime files and local data
+CODEX_MEMORY.md
+yard.db
+*.db
+*.sqlite
+*.sqlite3
+*.pdf
+renderer-errors.log
+Local State
+Preferences
+SharedStorage
+DIPS
+
+# Local backups generated during Codex repair sessions
+*.bak
+*.codex-*
+*.web-conversion-*
+
+# Editor/OS
+.vscode/
+.DS_Store
+Thumbs.db
