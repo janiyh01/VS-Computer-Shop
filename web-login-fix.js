@@ -1,5 +1,7 @@
 (function(){
     if(!window.VS_WEB_APP) return;
+    if(window.__VS_WEB_LOGIN_CLEAN__) return;
+    window.__VS_WEB_LOGIN_CLEAN__ = true;
 
     async function queryLogin(username, password){
         const response = await fetch("/api/db/get", {
@@ -12,6 +14,7 @@
         });
 
         const data = await response.json().catch(()=> ({}));
+
         if(!response.ok || data.ok === false){
             throw new Error(data.error || "Login request failed");
         }
@@ -20,28 +23,28 @@
     }
 
     function openApp(){
-        if(typeof window.showLoggedInApp === "function"){
-            window.showLoggedInApp();
-        }else{
-            document.body.classList.add("vs-logged-in");
-            const loginPage = document.getElementById("loginPage");
-            const app = document.getElementById("app");
-            if(loginPage) loginPage.style.setProperty("display", "none", "important");
-            if(app) app.style.setProperty("display", "flex", "important");
+        document.body.classList.add("vs-logged-in");
+
+        const loginPage = document.getElementById("loginPage");
+        const app = document.getElementById("app");
+
+        if(loginPage){
+            loginPage.style.setProperty("display", "none", "important");
+            loginPage.style.setProperty("visibility", "hidden", "important");
         }
 
-        [
-            "loadDashboard",
-            "loadTopBrand",
-            "loadProducts",
-            "loadAll"
-        ].forEach((name)=>{
-            try{
-                if(typeof window[name] === "function") window[name]();
-            }catch(error){
-                console.log(error);
-            }
-        });
+        if(app){
+            app.style.setProperty("display", "flex", "important");
+            app.style.setProperty("visibility", "visible", "important");
+        }
+
+        try{ if(typeof loadDashboard === "function") loadDashboard(); }catch(e){ console.log(e); }
+        try{ if(typeof loadTopBrand === "function") loadTopBrand(); }catch(e){ console.log(e); }
+
+        const firstBtn = document.querySelector(".sidebar button");
+        if(firstBtn && typeof window.nav === "function"){
+            window.nav(firstBtn, "dashboard");
+        }
     }
 
     window.login = async function(){
@@ -49,39 +52,55 @@
         const password = document.getElementById("password")?.value || "";
         const button = document.querySelector("#loginPage button");
 
+        if(button && button.dataset.busy === "1"){
+            return;
+        }
+
         try{
-            if(button) button.disabled = true;
+            if(button){
+                button.dataset.busy = "1";
+                button.disabled = true;
+                button.dataset.oldText = button.textContent;
+                button.textContent = "Logging in...";
+            }
+
             const row = await queryLogin(username, password);
 
             if(row){
                 openApp();
-                if(typeof window.showToast === "function") window.showToast("Login Success", "#4CAF50");
-            }else if(typeof window.showToast === "function"){
-                window.showToast("Wrong Username or Password", "#ff4d4d");
+                if(typeof showToast === "function") showToast("Login Success", "#4CAF50");
             }else{
-                alert("Wrong Username or Password");
+                if(typeof showToast === "function") showToast("Wrong Username or Password", "#ff4d4d");
+                else alert("Wrong Username or Password");
             }
         }catch(error){
             console.log(error);
-            if(typeof window.showToast === "function") window.showToast("Login Error", "#ff4d4d");
+            if(typeof showToast === "function") showToast("Login Error", "#ff4d4d");
             else alert("Login Error");
         }finally{
-            if(button) button.disabled = false;
+            if(button){
+                button.dataset.busy = "0";
+                button.disabled = false;
+                button.textContent = button.dataset.oldText || "Login";
+            }
         }
     };
 
     function bindLogin(){
         const button = document.querySelector("#loginPage button");
+
         if(button && !button.dataset.webLoginBound){
             button.dataset.webLoginBound = "true";
             button.addEventListener("click", (event)=>{
                 event.preventDefault();
+                event.stopImmediatePropagation();
                 window.login();
-            });
+            }, true);
         }
 
         ["username", "password"].forEach((id)=>{
             const input = document.getElementById(id);
+
             if(input && !input.dataset.webLoginBound){
                 input.dataset.webLoginBound = "true";
                 input.addEventListener("keydown", (event)=>{
