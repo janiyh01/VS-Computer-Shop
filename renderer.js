@@ -11814,3 +11814,591 @@ window.addEventListener("load", ()=>{
 });
 setTimeout(ensureVs2AshGrayTheme, 300);
 setTimeout(ensureVs2AshGrayTheme, 1800);
+
+/* ================= VS HOTFIX: LOGIN + PRODUCTS + CATEGORIES ================= */
+(function(){
+    if(window.__vsHotfixProductsCategories){
+        return;
+    }
+    window.__vsHotfixProductsCategories = true;
+
+    // 1) Login flicker stop
+    const style = document.createElement("style");
+    style.id = "vsHotfixLoginProductsCategories";
+    style.innerHTML = `
+        #loginPage .login-box{
+            animation:none !important;
+            transform:none !important;
+        }
+
+        #loginPage .login-box:hover{
+            transform:none !important;
+        }
+
+        #addBtn[disabled]{
+            opacity:.65 !important;
+            cursor:not-allowed !important;
+        }
+
+        #categoryPopup{
+            position:fixed !important;
+            inset:0 !important;
+            z-index:2147483647 !important;
+            background:rgba(0,0,0,.72) !important;
+            display:none;
+            align-items:center !important;
+            justify-content:center !important;
+            padding:22px !important;
+        }
+
+        #categoryPopup .category-popup-box{
+            width:min(560px, calc(100vw - 34px)) !important;
+            max-height:calc(100vh - 44px) !important;
+            overflow:auto !important;
+            background:#082033 !important;
+            color:white !important;
+            border-radius:16px !important;
+            padding:22px !important;
+            box-shadow:0 28px 80px rgba(0,0,0,.5) !important;
+            border:1px solid rgba(255,255,255,.12) !important;
+        }
+
+        #categoryList .cat-row{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+            padding:10px 12px;
+            margin:8px 0;
+            background:rgba(255,255,255,.08);
+            border-radius:10px;
+            border:1px solid rgba(255,255,255,.10);
+        }
+
+        #categoryList .cat-row b{
+            color:#fff !important;
+        }
+
+        #categoryList .cat-row button{
+            background:#ef4444 !important;
+            color:#fff !important;
+            padding:7px 12px !important;
+        }
+    `;
+    document.head.appendChild(style);
+
+    function getHotfixCategories(){
+        try{
+            const cats = JSON.parse(localStorage.getItem("categories") || "[]");
+            return Array.isArray(cats) && cats.length ? cats : ["Uncategorized"];
+        }catch(e){
+            return ["Uncategorized"];
+        }
+    }
+
+    function saveHotfixCategories(cats){
+        localStorage.setItem("categories", JSON.stringify(cats));
+
+        try{
+            if(typeof categories !== "undefined"){
+                categories = cats;
+            }
+        }catch(e){}
+    }
+
+    function refreshHotfixCategoryBits(){
+        try{ if(typeof loadCategoryDropdown === "function") loadCategoryDropdown(); }catch(e){ console.log(e); }
+        try{ if(typeof loadProducts === "function") loadProducts(); }catch(e){ console.log(e); }
+    }
+
+    function renderHotfixCategoryList(){
+        const list = document.getElementById("categoryList");
+        if(!list){
+            return;
+        }
+
+        list.innerHTML = "";
+
+        getHotfixCategories().forEach((cat)=>{
+            const row = document.createElement("div");
+            row.className = "cat-row";
+
+            const name = document.createElement("b");
+            name.textContent = cat;
+
+            const del = document.createElement("button");
+            del.type = "button";
+            del.textContent = "Delete";
+
+            if(cat === "Uncategorized"){
+                del.disabled = true;
+                del.style.opacity = ".45";
+                del.style.cursor = "not-allowed";
+            }
+
+            del.onclick = function(){
+                if(cat === "Uncategorized"){
+                    showToast("Default category cannot delete", "#ff4d4d");
+                    return;
+                }
+
+                const ok = confirm("Delete " + cat + "? Products will move to Uncategorized.");
+                if(!ok){
+                    return;
+                }
+
+                const cats = getHotfixCategories().filter((item)=> item !== cat);
+                saveHotfixCategories(cats);
+
+                db.run(
+                    "UPDATE products SET category=? WHERE category=?",
+                    ["Uncategorized", cat],
+                    function(){
+                        renderHotfixCategoryList();
+                        refreshHotfixCategoryBits();
+                        showToast("Category Deleted");
+                    }
+                );
+            };
+
+            row.appendChild(name);
+            row.appendChild(del);
+            list.appendChild(row);
+        });
+    }
+
+    window.openCategoryPopupDirect = function(){
+        const popup = document.getElementById("categoryPopup");
+        if(!popup){
+            showToast("Category popup not found", "#ff4d4d");
+            return;
+        }
+
+        renderHotfixCategoryList();
+        popup.style.setProperty("display", "flex", "important");
+    };
+
+    window.showManageCategories = window.openCategoryPopupDirect;
+
+    window.closeCategoryPopup = function(){
+        const popup = document.getElementById("categoryPopup");
+        if(popup){
+            popup.style.setProperty("display", "none", "important");
+        }
+    };
+
+    window.addNewCategory = function(){
+        const input = document.getElementById("newCategoryName");
+        const name = (input && input.value || "").trim();
+
+        if(!name){
+            showToast("Enter category name", "#ff4d4d");
+            return;
+        }
+
+        const cats = getHotfixCategories();
+
+        if(cats.includes(name)){
+            showToast("Category already exists", "#ff4d4d");
+            return;
+        }
+
+        cats.push(name);
+        saveHotfixCategories(cats);
+
+        if(input){
+            input.value = "";
+        }
+
+        renderHotfixCategoryList();
+        refreshHotfixCategoryBits();
+        showToast("Category Added");
+    };
+
+    // Stop old "Manage clicked" listener
+    function bindHotfixManageButton(){
+        const btn = document.getElementById("manageCategoriesBtn");
+        if(!btn){
+            return;
+        }
+
+        btn.removeAttribute("onclick");
+
+        btn.onclick = function(event){
+            event.preventDefault();
+            event.stopPropagation();
+            window.openCategoryPopupDirect();
+            return false;
+        };
+    }
+
+    ["pointerdown", "click"].forEach((eventName)=>{
+        document.addEventListener(eventName, function(event){
+            const btn = event.target.closest ? event.target.closest("#manageCategoriesBtn") : null;
+            if(!btn){
+                return;
+            }
+
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            if(eventName === "click"){
+                window.openCategoryPopupDirect();
+            }
+
+            return false;
+        }, true);
+    });
+
+    window.addEventListener("load", bindHotfixManageButton);
+    setTimeout(bindHotfixManageButton, 300);
+    setTimeout(bindHotfixManageButton, 1200);
+
+    // 3) Add Product saving state + duplicate click block
+    window.insertProduct = function(
+        n,
+        c,
+        p,
+        s,
+        img,
+        buyPrice,
+        sellPrice,
+        category,
+        supplier,
+        barcode,
+        productDiscount = {},
+        productWarranty = {}
+    ){
+        const addBtn = document.getElementById("addBtn");
+
+        if(addBtn && addBtn.dataset.saving === "1"){
+            return;
+        }
+
+        if(addBtn){
+            addBtn.dataset.saving = "1";
+            addBtn.disabled = true;
+            addBtn.textContent = "Saving...";
+        }
+
+        function finishSaving(){
+            if(addBtn){
+                addBtn.dataset.saving = "0";
+                addBtn.disabled = false;
+                addBtn.textContent = "Add Product";
+            }
+        }
+
+        db.run(
+            `INSERT INTO products
+            (name,code,price,stock,img,buyPrice,sellPrice,category,supplier,barcode,warrantyDays,warrantyNote,discountType,discountValue,discountStart,discountEnd)
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            [
+                n,
+                c,
+                p,
+                s,
+                img,
+                buyPrice,
+                sellPrice,
+                category,
+                supplier,
+                barcode,
+                Number(productWarranty.days || 0),
+                productWarranty.note || "",
+                productDiscount.type || "amount",
+                Number(productDiscount.value || 0),
+                productDiscount.start || "",
+                productDiscount.end || ""
+            ],
+            function(err){
+                finishSaving();
+
+                if(err){
+                    console.log(err);
+                    showToast("Product add failed", "#ff4d4d");
+                    return;
+                }
+
+                showToast("Product added");
+
+                try{ loadProducts(); }catch(e){ console.log(e); }
+                try{ loadDashboard(); }catch(e){ console.log(e); }
+                try{ clearProductForm(); }catch(e){ console.log(e); }
+                try{ ensureProductPricingFields(); }catch(e){ console.log(e); }
+            }
+        );
+    };
+})();
+
+/* ================= VS HOTFIX: PRODUCT LIST COMPACT + FAST DELETE ================= */
+(function(){
+    if(window.__vsProductListCompactDeleteFix){
+        return;
+    }
+    window.__vsProductListCompactDeleteFix = true;
+
+    const style = document.createElement("style");
+    style.id = "vsProductListCompactDeleteFix";
+    style.innerHTML = `
+        /* remove back box behind product list */
+        #products #list{
+            margin-top:12px !important;
+            padding:0 !important;
+            background:transparent !important;
+            border:none !important;
+            box-shadow:none !important;
+            border-radius:0 !important;
+            overflow:visible !important;
+        }
+
+        #products #list::before,
+        #products #list::after{
+            content:none !important;
+            display:none !important;
+        }
+
+        /* product table header + row same columns */
+        #products .product-table-head,
+        #products .product-table-row{
+            display:grid !important;
+            grid-template-columns:
+                54px
+                minmax(130px,1.2fr)
+                minmax(90px,.7fr)
+                minmax(145px,1fr)
+                minmax(90px,.72fr)
+                minmax(90px,.72fr)
+                minmax(70px,.55fr)
+                minmax(135px,auto) !important;
+            gap:12px !important;
+            align-items:center !important;
+            width:100% !important;
+            box-sizing:border-box !important;
+        }
+
+        /* header fix - words not joined */
+        #products .product-table-head{
+            padding:8px 10px !important;
+            margin:0 0 6px 0 !important;
+            min-height:0 !important;
+            background:transparent !important;
+            border:none !important;
+            border-bottom:1px solid rgba(148,163,184,.28) !important;
+            box-shadow:none !important;
+        }
+
+        #products .product-table-head span{
+            display:block !important;
+            color:#dce7ef !important;
+            -webkit-text-fill-color:#dce7ef !important;
+            font-size:12px !important;
+            font-weight:800 !important;
+            line-height:1 !important;
+            white-space:nowrap !important;
+            overflow:hidden !important;
+            text-overflow:ellipsis !important;
+            padding-right:6px !important;
+            opacity:.95 !important;
+        }
+
+        /* compact product row */
+        #products .product-table-row{
+            min-height:54px !important;
+            padding:7px 10px !important;
+            margin:0 0 6px 0 !important;
+            border-radius:12px !important;
+            background:rgba(255,255,255,.06) !important;
+            border:1px solid rgba(148,163,184,.18) !important;
+            box-shadow:none !important;
+            transform:none !important;
+            transition:.18s ease !important;
+        }
+
+        #products .product-table-row:hover{
+            transform:none !important;
+            background:rgba(255,255,255,.085) !important;
+        }
+
+        #products .product-image-cell{
+            display:flex !important;
+            align-items:center !important;
+            justify-content:center !important;
+            min-width:0 !important;
+        }
+
+        #products .product-image-cell img,
+        #products .product-table-row img{
+            width:38px !important;
+            height:38px !important;
+            margin:0 !important;
+            object-fit:cover !important;
+            border-radius:8px !important;
+            display:block !important;
+        }
+
+        #products .product-img-placeholder{
+            width:38px !important;
+            height:38px !important;
+            border-radius:8px !important;
+            background:rgba(255,255,255,.08) !important;
+            border:1px dashed rgba(255,255,255,.22) !important;
+        }
+
+        #products .product-cell{
+            min-width:0 !important;
+            color:#dce7ef !important;
+            -webkit-text-fill-color:#dce7ef !important;
+            font-size:12px !important;
+            line-height:1.15 !important;
+            white-space:nowrap !important;
+            overflow:hidden !important;
+            text-overflow:ellipsis !important;
+        }
+
+        #products .product-name-cell b{
+            color:#ffffff !important;
+            -webkit-text-fill-color:#ffffff !important;
+            font-size:12.5px !important;
+        }
+
+        #products .product-stock-cell.low{
+            color:#ff7373 !important;
+            -webkit-text-fill-color:#ff7373 !important;
+            font-weight:900 !important;
+        }
+
+        #products .product-actions{
+            display:flex !important;
+            justify-content:flex-end !important;
+            align-items:center !important;
+            gap:6px !important;
+            min-width:0 !important;
+        }
+
+        #products .product-action-btn{
+            padding:7px 10px !important;
+            min-width:42px !important;
+            border-radius:8px !important;
+            font-size:12px !important;
+            line-height:1 !important;
+            box-shadow:none !important;
+        }
+
+        #products .product-action-btn.delete{
+            background:#ef4444 !important;
+            color:#ffffff !important;
+            -webkit-text-fill-color:#ffffff !important;
+        }
+
+        #products .product-table-row.deleting{
+            opacity:.45 !important;
+            pointer-events:none !important;
+            transform:translateX(8px) !important;
+        }
+
+        @media(max-width:900px){
+            #products #list{
+                overflow-x:auto !important;
+            }
+
+            #products .product-table-head,
+            #products .product-table-row{
+                min-width:880px !important;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    function safeHtml(value){
+        if(typeof escapeLabelHtml === "function"){
+            return escapeLabelHtml(value);
+        }
+
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    window.renderVs2ProductRow = function(p){
+        const stockLow = Number(p.stock || 0) <= getLowStockLimit();
+        const stockText = String(p.stock ?? "");
+        const imgHtml = p.img
+            ? `<img src="${safeHtml(p.img)}">`
+            : `<div class="product-img-placeholder"></div>`;
+
+        return `
+            <div class="product product-table-row" data-product-id="${safeHtml(p.id)}">
+                <div class="product-image-cell">${imgHtml}</div>
+                <div class="product-cell product-name-cell"><b>${safeHtml(p.name || "-")}</b></div>
+                <div class="product-cell">${safeHtml(p.code || "-")}</div>
+                <div class="product-cell">${safeHtml(p.barcode || "-")}</div>
+                <div class="product-cell">${formatRs(p.buyPrice || 0)}</div>
+                <div class="product-cell">${formatRs(p.sellPrice || p.price || 0)}</div>
+                <div class="product-cell product-stock-cell ${stockLow ? "low" : ""}">
+                    ${safeHtml(stockText)}${stockLow ? " LOW" : ""}
+                </div>
+                <div class="product-actions">
+                    <button class="product-action-btn edit" onclick="editProduct(${p.id})">Edit</button>
+                    <button class="product-action-btn label" onclick="selectProductForLabel('${safeHtml(p.code || p.barcode || "")}')">Label</button>
+                    <button class="product-action-btn delete" onclick="deleteProduct(${p.id})">Del</button>
+                </div>
+            </div>
+        `;
+    };
+
+    window.wrapVs2ProductRows = function(html){
+        return `
+            <div class="product-table-head">
+                <span>Image</span>
+                <span>Product</span>
+                <span>Code</span>
+                <span>Barcode</span>
+                <span>Buy</span>
+                <span>Sell</span>
+                <span>Stock</span>
+                <span>Action</span>
+            </div>
+        ` + html;
+    };
+
+    window.deleteProduct = function(id){
+        const ask = typeof showConfirm === "function"
+            ? showConfirm
+            : function(message, ok){ if(confirm(message)) ok(); };
+
+        ask("Delete this product?", function(){
+            const row = document.querySelector(`#products .product-table-row[data-product-id="${id}"]`);
+
+            if(row){
+                row.classList.add("deleting");
+                setTimeout(()=> row.remove(), 160);
+            }
+
+            allProducts = allProducts.filter((p)=> String(p.id) !== String(id));
+
+            db.run(
+                "DELETE FROM products WHERE id=?",
+                [id],
+                function(err){
+                    if(err){
+                        console.log(err);
+                        showToast("Delete failed", "#ff4d4d");
+                        loadProducts();
+                        return;
+                    }
+
+                    showToast("Product Deleted");
+
+                    setTimeout(()=>{
+                        loadProducts();
+                        loadDashboard();
+                    }, 60);
+                }
+            );
+        });
+    };
+})();
