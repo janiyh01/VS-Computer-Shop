@@ -1,238 +1,148 @@
-/* ================= VS WEB FINAL HOTFIX ================= */
+/* ================= VS SYSTEM WEB STABLE FINAL FIX ================= */
 (function(){
-    if(window.__vsWebFinalHotfixLoaded){
+    if(window.__vsStableFinalFixLoaded){
         return;
     }
-    window.__vsWebFinalHotfixLoaded = true;
+    window.__vsStableFinalFixLoaded = true;
 
-    function toast(msg, color){
+    let categoryOpenLock = false;
+    let categoryToken = 0;
+    let productCacheForCategories = [];
+
+    function showMsg(message, color){
         try{
             if(typeof showToast === "function"){
-                showToast(msg, color);
+                showToast(message, color);
             }else{
-                console.log(msg);
+                console.log(message);
             }
         }catch(e){
-            console.log(msg);
+            console.log(message);
         }
     }
 
-    function injectStableStyle(){
-        let style = document.getElementById("vsWebFinalHotfixStyle");
-
-        if(!style){
-            style = document.createElement("style");
-            style.id = "vsWebFinalHotfixStyle";
-        }
-
-        style.innerHTML = `
-            /* LOGIN FLICKER FIX */
-            #loginPage,
-            #loginPage *,
-            #loginPage::before,
-            #loginPage::after{
-                animation:none !important;
-                transition:none !important;
+    function money(value){
+        try{
+            if(typeof formatRs === "function"){
+                return formatRs(value);
             }
-
-            #loginPage{
-                min-height:100vh !important;
-                width:100vw !important;
-                display:flex !important;
-                align-items:center !important;
-                justify-content:center !important;
-                padding:28px !important;
-                overflow:hidden !important;
-                background:
-                    radial-gradient(circle at 22% 22%, rgba(20,184,166,.18), transparent 28%),
-                    radial-gradient(circle at 78% 18%, rgba(14,165,233,.22), transparent 30%),
-                    linear-gradient(135deg,#06141b 0%,#092231 48%,#061018 100%) !important;
-            }
-
-            #loginPage .login-box{
-                width:min(390px, calc(100vw - 42px)) !important;
-                padding:34px !important;
-                transform:none !important;
-                min-height:auto !important;
-                border-radius:22px !important;
-                background:rgba(15,30,40,.88) !important;
-                border:1px solid rgba(255,255,255,.12) !important;
-                box-shadow:0 24px 70px rgba(0,0,0,.42) !important;
-                backdrop-filter:blur(6px) !important;
-            }
-
-            #loginPage .login-box:hover{
-                transform:none !important;
-            }
-
-            #loginPage .login-box input{
-                margin:10px 0 !important;
-                width:100% !important;
-            }
-
-            #loginPage .login-box button{
-                width:100% !important;
-                margin-top:12px !important;
-            }
-
-            /* BUTTON CLICK FIX */
-            #reportExportTools,
-            #productExcelTools,
-            #manageCategoriesBtn{
-                position:relative !important;
-                z-index:2147483000 !important;
-                pointer-events:auto !important;
-            }
-
-            #reportExportTools button,
-            #productExcelTools button,
-            #manageCategoriesBtn{
-                pointer-events:auto !important;
-                cursor:pointer !important;
-            }
-
-            /* FAST CATEGORY MODAL */
-            #vsFastCategoryOverlay{
-                position:fixed !important;
-                inset:0 !important;
-                z-index:2147483647 !important;
-                background:rgba(0,0,0,.72) !important;
-                display:flex !important;
-                align-items:center !important;
-                justify-content:center !important;
-                padding:24px !important;
-            }
-
-            #vsFastCategoryBox{
-                width:min(620px, calc(100vw - 34px)) !important;
-                max-height:calc(100vh - 44px) !important;
-                overflow:auto !important;
-                background:#082033 !important;
-                color:white !important;
-                border-radius:16px !important;
-                padding:22px !important;
-                box-shadow:0 28px 90px rgba(0,0,0,.55) !important;
-                border:1px solid rgba(255,255,255,.14) !important;
-            }
-
-            #vsFastCategoryBox input,
-            #vsFastCategoryBox select{
-                background:#102b3a !important;
-                color:#fff !important;
-                -webkit-text-fill-color:#fff !important;
-                border:1px solid #24495a !important;
-                border-radius:9px !important;
-                padding:11px !important;
-                margin:0 !important;
-            }
-
-            .vs-cat-row{
-                display:grid !important;
-                grid-template-columns:1fr auto auto !important;
-                gap:10px !important;
-                align-items:center !important;
-                padding:10px 12px !important;
-                margin:8px 0 !important;
-                background:rgba(255,255,255,.08) !important;
-                border:1px solid rgba(255,255,255,.12) !important;
-                border-radius:10px !important;
-            }
-
-            .vs-cat-row b{
-                color:#fff !important;
-                -webkit-text-fill-color:#fff !important;
-            }
-
-            .vs-cat-row small{
-                color:#b8c9d4 !important;
-                -webkit-text-fill-color:#b8c9d4 !important;
-            }
-
-            .vs-cat-del{
-                background:#ef4444 !important;
-                color:#fff !important;
-                -webkit-text-fill-color:#fff !important;
-            }
-        `;
-
-        document.head.appendChild(style);
+        }catch(e){}
+        return "Rs. " + Number(value || 0).toLocaleString("en-US");
     }
 
-    injectStableStyle();
-
-    let styleKeepCount = 0;
-    const styleKeepTimer = setInterval(()=>{
-        injectStableStyle();
-        styleKeepCount++;
-        if(styleKeepCount > 20){
-            clearInterval(styleKeepTimer);
-        }
-    }, 250);
-
-    function safeText(value){
+    function esc(value){
         return String(value ?? "")
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
 
-    function downloadBlob(filename, mime, data){
-        const blob = new Blob([data], { type:mime });
+    function qAll(sql, params = []){
+        return new Promise((resolve)=>{
+            try{
+                db.all(sql, params, (err, rows)=>{
+                    resolve(err ? [] : (rows || []));
+                });
+            }catch(e){
+                resolve([]);
+            }
+        });
+    }
+
+    function qRun(sql, params = []){
+        return new Promise((resolve)=>{
+            try{
+                db.run(sql, params, function(err){
+                    if(err){
+                        console.log(err);
+                        resolve({ ok:false, err });
+                        return;
+                    }
+
+                    resolve({
+                        ok:true,
+                        lastID:this && this.lastID,
+                        changes:this && this.changes
+                    });
+                });
+            }catch(e){
+                console.log(e);
+                resolve({ ok:false, err:e });
+            }
+        });
+    }
+
+    function downloadFile(filename, mime, content){
+        const blob = new Blob([content], { type:mime });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
         a.download = filename;
         document.body.appendChild(a);
         a.click();
+
         setTimeout(()=>{
             URL.revokeObjectURL(a.href);
             a.remove();
-        }, 800);
+        }, 1200);
     }
 
     function downloadWorkbook(workbook, filename){
+        if(typeof XLSX === "undefined"){
+            showMsg("Excel library not loaded", "#ff4d4d");
+            return;
+        }
+
         const data = XLSX.write(workbook, {
             bookType:"xlsx",
             type:"array"
         });
 
-        downloadBlob(
+        downloadFile(
             filename,
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             data
         );
     }
 
-    function dbAllP(sql, params = []){
-        return new Promise((resolve)=>{
-            try{
-                db.all(sql, params, (err, rows)=>{
-                    if(err){
-                        console.log(err);
-                        resolve([]);
-                    }else{
-                        resolve(rows || []);
-                    }
-                });
-            }catch(e){
-                console.log(e);
-                resolve([]);
-            }
-        });
+    function withBusy(button, label, task){
+        if(button && button.dataset.busy === "1"){
+            return;
+        }
+
+        const oldText = button ? button.textContent : "";
+
+        if(button){
+            button.dataset.busy = "1";
+            button.disabled = true;
+            button.textContent = label || "Working...";
+        }
+
+        Promise.resolve()
+            .then(task)
+            .finally(()=>{
+                if(button){
+                    button.dataset.busy = "0";
+                    button.disabled = false;
+                    button.textContent = oldText;
+                }
+            });
     }
 
     function getCats(){
         try{
             const cats = JSON.parse(localStorage.getItem("categories") || "[]");
             if(Array.isArray(cats) && cats.length){
-                return cats;
+                const clean = cats.map(c => String(c || "").trim()).filter(Boolean);
+                return clean.length ? clean : ["Uncategorized"];
             }
         }catch(e){}
+
         return ["Uncategorized"];
     }
 
-    function saveCatsFast(cats){
+    function saveCats(cats){
         const clean = Array.from(new Set(
             cats.map(c => String(c || "").trim()).filter(Boolean)
         ));
@@ -244,297 +154,465 @@
         localStorage.setItem("categories", JSON.stringify(clean));
 
         try{
-            window.categories = clean;
+            categories = clean;
         }catch(e){}
 
-        try{
-            if(typeof categories !== "undefined"){
-                categories = clean;
+        return clean;
+    }
+
+    function refreshLight(){
+        setTimeout(()=>{
+            try{ if(typeof loadCategoryDropdown === "function") loadCategoryDropdown(); }catch(e){}
+            try{ if(typeof loadProducts === "function") loadProducts(); }catch(e){}
+        }, 80);
+    }
+
+    function refreshDashboardLater(){
+        clearTimeout(window.__vsDashRefreshTimer);
+        window.__vsDashRefreshTimer = setTimeout(()=>{
+            try{ if(typeof loadDashboard === "function") loadDashboard(); }catch(e){}
+            try{ if(typeof loadReport === "function") loadReport(); }catch(e){}
+            try{ if(typeof loadReports === "function") loadReports(); }catch(e){}
+        }, 700);
+    }
+
+    function installStableStyle(){
+        let style = document.getElementById("vsStableFinalFixStyle");
+
+        if(!style){
+            style = document.createElement("style");
+            style.id = "vsStableFinalFixStyle";
+            document.head.appendChild(style);
+        }
+
+        style.innerHTML = `
+            #loginPage .login-box,
+            #loginPage .login-box *,
+            #loginPage::before,
+            #loginPage::after{
+                animation:none !important;
+                transition:none !important;
             }
-        }catch(e){}
+
+            #loginPage .login-box{
+                transform:none !important;
+            }
+
+            #manageCategoriesBtn,
+            #productExcelTools button,
+            #reportExportTools button,
+            #backupTab button{
+                pointer-events:auto !important;
+                cursor:pointer !important;
+                position:relative !important;
+                z-index:2147483000 !important;
+            }
+
+            #vsStableCategoryOverlay{
+                position:fixed !important;
+                inset:0 !important;
+                z-index:2147483647 !important;
+                background:rgba(0,0,0,.72) !important;
+                display:flex !important;
+                align-items:center !important;
+                justify-content:center !important;
+                padding:22px !important;
+            }
+
+            #vsStableCategoryBox{
+                width:min(660px, calc(100vw - 34px)) !important;
+                max-height:calc(100vh - 44px) !important;
+                overflow:auto !important;
+                background:#082033 !important;
+                color:#fff !important;
+                border-radius:16px !important;
+                padding:22px !important;
+                border:1px solid rgba(255,255,255,.14) !important;
+                box-shadow:0 28px 90px rgba(0,0,0,.55) !important;
+            }
+
+            #vsStableCategoryBox input,
+            #vsStableCategoryBox select{
+                background:#102b3a !important;
+                color:#fff !important;
+                -webkit-text-fill-color:#fff !important;
+                border:1px solid #24495a !important;
+                border-radius:9px !important;
+                padding:10px !important;
+                margin:0 !important;
+                min-width:0 !important;
+            }
+
+            .vs-stable-cat-row{
+                display:grid !important;
+                grid-template-columns:1fr 150px auto auto !important;
+                gap:8px !important;
+                align-items:center !important;
+                padding:10px !important;
+                margin:8px 0 !important;
+                background:rgba(255,255,255,.08) !important;
+                border:1px solid rgba(255,255,255,.12) !important;
+                border-radius:10px !important;
+            }
+
+            .vs-stable-cat-row b{
+                color:#fff !important;
+                -webkit-text-fill-color:#fff !important;
+            }
+
+            .vs-stable-cat-row small{
+                color:#b8c9d4 !important;
+                -webkit-text-fill-color:#b8c9d4 !important;
+            }
+
+            .vs-stable-danger{
+                background:#ef4444 !important;
+                color:white !important;
+                -webkit-text-fill-color:white !important;
+            }
+
+            @media(max-width:720px){
+                .vs-stable-cat-row{
+                    grid-template-columns:1fr !important;
+                }
+
+                #vsStableMoveRow,
+                #vsStableAddRow{
+                    grid-template-columns:1fr !important;
+                }
+            }
+        `;
     }
 
-    function refreshCategoryUI(){
-        try{ if(typeof loadCategoryDropdown === "function") loadCategoryDropdown(); }catch(e){}
-        try{ if(typeof loadProducts === "function") loadProducts(); }catch(e){}
-        try{ if(typeof loadDashboard === "function") loadDashboard(); }catch(e){}
+    installStableStyle();
+
+    function renderCategoryBox(overlay, products){
+        productCacheForCategories = Array.isArray(products) ? products : productCacheForCategories;
+
+        const cats = getCats();
+        const rows = overlay.querySelector("#vsStableCatRows");
+        const moveProduct = overlay.querySelector("#vsStableMoveProduct");
+        const moveCategory = overlay.querySelector("#vsStableMoveCategory");
+
+        if(moveProduct){
+            moveProduct.innerHTML = productCacheForCategories.length
+                ? productCacheForCategories.map(p => `
+                    <option value="${esc(p.id)}">
+                        ${esc(p.name || "-")} ${p.code ? "(" + esc(p.code) + ")" : ""} - ${esc(p.category || "Uncategorized")}
+                    </option>
+                `).join("")
+                : `<option value="">No products</option>`;
+        }
+
+        if(moveCategory){
+            moveCategory.innerHTML = cats.map(cat => `
+                <option value="${esc(cat)}">${esc(cat)}</option>
+            `).join("");
+        }
+
+        if(rows){
+            rows.innerHTML = cats.map(cat => {
+                const count = productCacheForCategories.filter(p => String(p.category || "Uncategorized") === cat).length;
+                const canDelete = cat !== "Uncategorized";
+
+                return `
+                    <div class="vs-stable-cat-row" data-cat="${esc(cat)}">
+                        <div>
+                            <b>${esc(cat)}</b>
+                            <small style="display:block;margin-top:4px;">${count} products</small>
+                        </div>
+
+                        <input class="vs-stable-rename-input" placeholder="New name">
+
+                        <button type="button" data-action="rename">Rename</button>
+
+                        <button
+                            type="button"
+                            data-action="delete"
+                            class="vs-stable-danger"
+                            ${canDelete ? "" : "disabled"}
+                            style="${canDelete ? "" : "opacity:.45;cursor:not-allowed;"}"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                `;
+            }).join("");
+        }
     }
 
-    window.openVSFastCategoryManager = async function(){
-        document.getElementById("cleanCategoryOverlay")?.remove();
-        document.getElementById("categoryPopup")?.remove();
-        document.getElementById("vsFastCategoryOverlay")?.remove();
+    async function openStableCategoryManager(){
+        if(categoryOpenLock){
+            return;
+        }
+
+        categoryOpenLock = true;
+
+        setTimeout(()=>{
+            categoryOpenLock = false;
+        }, 700);
+
+        document.querySelectorAll("#vsStableCategoryOverlay,#cleanCategoryOverlay,#vsFastCategoryOverlay").forEach(el => el.remove());
+
+        const oldPopup = document.getElementById("categoryPopup");
+        if(oldPopup){
+            oldPopup.style.display = "none";
+        }
+
+        const token = ++categoryToken;
 
         const overlay = document.createElement("div");
-        overlay.id = "vsFastCategoryOverlay";
+        overlay.id = "vsStableCategoryOverlay";
 
         overlay.innerHTML = `
-            <div id="vsFastCategoryBox">
+            <div id="vsStableCategoryBox">
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;">
                     <h2 style="margin:0;">Manage Categories</h2>
-                    <button type="button" id="vsCatCloseBtn">Close</button>
+                    <button type="button" data-action="close">Close</button>
                 </div>
 
-                <div style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:14px;">
-                    <input id="vsNewCategoryInput" placeholder="New Category">
-                    <button type="button" id="vsAddCategoryBtn">Add</button>
+                <div id="vsStableAddRow" style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:14px;">
+                    <input id="vsStableNewCategory" placeholder="New Category">
+                    <button type="button" data-action="add">Add</button>
                 </div>
 
-                <div id="vsCategoryRows"></div>
-
-                <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12);">
-                    <h3 style="margin:0 0 10px 0;">Move Product Category</h3>
-                    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;">
-                        <select id="vsMoveProductSelect">
-                            <option value="">Loading products...</option>
-                        </select>
-                        <select id="vsMoveCategorySelect"></select>
-                        <button type="button" id="vsMoveProductBtn">Move</button>
-                    </div>
+                <div id="vsStableMoveRow" style="display:grid;grid-template-columns:1fr 180px auto;gap:10px;margin-bottom:16px;background:#102638;padding:12px;border-radius:10px;">
+                    <select id="vsStableMoveProduct">
+                        <option value="">Loading products...</option>
+                    </select>
+                    <select id="vsStableMoveCategory"></select>
+                    <button type="button" data-action="move">Move</button>
                 </div>
+
+                <div id="vsStableCatRows"></div>
             </div>
         `;
 
         document.body.appendChild(overlay);
 
-        const close = ()=>{
-            overlay.remove();
-        };
+        renderCategoryBox(overlay, []);
 
-        overlay.querySelector("#vsCatCloseBtn").onclick = close;
+        overlay.addEventListener("click", async function(event){
+            const actionBtn = event.target.closest ? event.target.closest("[data-action]") : null;
 
-        overlay.addEventListener("click", (event)=>{
             if(event.target === overlay){
-                close();
+                overlay.remove();
+                return;
+            }
+
+            if(!actionBtn){
+                return;
+            }
+
+            const action = actionBtn.dataset.action;
+
+            if(action === "close"){
+                overlay.remove();
+                return;
+            }
+
+            if(action === "add"){
+                const input = overlay.querySelector("#vsStableNewCategory");
+                const name = String(input?.value || "").trim();
+
+                if(!name){
+                    showMsg("Enter category name", "#ff4d4d");
+                    return;
+                }
+
+                const cats = getCats();
+
+                if(cats.includes(name)){
+                    showMsg("Category already exists", "#ff4d4d");
+                    return;
+                }
+
+                saveCats([...cats, name]);
+                input.value = "";
+                renderCategoryBox(overlay, productCacheForCategories);
+                refreshLight();
+                showMsg("Category Added");
+                return;
+            }
+
+            if(action === "rename"){
+                const row = actionBtn.closest(".vs-stable-cat-row");
+                const oldName = row?.dataset.cat || "";
+                const input = row?.querySelector(".vs-stable-rename-input");
+                const newName = String(input?.value || "").trim();
+
+                if(!oldName || !newName || oldName === newName){
+                    return;
+                }
+
+                if(getCats().includes(newName)){
+                    showMsg("Category already exists", "#ff4d4d");
+                    return;
+                }
+
+                actionBtn.disabled = true;
+                actionBtn.textContent = "Saving...";
+
+                const cats = getCats().map(cat => cat === oldName ? newName : cat);
+                saveCats(cats);
+
+                await qRun(
+                    "UPDATE products SET category=? WHERE category=?",
+                    [newName, oldName]
+                );
+
+                productCacheForCategories = productCacheForCategories.map(p =>
+                    String(p.category || "Uncategorized") === oldName
+                        ? { ...p, category:newName }
+                        : p
+                );
+
+                renderCategoryBox(overlay, productCacheForCategories);
+                refreshLight();
+                showMsg("Category Renamed");
+                return;
+            }
+
+            if(action === "delete"){
+                const row = actionBtn.closest(".vs-stable-cat-row");
+                const cat = row?.dataset.cat || "";
+
+                if(!cat || cat === "Uncategorized"){
+                    return;
+                }
+
+                const ok = confirm("Delete " + cat + "? Products will move to Uncategorized.");
+                if(!ok){
+                    return;
+                }
+
+                actionBtn.disabled = true;
+                actionBtn.textContent = "Deleting...";
+
+                saveCats(getCats().filter(item => item !== cat));
+
+                await qRun(
+                    "UPDATE products SET category=? WHERE category=?",
+                    ["Uncategorized", cat]
+                );
+
+                productCacheForCategories = productCacheForCategories.map(p =>
+                    String(p.category || "Uncategorized") === cat
+                        ? { ...p, category:"Uncategorized" }
+                        : p
+                );
+
+                renderCategoryBox(overlay, productCacheForCategories);
+                refreshLight();
+                showMsg("Category Deleted");
+                return;
+            }
+
+            if(action === "move"){
+                const productId = overlay.querySelector("#vsStableMoveProduct")?.value || "";
+                const cat = overlay.querySelector("#vsStableMoveCategory")?.value || "";
+
+                if(!productId || !cat){
+                    showMsg("Select product and category", "#ff4d4d");
+                    return;
+                }
+
+                actionBtn.disabled = true;
+                actionBtn.textContent = "Moving...";
+
+                await qRun(
+                    "UPDATE products SET category=? WHERE id=?",
+                    [cat, productId]
+                );
+
+                productCacheForCategories = productCacheForCategories.map(p =>
+                    String(p.id) === String(productId)
+                        ? { ...p, category:cat }
+                        : p
+                );
+
+                actionBtn.disabled = false;
+                actionBtn.textContent = "Move";
+
+                renderCategoryBox(overlay, productCacheForCategories);
+                refreshLight();
+                showMsg("Product moved");
             }
         });
 
-        function renderCats(products = []){
-            const cats = getCats();
-            const rows = overlay.querySelector("#vsCategoryRows");
-            const moveCat = overlay.querySelector("#vsMoveCategorySelect");
-
-            rows.innerHTML = cats.map((cat)=>{
-                const count = products.filter(p => String(p.category || "Uncategorized") === cat).length;
-                const disabled = cat === "Uncategorized" ? "disabled" : "";
-
-                return `
-                    <div class="vs-cat-row">
-                        <div>
-                            <b>${safeText(cat)}</b><br>
-                            <small>${count} products</small>
-                        </div>
-                        <button type="button" class="vs-cat-use" data-cat="${safeText(cat)}">Use</button>
-                        <button type="button" class="vs-cat-del" data-cat="${safeText(cat)}" ${disabled}>Delete</button>
-                    </div>
-                `;
-            }).join("");
-
-            moveCat.innerHTML = cats.map(cat => `
-                <option value="${safeText(cat)}">${safeText(cat)}</option>
-            `).join("");
-
-            rows.querySelectorAll(".vs-cat-use").forEach((btn)=>{
-                btn.onclick = ()=>{
-                    const input = document.getElementById("category");
-                    if(input){
-                        input.value = btn.dataset.cat || "";
-                    }
-                    close();
-                };
-            });
-
-            rows.querySelectorAll(".vs-cat-del").forEach((btn)=>{
-                btn.onclick = ()=>{
-                    const cat = btn.dataset.cat;
-
-                    if(!cat || cat === "Uncategorized"){
-                        return;
-                    }
-
-                    const ok = confirm("Delete " + cat + "? Products will move to Uncategorized.");
-                    if(!ok){
-                        return;
-                    }
-
-                    const nextCats = getCats().filter(c => c !== cat);
-                    saveCatsFast(nextCats);
-
-                    db.run(
-                        "UPDATE products SET category=? WHERE category=?",
-                        ["Uncategorized", cat],
-                        ()=>{
-                            refreshCategoryUI();
-                            toast("Category Deleted");
-                            renderCats(products.map(p => (
-                                String(p.category || "") === cat
-                                    ? { ...p, category:"Uncategorized" }
-                                    : p
-                            )));
-                        }
-                    );
-                };
-            });
-        }
-
-        renderCats([]);
-
-        overlay.querySelector("#vsAddCategoryBtn").onclick = ()=>{
-            const input = overlay.querySelector("#vsNewCategoryInput");
-            const name = String(input.value || "").trim();
-
-            if(!name){
-                toast("Enter category name", "#ff4d4d");
+        qAll("SELECT id,name,code,category FROM products ORDER BY name ASC", []).then(products=>{
+            if(token !== categoryToken || !document.body.contains(overlay)){
                 return;
             }
 
-            const cats = getCats();
+            renderCategoryBox(overlay, products);
+        });
+    }
 
-            if(cats.includes(name)){
-                toast("Category already exists", "#ff4d4d");
-                return;
-            }
-
-            cats.push(name);
-            saveCatsFast(cats);
-            input.value = "";
-            refreshCategoryUI();
-            toast("Category Added");
-            renderCats([]);
-        };
-
-        let products = await dbAllP("SELECT id,name,code,category FROM products ORDER BY name ASC", []);
-
-        const moveProduct = overlay.querySelector("#vsMoveProductSelect");
-        moveProduct.innerHTML = products.length
-            ? products.map(p => `
-                <option value="${safeText(p.id)}">
-                    ${safeText(p.name || "-")} ${p.code ? "(" + safeText(p.code) + ")" : ""}
-                </option>
-            `).join("")
-            : `<option value="">No products</option>`;
-
-        renderCats(products);
-
-        overlay.querySelector("#vsMoveProductBtn").onclick = ()=>{
-            const productId = overlay.querySelector("#vsMoveProductSelect").value;
-            const cat = overlay.querySelector("#vsMoveCategorySelect").value;
-
-            if(!productId || !cat){
-                toast("Select product and category", "#ff4d4d");
-                return;
-            }
-
-            db.run(
-                "UPDATE products SET category=? WHERE id=?",
-                [cat, productId],
-                ()=>{
-                    products = products.map(p => String(p.id) === String(productId) ? { ...p, category:cat } : p);
-                    refreshCategoryUI();
-                    toast("Product moved");
-                    renderCats(products);
-                }
-            );
-        };
-    };
-
-    window.openCleanCategoryManager = window.openVSFastCategoryManager;
-    window.openCategoryPopupDirect = window.openVSFastCategoryManager;
-    window.showManageCategories = window.openVSFastCategoryManager;
+    window.openStableCategoryManager = openStableCategoryManager;
+    window.openCleanCategoryManager = openStableCategoryManager;
+    window.openCategoryPopupDirect = openStableCategoryManager;
+    window.showManageCategories = openStableCategoryManager;
 
     function bindManageButton(){
         const btn = document.getElementById("manageCategoriesBtn");
+
         if(!btn){
             return;
         }
 
         btn.removeAttribute("onclick");
+
         btn.onclick = function(event){
-            if(event){
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            window.openVSFastCategoryManager();
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            openStableCategoryManager();
+            return false;
+        };
+
+        btn.onpointerdown = function(event){
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            openStableCategoryManager();
             return false;
         };
     }
 
-    bindManageButton();
-    window.addEventListener("load", bindManageButton);
-    setTimeout(bindManageButton, 300);
-    setTimeout(bindManageButton, 1200);
-
-    document.addEventListener("click", function(event){
+    function interceptManage(event){
         const btn = event.target.closest ? event.target.closest("#manageCategoriesBtn") : null;
 
-        if(btn){
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            window.openVSFastCategoryManager();
-            return false;
-        }
-
-        const clicked = event.target.closest ? event.target.closest("button") : null;
-        if(!clicked){
+        if(!btn){
             return;
         }
 
-        const text = (clicked.textContent || "").trim().toLowerCase();
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openStableCategoryManager();
+        return false;
+    }
 
-        if(text === "save report excel"){
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            exportReportsExcel();
-            return false;
-        }
+    document.addEventListener("pointerdown", interceptManage, true);
+    document.addEventListener("click", interceptManage, true);
 
-        if(text === "save report pdf"){
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            exportReportsPDF();
-            return false;
-        }
-
-        if(text === "export excel" && clicked.closest("#products")){
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            exportProductsExcel();
-            return false;
-        }
-
-        if(text === "excel template" && clicked.closest("#products")){
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            downloadProductExcelTemplate();
-            return false;
-        }
-    }, true);
-
-    async function collectFullReportDataSafe(){
-        if(typeof getFullReportData === "function"){
-            try{
-                return await getFullReportData();
-            }catch(e){
-                console.log(e);
-            }
-        }
-
-        const sales = await dbAllP("SELECT * FROM sales ORDER BY id DESC", []);
-        const products = await dbAllP("SELECT * FROM products ORDER BY id ASC", []);
-        const lowStock = products.filter(p => Number(p.stock || 0) <= 2);
-        const repairs = await dbAllP("SELECT * FROM repairs ORDER BY id DESC", []);
+    async function getReportDataFast(){
+        const [sales, products, repairs] = await Promise.all([
+            qAll("SELECT * FROM sales ORDER BY id DESC", []),
+            qAll("SELECT * FROM products ORDER BY id ASC", []),
+            qAll("SELECT * FROM repairs ORDER BY id DESC", [])
+        ]);
 
         const salesTotal = sales.reduce((sum, row)=> sum + Number(row.total || 0), 0);
-        const repairTotal = repairs.reduce((sum, row)=> sum + Number(row.finalAmount || row.estimatedCost || 0), 0);
+        const repairTotal = repairs.reduce((sum, row)=> sum + Number(row.total || row.finalAmount || row.estimatedCost || 0), 0);
+        const lowStockLimit = typeof getLowStockLimit === "function" ? getLowStockLimit() : 2;
+        const lowStock = products.filter(p => Number(p.stock || 0) <= lowStockLimit);
 
         return {
             sales,
             products,
-            lowStock,
             repairs,
+            lowStock,
             summary:{
                 generatedAt:new Date().toLocaleString(),
-                dailySales:salesTotal + repairTotal,
                 totalIncome:salesTotal + repairTotal,
                 salesIncome:salesTotal,
                 repairIncome:repairTotal,
@@ -544,17 +622,63 @@
         };
     }
 
-    window.exportProductsExcel = async function(){
-        const btn = document.activeElement;
+    window.exportBackup = async function(){
+        const button = document.activeElement && document.activeElement.tagName === "BUTTON"
+            ? document.activeElement
+            : null;
 
-        try{
-            if(btn && btn.tagName === "BUTTON"){
-                btn.disabled = true;
-                btn.dataset.oldText = btn.textContent;
-                btn.textContent = "Exporting...";
+        withBusy(button, "Exporting...", async ()=>{
+            const [products, sales, repairs, customers, expenses] = await Promise.all([
+                qAll("SELECT * FROM products", []),
+                qAll("SELECT * FROM sales", []),
+                qAll("SELECT * FROM repairs", []),
+                qAll("SELECT * FROM customers", []),
+                qAll("SELECT * FROM expenses", [])
+            ]);
+
+            const exportDate = new Date().toLocaleString();
+            const fileName = "backup_" + Date.now() + ".ysbackup";
+
+            const data = {
+                products,
+                sales,
+                repairs,
+                customers,
+                expenses,
+                categories:getCats(),
+                exportDate
+            };
+
+            downloadFile(
+                fileName,
+                "application/json",
+                JSON.stringify(data)
+            );
+
+            try{
+                const history = JSON.parse(localStorage.getItem("backupHistory") || "[]");
+                history.unshift({ file:fileName, date:exportDate });
+                localStorage.setItem("backupHistory", JSON.stringify(history.slice(0, 25)));
+            }catch(e){}
+
+            const lastBackup = document.getElementById("lastBackupDate");
+
+            if(lastBackup){
+                lastBackup.innerText = exportDate;
             }
 
-            const products = await dbAllP("SELECT * FROM products ORDER BY id ASC", []);
+            try{ if(typeof loadBackupHistory === "function") loadBackupHistory(); }catch(e){}
+
+            showMsg("Backup Exported");
+        });
+    };
+
+    window.exportProductsExcel = async function(buttonFromClick){
+        const button = buttonFromClick || (document.activeElement && document.activeElement.tagName === "BUTTON" ? document.activeElement : null);
+
+        withBusy(button, "Exporting...", async ()=>{
+            const products = await qAll("SELECT * FROM products ORDER BY id ASC", []);
+
             const rows = typeof getProductExcelRows === "function"
                 ? getProductExcelRows(products)
                 : products;
@@ -567,20 +691,14 @@
             );
 
             downloadWorkbook(workbook, "products_" + Date.now() + ".xlsx");
-            toast("Products Excel downloaded");
-        }catch(e){
-            console.log(e);
-            toast("Product export failed", "#ff4d4d");
-        }finally{
-            if(btn && btn.dataset.oldText){
-                btn.disabled = false;
-                btn.textContent = btn.dataset.oldText;
-            }
-        }
+            showMsg("Products Excel downloaded");
+        });
     };
 
-    window.downloadProductExcelTemplate = async function(){
-        try{
+    window.downloadProductExcelTemplate = async function(buttonFromClick){
+        const button = buttonFromClick || (document.activeElement && document.activeElement.tagName === "BUTTON" ? document.activeElement : null);
+
+        withBusy(button, "Preparing...", async ()=>{
             const workbook = XLSX.utils.book_new();
 
             XLSX.utils.book_append_sheet(
@@ -603,31 +721,21 @@
             );
 
             downloadWorkbook(workbook, "products_template.xlsx");
-            toast("Excel template downloaded");
-        }catch(e){
-            console.log(e);
-            toast("Template download failed", "#ff4d4d");
-        }
+            showMsg("Excel template downloaded");
+        });
     };
 
-    window.exportReportsExcel = async function(){
-        const btn = document.activeElement;
+    window.exportReportsExcel = async function(buttonFromClick){
+        const button = buttonFromClick || (document.activeElement && document.activeElement.tagName === "BUTTON" ? document.activeElement : null);
 
-        try{
-            if(btn && btn.tagName === "BUTTON"){
-                btn.disabled = true;
-                btn.dataset.oldText = btn.textContent;
-                btn.textContent = "Exporting...";
-            }
-
-            const data = await collectFullReportDataSafe();
+        withBusy(button, "Exporting...", async ()=>{
+            const data = await getReportDataFast();
             const workbook = XLSX.utils.book_new();
 
             XLSX.utils.book_append_sheet(
                 workbook,
                 XLSX.utils.json_to_sheet([
                     { Item:"Generated At", Value:data.summary.generatedAt },
-                    { Item:"Daily Sales", Value:data.summary.dailySales },
                     { Item:"Total Income", Value:data.summary.totalIncome },
                     { Item:"Sales Income", Value:data.summary.salesIncome },
                     { Item:"Repair Income", Value:data.summary.repairIncome },
@@ -637,63 +745,28 @@
                 "Summary"
             );
 
-            XLSX.utils.book_append_sheet(
-                workbook,
-                XLSX.utils.json_to_sheet(data.sales || []),
-                "Sales"
-            );
-
-            XLSX.utils.book_append_sheet(
-                workbook,
-                XLSX.utils.json_to_sheet(data.products || []),
-                "Products"
-            );
-
-            XLSX.utils.book_append_sheet(
-                workbook,
-                XLSX.utils.json_to_sheet(data.lowStock || []),
-                "Low Stock"
-            );
-
-            if(data.repairs && data.repairs.length){
-                XLSX.utils.book_append_sheet(
-                    workbook,
-                    XLSX.utils.json_to_sheet(data.repairs),
-                    "Repairs"
-                );
-            }
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(data.sales), "Sales");
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(data.products), "Products");
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(data.repairs), "Repairs");
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(data.lowStock), "Low Stock");
 
             downloadWorkbook(workbook, "vs_report_" + Date.now() + ".xlsx");
-            toast("Report Excel downloaded");
-        }catch(e){
-            console.log(e);
-            toast("Report Excel export failed", "#ff4d4d");
-        }finally{
-            if(btn && btn.dataset.oldText){
-                btn.disabled = false;
-                btn.textContent = btn.dataset.oldText;
-            }
-        }
+            showMsg("Report Excel downloaded");
+        });
     };
 
-    window.exportReportsPDF = async function(){
-        const btn = document.activeElement;
+    window.exportReportsPDF = async function(buttonFromClick){
+        const button = buttonFromClick || (document.activeElement && document.activeElement.tagName === "BUTTON" ? document.activeElement : null);
 
-        try{
-            if(btn && btn.tagName === "BUTTON"){
-                btn.disabled = true;
-                btn.dataset.oldText = btn.textContent;
-                btn.textContent = "Exporting...";
-            }
-
+        withBusy(button, "Exporting...", async ()=>{
             const PdfCtor = window.jspdf?.jsPDF || window.jsPDF;
 
             if(!PdfCtor){
-                toast("PDF library not loaded", "#ff4d4d");
+                showMsg("PDF library not loaded", "#ff4d4d");
                 return;
             }
 
-            const data = await collectFullReportDataSafe();
+            const data = await getReportDataFast();
             const doc = new PdfCtor();
 
             let y = 14;
@@ -707,16 +780,14 @@
             y += 8;
 
             doc.setFontSize(12);
-            const summaryLines = [
-                "Daily Sales: " + formatRs(data.summary.dailySales || 0),
-                "Total Income: " + formatRs(data.summary.totalIncome || 0),
-                "Sales Income: " + formatRs(data.summary.salesIncome || 0),
-                "Repair Income: " + formatRs(data.summary.repairIncome || 0),
-                "Total Products: " + (data.summary.totalProducts || 0),
-                "Low Stock Count: " + (data.summary.lowStockCount || 0)
-            ];
 
-            summaryLines.forEach(line=>{
+            [
+                "Total Income: " + money(data.summary.totalIncome),
+                "Sales Income: " + money(data.summary.salesIncome),
+                "Repair Income: " + money(data.summary.repairIncome),
+                "Total Products: " + data.summary.totalProducts,
+                "Low Stock Count: " + data.summary.lowStockCount
+            ].forEach(line=>{
                 doc.text(line, 14, y);
                 y += 7;
             });
@@ -727,8 +798,9 @@
             y += 8;
 
             doc.setFontSize(9);
-            (data.sales || []).slice(0, 35).forEach(row=>{
-                const line = `${row.invoiceNo || "-"} | ${row.date || "-"} | ${row.customerName || "-"} | ${formatRs(row.total || 0)}`;
+
+            data.sales.slice(0, 35).forEach(row=>{
+                const line = `${row.invoiceNo || "-"} | ${row.date || "-"} | ${row.customerName || "-"} | ${money(row.total || 0)}`;
                 doc.text(String(line).slice(0, 105), 14, y);
                 y += 6;
 
@@ -739,20 +811,270 @@
             });
 
             doc.save("vs_report_" + Date.now() + ".pdf");
-            toast("Report PDF downloaded");
-        }catch(e){
-            console.log(e);
-            toast("Report PDF export failed", "#ff4d4d");
-        }finally{
-            if(btn && btn.dataset.oldText){
-                btn.disabled = false;
-                btn.textContent = btn.dataset.oldText;
-            }
-        }
+            showMsg("Report PDF downloaded");
+        });
     };
 
+    function getValue(id){
+        return String(document.getElementById(id)?.value || "").trim();
+    }
+
+    window.insertProduct = async function(
+        n,
+        c,
+        p,
+        s,
+        img,
+        buyPrice,
+        sellPrice,
+        category,
+        supplier,
+        barcode,
+        productDiscount = {},
+        productWarranty = {}
+    ){
+        const addBtn = document.getElementById("addBtn");
+
+        if(addBtn && addBtn.dataset.busy === "1"){
+            return;
+        }
+
+        if(addBtn){
+            addBtn.dataset.busy = "1";
+            addBtn.disabled = true;
+            addBtn.textContent = "Saving...";
+        }
+
+        const result = await qRun(
+            `INSERT INTO products
+            (name,code,price,stock,img,buyPrice,sellPrice,category,supplier,barcode,warrantyDays,warrantyNote,discountType,discountValue,discountStart,discountEnd)
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            [
+                n,
+                c,
+                p,
+                s,
+                img,
+                buyPrice,
+                sellPrice,
+                category,
+                supplier,
+                barcode,
+                Number(productWarranty.days || 0),
+                productWarranty.note || "",
+                productDiscount.type || "amount",
+                Number(productDiscount.value || 0),
+                productDiscount.start || "",
+                productDiscount.end || ""
+            ]
+        );
+
+        if(addBtn){
+            addBtn.dataset.busy = "0";
+            addBtn.disabled = false;
+            addBtn.textContent = "Add Product";
+        }
+
+        if(!result.ok){
+            showMsg("Product add failed", "#ff4d4d");
+            return;
+        }
+
+        showMsg("Product added");
+
+        try{ if(typeof clearProductForm === "function") clearProductForm(); }catch(e){}
+        try{ if(typeof ensureProductPricingFields === "function") ensureProductPricingFields(); }catch(e){}
+        try{ if(typeof loadProducts === "function") loadProducts(); }catch(e){}
+
+        refreshDashboardLater();
+    };
+
+    window.addProduct = function(){
+        const n = getValue("name");
+        const c = getValue("code");
+        const pRaw = getValue("price");
+        const buyPrice = Number(getValue("buyPrice") || 0);
+        const sellPrice = Number(getValue("sellPrice") || pRaw || 0);
+        const p = sellPrice;
+        const s = Number(getValue("stock") || 0);
+        const category = getValue("category") || "Uncategorized";
+        const supplier = getValue("supplier");
+        let barcode = getValue("barcode");
+
+        if(!barcode){
+            try{
+                barcode = typeof generateProductBarcode === "function"
+                    ? generateProductBarcode()
+                    : "88" + Date.now();
+            }catch(e){
+                barcode = "88" + Date.now();
+            }
+
+            const barcodeInput = document.getElementById("barcode");
+            if(barcodeInput){
+                barcodeInput.value = barcode;
+            }
+        }
+
+        if(!n || !c || sellPrice <= 0 || s < 0){
+            showMsg("Enter product name, code, sell price, and stock", "#ff4d4d");
+            return;
+        }
+
+        try{
+            if(typeof allProducts !== "undefined" && Array.isArray(allProducts)){
+                const duplicateCode = allProducts.find(item => String(item.code || "") === c);
+                const duplicateBarcode = barcode
+                    ? allProducts.find(item => item.barcode && String(item.barcode) === barcode)
+                    : null;
+
+                if(duplicateCode){
+                    showMsg("Product code already exists", "#ff4d4d");
+                    return;
+                }
+
+                if(duplicateBarcode){
+                    showMsg("Barcode already exists", "#ff4d4d");
+                    return;
+                }
+            }
+        }catch(e){}
+
+        const productDiscount = typeof getProductDiscountInput === "function"
+            ? getProductDiscountInput()
+            : {};
+
+        const productWarranty = typeof getProductWarrantyInput === "function"
+            ? getProductWarrantyInput()
+            : {
+                days:Number(getValue("warrantyDays") || 0),
+                note:getValue("warrantyNote")
+            };
+
+        const imgUrl = getValue("img");
+        const file = document.getElementById("imgFile")?.files?.[0];
+
+        if(file){
+            const addBtn = document.getElementById("addBtn");
+
+            if(addBtn){
+                addBtn.disabled = true;
+                addBtn.textContent = "Reading image...";
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(event){
+                if(addBtn){
+                    addBtn.disabled = false;
+                    addBtn.textContent = "Add Product";
+                }
+
+                window.insertProduct(
+                    n,
+                    c,
+                    p,
+                    s,
+                    event.target.result,
+                    buyPrice,
+                    sellPrice,
+                    category,
+                    supplier,
+                    barcode,
+                    productDiscount,
+                    productWarranty
+                );
+            };
+
+            reader.onerror = function(){
+                if(addBtn){
+                    addBtn.disabled = false;
+                    addBtn.textContent = "Add Product";
+                }
+
+                showMsg("Image read failed", "#ff4d4d");
+            };
+
+            reader.readAsDataURL(file);
+            return;
+        }
+
+        window.insertProduct(
+            n,
+            c,
+            p,
+            s,
+            imgUrl || "",
+            buyPrice,
+            sellPrice,
+            category,
+            supplier,
+            barcode,
+            productDiscount,
+            productWarranty
+        );
+    };
+
+    function interceptExportButtons(event){
+        const btn = event.target.closest ? event.target.closest("button") : null;
+
+        if(!btn){
+            return;
+        }
+
+        const text = String(btn.textContent || "").trim().toLowerCase();
+
+        if(text.includes("manage categories")){
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            openStableCategoryManager();
+            return false;
+        }
+
+        if(text.includes("export backup")){
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            window.exportBackup();
+            return false;
+        }
+
+        if(text === "export excel" && btn.closest("#products")){
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            window.exportProductsExcel(btn);
+            return false;
+        }
+
+        if(text.includes("excel template") && btn.closest("#products")){
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            window.downloadProductExcelTemplate(btn);
+            return false;
+        }
+
+        if(text.includes("save report excel")){
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            window.exportReportsExcel(btn);
+            return false;
+        }
+
+        if(text.includes("save report pdf")){
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            window.exportReportsPDF(btn);
+            return false;
+        }
+    }
+
+    document.addEventListener("click", interceptExportButtons, true);
+
     window.addEventListener("load", ()=>{
-        injectStableStyle();
+        installStableStyle();
         bindManageButton();
     });
+
+    setTimeout(bindManageButton, 250);
+    setTimeout(bindManageButton, 1000);
+    setTimeout(bindManageButton, 2500);
 })();
