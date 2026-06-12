@@ -6,7 +6,7 @@ VS System is a local stock, billing, repair, barcode, due-payment, and report ap
 
 ```powershell
 npm install
-npm run web
+npm start
 ```
 
 Open:
@@ -39,8 +39,52 @@ LAN mode keeps a browser password in front of the app for safety. The terminal p
 ## Desktop Electron Mode
 
 ```powershell
-npm start
+npm run desktop
 ```
+
+## Deploy On Render With Turso
+
+This project can run locally with SQLite and in production with Turso/libSQL.
+When `TURSO_DATABASE_URL` is present, the server uses Turso automatically.
+
+Render settings:
+
+```text
+Build command: npm install
+Start command: npm start
+```
+
+Render environment variables:
+
+```text
+HOST=0.0.0.0
+BROWSER_PASSWORD=1
+WEB_USER=vs
+WEB_PASSWORD=<choose a strong browser password>
+TURSO_DATABASE_URL=<your Turso database URL>
+TURSO_AUTH_TOKEN=<your Turso auth token>
+```
+
+Render also provides `PORT` automatically. Keep the browser password on for
+deployed usage, then use the normal app login after the browser prompt.
+
+The included `render.yaml` contains the same deployment settings.
+
+## Deploy With Local SQLite
+
+Use this only on a Node.js host that provides persistent disk storage.
+
+```text
+Build command: npm install
+Start command: npm start
+Environment:
+  HOST=0.0.0.0
+  PORT=<provided by host>
+  DB_PATH=<persistent disk path>/yard.db
+```
+
+If the host does not provide persistent disk storage, SQLite data can reset when
+the service restarts. Turso is recommended for Render.
 
 ## Main Features
 
@@ -57,7 +101,8 @@ npm start
 
 ## Data
 
-The web server uses the same app-data database path as the Electron app:
+Without Turso, the web server uses the same app-data database path as the
+Electron app:
 
 ```text
 %APPDATA%\VS Software\VS-System\yard.db

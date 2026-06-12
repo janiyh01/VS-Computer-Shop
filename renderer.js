@@ -39,20 +39,47 @@ let salesChart = null;
 let chartInstance = null;
 var { jsPDF } = __vsRequire("jspdf");
 var path = __vsRequire("path");
+const vs2ChartDarkCanvasPlugin = {
+    id: "vs2ChartDarkCanvas",
+    beforeDraw(chart){
+        const ctx = chart.ctx;
+        const area = chart.chartArea;
+        if(!ctx || !area) return;
+
+        ctx.save();
+        ctx.globalCompositeOperation = "destination-over";
+        ctx.fillStyle = "#111a22";
+        ctx.fillRect(0, 0, chart.width, chart.height);
+        ctx.restore();
+    }
+};
 const vs2DashboardReadableChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
-        legend: { labels: { color: "#111827", font: { weight: "700" } } }
+        legend: {
+            labels: {
+                color: "#e7eef4",
+                font: { weight: "600" }
+            }
+        }
     },
     scales: {
         x: {
-            ticks: { color: "#334155" },
-            grid: { color: "rgba(51,65,85,.12)" }
+            ticks: { color: "#cbd5e1" },
+            grid: { color: "rgba(148,163,184,.18)" },
+            border: { color: "rgba(148,163,184,.35)" }
         },
         y: {
-            ticks: { color: "#334155" },
-            grid: { color: "rgba(51,65,85,.14)" }
+            ticks: { color: "#cbd5e1" },
+            grid: { color: "rgba(148,163,184,.18)" },
+            border: { color: "rgba(148,163,184,.35)" }
         }
+    },
+    elements: {
+        line: { borderWidth: 3 },
+        point: { radius: 3, hoverRadius: 5 },
+        bar: { borderWidth: 1 }
     }
 };
 
@@ -1494,9 +1521,13 @@ if(document.getElementById("today")){
         labels:labels,
         datasets:[{
           label:'Sales',
-          data:data
+          data:data,
+          backgroundColor:"rgba(32,201,151,.62)",
+          borderColor:"#20c997"
         }]
-      }
+      },
+      options: vs2DashboardReadableChartOptions,
+      plugins:[vs2ChartDarkCanvasPlugin]
     });
 
   });
@@ -1779,9 +1810,16 @@ function loadReport(){
         labels:labels,
         datasets:[{
           label:"Stock",
-          data:data
+          data:data,
+          tension:0.35,
+          borderColor:"#38bdf8",
+          backgroundColor:"rgba(56,189,248,.16)",
+          pointBackgroundColor:"#38bdf8",
+          pointBorderColor:"#0f172a"
         }]
-      }
+      },
+      options: vs2DashboardReadableChartOptions,
+      plugins:[vs2ChartDarkCanvasPlugin]
     });
 
   });
@@ -4590,6 +4628,12 @@ db.get(
 
             const ctx =
             document.getElementById("salesChart");
+            const chartPanel = ctx ? ctx.closest(".dashboard-chart-panel") : null;
+
+            if(chartPanel){
+                chartPanel.style.display = "";
+            }
+
             if(salesChart){
             salesChart.destroy();
             } 
@@ -4610,7 +4654,8 @@ db.get(
                         pointBorderColor:"#0369a1"
                     }]
                 },
-                options: vs2DashboardReadableChartOptions
+                options: vs2DashboardReadableChartOptions,
+                plugins:[vs2ChartDarkCanvasPlugin]
             });
 
         }
@@ -5965,7 +6010,8 @@ function loadReports(){
                 datasets:[{
                     label:"Sales",
                     data:data,
-                    backgroundColor:"#fbbf24",
+                    backgroundColor:"rgba(32,201,151,.68)",
+                    borderColor:"#20c997",
                     borderRadius:6,
                     barPercentage:0.55,
                     categoryPercentage:0.7
@@ -5979,16 +6025,19 @@ function loadReports(){
                 },
                 scales:{
                     x:{
-                        ticks:{color:"#334155", maxRotation:0, minRotation:0},
-                        grid:{display:false}
+                        ticks:{color:"#cbd5e1", maxRotation:0, minRotation:0},
+                        grid:{display:false},
+                        border:{color:"rgba(148,163,184,.35)"}
                     },
                     y:{
                         beginAtZero:true,
-                        ticks:{color:"#334155"},
-                        grid:{color:"rgba(51,65,85,0.14)"}
+                        ticks:{color:"#cbd5e1"},
+                        grid:{color:"rgba(148,163,184,.18)"},
+                        border:{color:"rgba(148,163,184,.35)"}
                     }
                 }
-            }
+            },
+            plugins:[vs2ChartDarkCanvasPlugin]
         });
     });
 }
@@ -11613,6 +11662,12 @@ setTimeout(()=>{
 
 
 function ensureVs2AshGrayTheme(){
+    const oldAshGrayTheme = document.getElementById("vs2AshGrayTheme");
+    if(oldAshGrayTheme){
+        oldAshGrayTheme.remove();
+    }
+    return;
+
     let style = document.getElementById("vs2AshGrayTheme");
     if(!style){
         style = document.createElement("style");

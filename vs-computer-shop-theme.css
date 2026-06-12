@@ -1,0 +1,1359 @@
+/* Final UI layer for VS System: clean computer parts + repair shop web app. */
+:root{
+    --vs-bg:#0d1217;
+    --vs-panel:#151d24;
+    --vs-panel-2:#1b2630;
+    --vs-panel-3:#102635;
+    --vs-line:#2e3f4c;
+    --vs-text:#e7eef4;
+    --vs-muted:#a4b3bf;
+    --vs-accent:#20c997;
+    --vs-accent-2:#38bdf8;
+    --vs-warn:#f59e0b;
+    --vs-danger:#ef4444;
+    --vs-input:#111a22;
+    --vs-shadow:0 10px 28px rgba(0,0,0,.24);
+}
+
+html,
+body{
+    background:var(--vs-bg) !important;
+    color:var(--vs-text) !important;
+    font-family:"Inter","Segoe UI",Arial,sans-serif !important;
+    font-weight:400 !important;
+    letter-spacing:0 !important;
+}
+
+body,
+button,
+input,
+select,
+textarea,
+table{
+    font-weight:400 !important;
+}
+
+h1,
+h2,
+h3,
+h4{
+    color:var(--vs-text) !important;
+    font-weight:650 !important;
+    letter-spacing:0 !important;
+}
+
+p,
+label,
+span,
+td,
+th,
+small,
+div{
+    letter-spacing:0 !important;
+}
+
+#app,
+.main{
+    background:var(--vs-bg) !important;
+}
+
+.content{
+    background:
+        linear-gradient(180deg,rgba(56,189,248,.035),rgba(13,18,23,0) 260px),
+        var(--vs-bg) !important;
+    color:var(--vs-text) !important;
+}
+
+.sidebar{
+    background:#0c1116 !important;
+    border-right:1px solid var(--vs-line) !important;
+    box-shadow:none !important;
+}
+
+.sidebar button,
+.settings-menu button{
+    height:42px !important;
+    border-radius:8px !important;
+    background:#17a2b8 !important;
+    color:#f4fbff !important;
+    border:1px solid rgba(56,189,248,.22) !important;
+    font-size:14px !important;
+    font-weight:500 !important;
+    text-align:left !important;
+    box-shadow:none !important;
+}
+
+.sidebar button:hover,
+.settings-menu button:hover{
+    background:#1999ad !important;
+    border-color:#45c6d8 !important;
+    color:#ffffff !important;
+}
+
+.sidebar button.active,
+.sidebar button.active:hover,
+.settings-menu button.active,
+.settings-menu button.active:hover{
+    background:#f7b21b !important;
+    border-color:#ffd166 !important;
+    color:#111827 !important;
+    box-shadow:none !important;
+}
+
+.topbar,
+#mainTopbar{
+    min-height:58px !important;
+    padding:10px 14px !important;
+    margin-bottom:14px !important;
+    border:1px solid var(--vs-line) !important;
+    border-radius:8px !important;
+    background:rgba(24,32,40,.92) !important;
+    box-shadow:var(--vs-shadow) !important;
+}
+
+#topCompanyName{
+    margin:0 !important;
+    font-size:19px !important;
+    line-height:1.2 !important;
+    font-weight:650 !important;
+}
+
+#dateTimeBox{
+    color:var(--vs-muted) !important;
+    font-weight:500 !important;
+}
+
+.online-status{
+    min-height:28px !important;
+    border-radius:999px !important;
+    padding:5px 11px !important;
+    background:rgba(32,201,151,.13) !important;
+    color:#8ff0cd !important;
+    border:1px solid rgba(32,201,151,.42) !important;
+    font-size:12px !important;
+    font-weight:600 !important;
+}
+
+.card,
+.stat-card,
+.settings-card,
+.settings-content,
+.login-box,
+#invoice.card,
+#report.card,
+#settings.card,
+#products .card,
+#dashboard .card,
+#report .card,
+#settings .card,
+#invoice .card,
+#topProducts > div,
+#reportLow > div,
+.monthly-report-panel,
+.report-filter-panel,
+.report-summary-card,
+.billing-helper-panel,
+.billing-helper-tools,
+#productLabelTools,
+#productExcelTools,
+#list,
+#repairs .repairs-form-panel,
+#repairs .repairs-side-panel,
+#repairs .repairs-history-panel,
+#repairs .repairs-header{
+    border-radius:8px !important;
+    background:var(--vs-panel) !important;
+    color:var(--vs-text) !important;
+    border:1px solid var(--vs-line) !important;
+    box-shadow:var(--vs-shadow) !important;
+}
+
+.card:hover,
+.stat-card:hover{
+    transform:none !important;
+    box-shadow:var(--vs-shadow) !important;
+}
+
+.stat-card{
+    min-height:112px !important;
+    align-items:flex-start !important;
+    justify-content:center !important;
+    padding:18px !important;
+}
+
+.stat-card h3,
+#totalProducts,
+#todaySales,
+#lowStock,
+#reportDailySales,
+#reportIncome,
+#lowStockCount,
+#dashboardProfit{
+    color:#ffffff !important;
+    font-size:28px !important;
+    font-weight:650 !important;
+}
+
+.stat-card p{
+    color:var(--vs-muted) !important;
+    font-size:13px !important;
+    font-weight:500 !important;
+}
+
+input,
+select,
+textarea{
+    min-height:40px !important;
+    border-radius:8px !important;
+    background:var(--vs-input) !important;
+    color:var(--vs-text) !important;
+    border:1px solid var(--vs-line) !important;
+    box-shadow:none !important;
+    outline:none !important;
+    font-size:14px !important;
+    font-weight:400 !important;
+}
+
+input[type="file"]{
+    background:#0f2a36 !important;
+    color:var(--vs-text) !important;
+    border:1px solid var(--vs-line) !important;
+    padding:8px !important;
+}
+
+input[type="file"]::file-selector-button{
+    border:0 !important;
+    border-radius:6px !important;
+    background:#e7eef4 !important;
+    color:#111827 !important;
+    padding:8px 12px !important;
+    margin-right:10px !important;
+    font-weight:600 !important;
+}
+
+input::placeholder,
+textarea::placeholder{
+    color:#788995 !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:var(--vs-accent-2) !important;
+    box-shadow:0 0 0 3px rgba(56,189,248,.14) !important;
+}
+
+button,
+.product button,
+#settings button,
+#invoice button,
+#report button,
+#repairs button{
+    min-height:40px !important;
+    border-radius:8px !important;
+    padding:9px 13px !important;
+    border:1px solid rgba(32,201,151,.34) !important;
+    background:linear-gradient(180deg,#22d3a6,#13a980) !important;
+    color:#061412 !important;
+    font-size:14px !important;
+    font-weight:600 !important;
+    line-height:1.15 !important;
+    box-shadow:none !important;
+    text-shadow:none !important;
+}
+
+button:hover,
+.product button:hover,
+#settings button:hover,
+#invoice button:hover,
+#report button:hover,
+#repairs button:hover{
+    background:linear-gradient(180deg,#36e2b6,#18b88c) !important;
+    transform:none !important;
+}
+
+#refreshBtn,
+#soundBtn,
+#fullBtn{
+    width:40px !important;
+    min-width:40px !important;
+    height:40px !important;
+    padding:0 !important;
+    border-color:#40515f !important;
+    background:#202a34 !important;
+    color:#ffffff !important;
+}
+
+button.danger,
+.product .product-action-btn.delete,
+.product button:last-child,
+#confirmToast button[data-action="yes"]{
+    background:linear-gradient(180deg,#ef4444,#dc2626) !important;
+    border-color:rgba(239,68,68,.52) !important;
+    color:#ffffff !important;
+}
+
+#products .card,
+#invoice,
+#report,
+#settings,
+#repairs{
+    max-width:100% !important;
+}
+
+#invoice,
+#invoice.card,
+#products .card,
+#report.card,
+#settings.card,
+#settings .settings-content,
+#settings .settings-tab-content,
+#settings .settings-card,
+#dashboard .card,
+#report .card,
+#report .monthly-report-panel,
+#report .report-card,
+#report .report-grid .card,
+#topProducts,
+#reportLow{
+    background:var(--vs-panel) !important;
+    color:var(--vs-text) !important;
+    border-color:var(--vs-line) !important;
+}
+
+#invoice *,
+#products *,
+#report *,
+#settings *,
+#dashboard *{
+    border-color:var(--vs-line);
+}
+
+.product,
+.saleCard,
+.history-item,
+.repair-record,
+#salesHistory .saleCard{
+    border-radius:8px !important;
+    background:var(--vs-panel-2) !important;
+    color:var(--vs-text) !important;
+    border:1px solid var(--vs-line) !important;
+    box-shadow:none !important;
+}
+
+.product *,
+.saleCard *,
+.history-item *,
+.repair-record *,
+#salesHistory .saleCard *{
+    color:inherit !important;
+}
+
+.product-details b,
+.saleCard b,
+.repair-record b{
+    font-weight:650 !important;
+}
+
+table{
+    width:100% !important;
+    overflow:hidden !important;
+    border-radius:8px !important;
+    border:1px solid var(--vs-line) !important;
+    background:var(--vs-panel) !important;
+    color:var(--vs-text) !important;
+}
+
+#billTable thead tr,
+#billTable th,
+table thead tr,
+table thead th{
+    background:#102635 !important;
+    color:#dff4ff !important;
+}
+
+th{
+    background:#111a22 !important;
+    color:#dce8ef !important;
+    font-size:12px !important;
+    text-transform:uppercase !important;
+    font-weight:650 !important;
+}
+
+td,
+th{
+    border-color:#2a3945 !important;
+    padding:10px !important;
+}
+
+tr:nth-child(even) td{
+    background:rgba(255,255,255,.025) !important;
+}
+
+hr{
+    border:0 !important;
+    border-top:1px solid var(--vs-line) !important;
+}
+
+canvas,
+#chart,
+#salesChart,
+#reportSalesChart,
+.chartjs-render-monitor{
+    background:#111a22 !important;
+    border:1px solid var(--vs-line) !important;
+    border-radius:8px !important;
+}
+
+#loginPage{
+    background:
+        radial-gradient(circle at 20% 15%,rgba(56,189,248,.16),transparent 32%),
+        radial-gradient(circle at 82% 76%,rgba(32,201,151,.14),transparent 34%),
+        #0c1116 !important;
+}
+
+#loginPage .login-box{
+    max-width:380px !important;
+    background:rgba(24,32,40,.96) !important;
+    border:1px solid var(--vs-line) !important;
+    animation:none !important;
+}
+
+#loginPage .login-box h1,
+#loginPage .login-box h2{
+    font-size:26px !important;
+    font-weight:650 !important;
+}
+
+#loginPage .login-box::after{
+    color:var(--vs-muted) !important;
+    font-weight:500 !important;
+}
+
+#repairs .repairs-shell{
+    max-width:1320px !important;
+}
+
+#repairs .repairs-header p,
+#repairs .repair-no-box span,
+#repairs .repair-total-card span,
+#repairs .repairs-form-grid label,
+#repairs .repairs-side-panel label{
+    color:var(--vs-muted) !important;
+    font-weight:500 !important;
+}
+
+#repairs .repair-no-box,
+#repairs .repair-total-card{
+    border-radius:8px !important;
+    background:#111a22 !important;
+    border:1px solid var(--vs-line) !important;
+}
+
+#repairs .repair-no-box b,
+#repairs .repair-total-card b{
+    color:var(--vs-accent) !important;
+    font-weight:650 !important;
+}
+
+#developerWatermarkFixed{
+    opacity:.78 !important;
+}
+
+@media(max-width:760px){
+    .topbar,
+    #mainTopbar{
+        border-radius:8px !important;
+    }
+
+    .sidebar button{
+        text-align:center !important;
+    }
+
+    .stat-card h3,
+    #totalProducts,
+    #todaySales,
+    #lowStock{
+        font-size:24px !important;
+    }
+}
+
+/* Hard final overrides: old inline theme rules still try to paint light panels. */
+body.vs-logged-in,
+body.vs-logged-in .content,
+body.vs-logged-in .main-content,
+body.vs-logged-in #app{
+    background:#0d1217 !important;
+    color:#e7eef4 !important;
+}
+
+body.vs-logged-in .card,
+body.vs-logged-in .stat-card,
+body.vs-logged-in #invoice,
+body.vs-logged-in #report,
+body.vs-logged-in #settings,
+body.vs-logged-in #products > .card,
+body.vs-logged-in #dashboard > .card,
+body.vs-logged-in #dashboard .card,
+body.vs-logged-in #topProducts,
+body.vs-logged-in #topProducts > div,
+body.vs-logged-in #reportLow,
+body.vs-logged-in #reportLow > div,
+body.vs-logged-in .monthly-report-panel,
+body.vs-logged-in .monthly-report-summary,
+body.vs-logged-in .monthly-summary-card,
+body.vs-logged-in .settings-content,
+body.vs-logged-in .settings-grid-card,
+body.vs-logged-in .settings-tab-content,
+body.vs-logged-in .repairs-header,
+body.vs-logged-in .repairs-form-panel,
+body.vs-logged-in .repairs-side-panel,
+body.vs-logged-in .repairs-history-panel,
+body.vs-logged-in .repair-total-card,
+body.vs-logged-in .repair-record,
+body.vs-logged-in .billing-helper-tools,
+body.vs-logged-in .billing-helper-panel,
+body.vs-logged-in #productLabelTools,
+body.vs-logged-in #productExcelTools{
+    background:#151d24 !important;
+    color:#e7eef4 !important;
+    border-color:#2e3f4c !important;
+    box-shadow:0 10px 28px rgba(0,0,0,.24) !important;
+}
+
+body.vs-logged-in h1,
+body.vs-logged-in h2,
+body.vs-logged-in h3,
+body.vs-logged-in h4,
+body.vs-logged-in label,
+body.vs-logged-in p,
+body.vs-logged-in span,
+body.vs-logged-in small,
+body.vs-logged-in b,
+body.vs-logged-in strong,
+body.vs-logged-in div{
+    color:inherit;
+}
+
+body.vs-logged-in h1,
+body.vs-logged-in h2,
+body.vs-logged-in h3,
+body.vs-logged-in h4{
+    color:#f8fafc !important;
+}
+
+body.vs-logged-in p,
+body.vs-logged-in label,
+body.vs-logged-in small,
+body.vs-logged-in .muted,
+body.vs-logged-in #repairCountText,
+body.vs-logged-in .repair-record-meta{
+    color:#aab8c4 !important;
+}
+
+body.vs-logged-in .stat-card h3,
+body.vs-logged-in #totalProducts,
+body.vs-logged-in #todaySales,
+body.vs-logged-in #lowStock,
+body.vs-logged-in #dashboardProfit,
+body.vs-logged-in #reportDailySales,
+body.vs-logged-in #reportIncome,
+body.vs-logged-in #lowStockCount,
+body.vs-logged-in #monthlyReportIncome,
+body.vs-logged-in #monthlyReportProfit,
+body.vs-logged-in #monthlyReportCount,
+body.vs-logged-in #monthlyReportAverage{
+    color:#f8fafc !important;
+}
+
+body.vs-logged-in #invoiceTotal,
+body.vs-logged-in .repair-total-card b,
+body.vs-logged-in .repair-no-box b,
+body.vs-logged-in #monthlyReportIncome,
+body.vs-logged-in #monthlyReportProfit{
+    color:#20c997 !important;
+}
+
+body.vs-logged-in input,
+body.vs-logged-in select,
+body.vs-logged-in textarea{
+    background:#10202b !important;
+    color:#e7eef4 !important;
+    border-color:#395061 !important;
+}
+
+body.vs-logged-in input::placeholder,
+body.vs-logged-in textarea::placeholder{
+    color:#8fa2b0 !important;
+    opacity:1 !important;
+}
+
+body.vs-logged-in canvas,
+body.vs-logged-in #chart,
+body.vs-logged-in #salesChart,
+body.vs-logged-in #reportSalesChart{
+    display:block !important;
+    background:#111a22 !important;
+    border:1px solid #2e3f4c !important;
+    border-radius:8px !important;
+}
+
+body.vs-logged-in canvas + *,
+body.vs-logged-in .chart-card,
+body.vs-logged-in .chart-box,
+body.vs-logged-in .sales-chart,
+body.vs-logged-in [id*="Chart"],
+body.vs-logged-in [class*="chart"]{
+    color:#e7eef4 !important;
+}
+
+body.vs-logged-in table,
+body.vs-logged-in #billTable{
+    background:#111a22 !important;
+    color:#e7eef4 !important;
+    border-color:#2e3f4c !important;
+}
+
+body.vs-logged-in th,
+body.vs-logged-in #billTable th{
+    background:#102635 !important;
+    color:#e7eef4 !important;
+}
+
+body.vs-logged-in td,
+body.vs-logged-in #billTable td{
+    color:#dbe7ef !important;
+    border-color:#2e3f4c !important;
+}
+
+body.vs-logged-in #topProducts p,
+body.vs-logged-in #reportLow p,
+body.vs-logged-in #list p,
+body.vs-logged-in .product,
+body.vs-logged-in .product *{
+    color:#dbe7ef !important;
+}
+
+body.vs-logged-in #topBrand,
+body.vs-logged-in #topCompanyName,
+body.vs-logged-in .topbar,
+body.vs-logged-in .topbar *,
+body.vs-logged-in #mainTopbar,
+body.vs-logged-in #mainTopbar *,
+body.vs-logged-in .page > h1,
+body.vs-logged-in .page > h2,
+body.vs-logged-in .page > h3,
+body.vs-logged-in #dashboard > h3,
+body.vs-logged-in #products > h3,
+body.vs-logged-in #invoice > h3,
+body.vs-logged-in #report > h3,
+body.vs-logged-in #settings > h3,
+body.vs-logged-in #repairs h3,
+body.vs-logged-in .settings-tab-content > h1,
+body.vs-logged-in .settings-tab-content > h2,
+body.vs-logged-in .settings-tab-content > h3,
+body.vs-logged-in .settings-content > h1,
+body.vs-logged-in .settings-content > h2,
+body.vs-logged-in .settings-content > h3,
+body.vs-logged-in .monthly-report-panel h3,
+body.vs-logged-in #topProducts h3,
+body.vs-logged-in #reportLow h3{
+    color:#f8fafc !important;
+    opacity:1 !important;
+    text-shadow:none !important;
+}
+
+body.vs-logged-in .settings-tab-content,
+body.vs-logged-in .settings-tab-content *,
+body.vs-logged-in .settings-content,
+body.vs-logged-in .settings-content *,
+body.vs-logged-in .settings-grid-card,
+body.vs-logged-in .settings-grid-card *,
+body.vs-logged-in .pref-grid,
+body.vs-logged-in .pref-grid *,
+body.vs-logged-in .campaign-panel,
+body.vs-logged-in .campaign-panel *{
+    opacity:1 !important;
+}
+
+body.vs-logged-in .settings-tab-content p,
+body.vs-logged-in .settings-content p,
+body.vs-logged-in .settings-grid-card p,
+body.vs-logged-in .settings-tab-content label,
+body.vs-logged-in .settings-content label,
+body.vs-logged-in .settings-grid-card label,
+body.vs-logged-in .repairs-form-grid label,
+body.vs-logged-in .repairs-side-panel label,
+body.vs-logged-in .monthly-report-panel p,
+body.vs-logged-in #topProducts p,
+body.vs-logged-in #reportLow p{
+    color:#b8c7d3 !important;
+    opacity:1 !important;
+}
+
+body.vs-logged-in .settings-tab-content .card,
+body.vs-logged-in .settings-content .card,
+body.vs-logged-in .settings-grid-card,
+body.vs-logged-in .settings-card,
+body.vs-logged-in .pref-field,
+body.vs-logged-in .campaign-panel{
+    background:#151d24 !important;
+    color:#e7eef4 !important;
+    border-color:#2e3f4c !important;
+}
+
+/* Final visual contract: no white app boxes, white readable text, quiet selection. */
+body.vs-logged-in ::selection{
+    background:rgba(32,201,151,.28) !important;
+    color:#ffffff !important;
+}
+
+body.vs-logged-in :not(input):not(textarea):not(select):not(option){
+    -webkit-user-select:none !important;
+    user-select:none !important;
+}
+
+body.vs-logged-in input,
+body.vs-logged-in textarea,
+body.vs-logged-in select,
+body.vs-logged-in option{
+    -webkit-user-select:text !important;
+    user-select:text !important;
+}
+
+body.vs-logged-in,
+body.vs-logged-in #app,
+body.vs-logged-in .main,
+body.vs-logged-in .content,
+body.vs-logged-in .main-content,
+body.vs-logged-in #dashboard,
+body.vs-logged-in #products,
+body.vs-logged-in #invoice,
+body.vs-logged-in #report,
+body.vs-logged-in #settings,
+body.vs-logged-in #repairs{
+    background:#0b1117 !important;
+    color:#f8fafc !important;
+}
+
+body.vs-logged-in .topbar,
+body.vs-logged-in #mainTopbar,
+body.vs-logged-in .card,
+body.vs-logged-in .stat-card,
+body.vs-logged-in #invoice.card,
+body.vs-logged-in #report.card,
+body.vs-logged-in #settings.card,
+body.vs-logged-in #products > .card,
+body.vs-logged-in #dashboard .card,
+body.vs-logged-in #topProducts,
+body.vs-logged-in #topProducts > div,
+body.vs-logged-in #reportLow,
+body.vs-logged-in #reportLow > div,
+body.vs-logged-in #list,
+body.vs-logged-in #salesHistory,
+body.vs-logged-in .product,
+body.vs-logged-in .saleCard,
+body.vs-logged-in .history-item,
+body.vs-logged-in .monthly-report-panel,
+body.vs-logged-in .monthly-summary-card,
+body.vs-logged-in .settings-menu,
+body.vs-logged-in .settings-content,
+body.vs-logged-in .settings-tab-content,
+body.vs-logged-in .settings-grid-card,
+body.vs-logged-in .settings-card,
+body.vs-logged-in .pref-field,
+body.vs-logged-in .campaign-panel,
+body.vs-logged-in .repairs-header,
+body.vs-logged-in .repairs-form-panel,
+body.vs-logged-in .repairs-side-panel,
+body.vs-logged-in .repairs-history-panel,
+body.vs-logged-in .repair-total-card,
+body.vs-logged-in .repair-record,
+body.vs-logged-in .billing-helper-tools,
+body.vs-logged-in .billing-helper-panel,
+body.vs-logged-in #productLabelTools,
+body.vs-logged-in #productExcelTools{
+    background:#141d25 !important;
+    background-image:none !important;
+    color:#f8fafc !important;
+    border:1px solid #2b3d4a !important;
+    box-shadow:0 12px 30px rgba(0,0,0,.22) !important;
+}
+
+body.vs-logged-in .stat-card,
+body.vs-logged-in .monthly-summary-card,
+body.vs-logged-in .repair-total-card{
+    background:#10293a !important;
+}
+
+body.vs-logged-in input,
+body.vs-logged-in select,
+body.vs-logged-in textarea,
+body.vs-logged-in input[type="file"]{
+    background:#1a2731 !important;
+    background-image:none !important;
+    color:#f8fafc !important;
+    -webkit-text-fill-color:#f8fafc !important;
+    border:1px solid #3a5060 !important;
+    box-shadow:none !important;
+}
+
+body.vs-logged-in input::placeholder,
+body.vs-logged-in textarea::placeholder{
+    color:#b7c4ce !important;
+    opacity:1 !important;
+}
+
+body.vs-logged-in input[type="file"]::file-selector-button{
+    background:#253646 !important;
+    color:#f8fafc !important;
+    border:1px solid #3a5060 !important;
+}
+
+body.vs-logged-in select option{
+    background:#1a2731 !important;
+    color:#f8fafc !important;
+}
+
+body.vs-logged-in h1,
+body.vs-logged-in h2,
+body.vs-logged-in h3,
+body.vs-logged-in h4,
+body.vs-logged-in h5,
+body.vs-logged-in h6,
+body.vs-logged-in .page > h3,
+body.vs-logged-in #topCompanyName{
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    opacity:1 !important;
+}
+
+body.vs-logged-in p,
+body.vs-logged-in label,
+body.vs-logged-in small,
+body.vs-logged-in span,
+body.vs-logged-in li,
+body.vs-logged-in td,
+body.vs-logged-in th,
+body.vs-logged-in b,
+body.vs-logged-in strong,
+body.vs-logged-in .muted,
+body.vs-logged-in .repair-record-meta,
+body.vs-logged-in #repairCountText{
+    color:#f8fafc !important;
+    -webkit-text-fill-color:#f8fafc !important;
+    opacity:1 !important;
+}
+
+body.vs-logged-in .stat-card p,
+body.vs-logged-in .settings-tab-content p,
+body.vs-logged-in .settings-content p,
+body.vs-logged-in .settings-grid-card p,
+body.vs-logged-in .repairs-header p,
+body.vs-logged-in .repair-record-meta,
+body.vs-logged-in #topProducts p,
+body.vs-logged-in #reportLow p,
+body.vs-logged-in #list p{
+    color:#c5d0d9 !important;
+    -webkit-text-fill-color:#c5d0d9 !important;
+}
+
+body.vs-logged-in .stat-card h3,
+body.vs-logged-in #totalProducts,
+body.vs-logged-in #todaySales,
+body.vs-logged-in #lowStock,
+body.vs-logged-in #dashboardProfit,
+body.vs-logged-in #reportDailySales,
+body.vs-logged-in #reportIncome,
+body.vs-logged-in #lowStockCount{
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+}
+
+body.vs-logged-in #invoiceTotal,
+body.vs-logged-in .repair-total-card b,
+body.vs-logged-in .repair-no-box b,
+body.vs-logged-in #monthlyReportIncome,
+body.vs-logged-in #monthlyReportProfit{
+    color:#20c997 !important;
+    -webkit-text-fill-color:#20c997 !important;
+}
+
+body.vs-logged-in canvas,
+body.vs-logged-in #chart,
+body.vs-logged-in #salesChart,
+body.vs-logged-in #reportSalesChart{
+    background:#101922 !important;
+    border-color:#2b3d4a !important;
+}
+
+body.vs-logged-in .modal-content,
+body.vs-logged-in .about-modal,
+body.vs-logged-in .vs-about-modal,
+body.vs-logged-in .developer-about-modal,
+body.vs-logged-in .preview-modal,
+body.vs-logged-in .invoice-preview,
+body.vs-logged-in .thermal-preview,
+body.vs-logged-in .repair-preview{
+    background:#141d25 !important;
+    background-image:none !important;
+    color:#f8fafc !important;
+    border-color:#2b3d4a !important;
+}
+
+/* Targeted cleanup for preview/readability issues. */
+body.vs-logged-in #loginPage *,
+#loginPage *,
+#loginPage .login-box{
+    animation:none !important;
+    transition:none !important;
+}
+
+body.vs-logged-in #invoicePreviewOverlay > div,
+body.vs-logged-in #thermalPreviewOverlay > div,
+body.vs-logged-in #repairBillOverlay .repair-bill-modal,
+body.vs-logged-in .invoice-preview,
+body.vs-logged-in .thermal-preview,
+body.vs-logged-in .repair-preview{
+    background:#ffffff !important;
+    color:#111827 !important;
+    -webkit-text-fill-color:#111827 !important;
+}
+
+body.vs-logged-in #invoicePreviewOverlay > div *,
+body.vs-logged-in #thermalPreviewOverlay > div *,
+body.vs-logged-in #repairBillOverlay .repair-bill-modal *,
+body.vs-logged-in .invoice-preview *,
+body.vs-logged-in .thermal-preview *,
+body.vs-logged-in .repair-preview *{
+    color:#111827 !important;
+    -webkit-text-fill-color:#111827 !important;
+    opacity:1 !important;
+}
+
+body.vs-logged-in #invoicePreviewOverlay table th,
+body.vs-logged-in #thermalPreviewOverlay table th,
+body.vs-logged-in #repairBillOverlay table th,
+body.vs-logged-in .invoice-preview table th,
+body.vs-logged-in .thermal-preview table th,
+body.vs-logged-in .repair-preview table th,
+body.vs-logged-in #invoicePreviewOverlay [style*="background:#071220"],
+body.vs-logged-in #invoicePreviewOverlay [style*="background:#081421"],
+body.vs-logged-in #invoicePreviewOverlay [style*="background:#111"],
+body.vs-logged-in #thermalPreviewOverlay [style*="background:#071220"],
+body.vs-logged-in #thermalPreviewOverlay [style*="background:#081421"],
+body.vs-logged-in #thermalPreviewOverlay [style*="background:#111"],
+body.vs-logged-in #repairBillOverlay [style*="background:#071220"],
+body.vs-logged-in #repairBillOverlay [style*="background:#081421"],
+body.vs-logged-in #repairBillOverlay [style*="background:#111"]{
+    background:#102635 !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+}
+
+body.vs-logged-in #invoicePreviewOverlay [style*="background:#071220"] *,
+body.vs-logged-in #invoicePreviewOverlay [style*="background:#081421"] *,
+body.vs-logged-in #invoicePreviewOverlay [style*="background:#111"] *,
+body.vs-logged-in #thermalPreviewOverlay [style*="background:#071220"] *,
+body.vs-logged-in #thermalPreviewOverlay [style*="background:#081421"] *,
+body.vs-logged-in #thermalPreviewOverlay [style*="background:#111"] *,
+body.vs-logged-in #repairBillOverlay [style*="background:#071220"] *,
+body.vs-logged-in #repairBillOverlay [style*="background:#081421"] *,
+body.vs-logged-in #repairBillOverlay [style*="background:#111"] *{
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+}
+
+body.vs-logged-in #invoicePreviewOverlay button,
+body.vs-logged-in #thermalPreviewOverlay button,
+body.vs-logged-in #repairBillOverlay button{
+    background:#149db1 !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+}
+
+body.vs-logged-in #balanceDuePanel,
+body.vs-logged-in #customerProfilePanel,
+body.vs-logged-in .billing-helper-panel{
+    background:#141d25 !important;
+    border:1px solid #2b3d4a !important;
+}
+
+body.vs-logged-in #balanceDuePanel input,
+body.vs-logged-in #customerProfilePanel input,
+body.vs-logged-in .billing-helper-panel input{
+    background:#1a2731 !important;
+    color:#f8fafc !important;
+    -webkit-text-fill-color:#f8fafc !important;
+}
+
+body.vs-logged-in #balanceDuePanel [style*="background"],
+body.vs-logged-in #customerProfilePanel [style*="background"]{
+    background:#1a2731 !important;
+    color:#f8fafc !important;
+    -webkit-text-fill-color:#f8fafc !important;
+}
+
+body.vs-logged-in #settings .pref-grid,
+body.vs-logged-in #settings .settings-grid-card,
+body.vs-logged-in #settings .campaign-panel{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+}
+
+body.vs-logged-in #settings .pref-field,
+body.vs-logged-in #settings .campaign-field,
+body.vs-logged-in #settings .campaign-panel label{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    padding:0 !important;
+}
+
+body.vs-logged-in #settings .settings-content,
+body.vs-logged-in #settings .settings-tab-content{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+}
+
+body.vs-logged-in #settings .settings-layout,
+body.vs-logged-in #settings .settings-card{
+    background:#141d25 !important;
+    border:1px solid #2b3d4a !important;
+    box-shadow:none !important;
+}
+
+body.vs-logged-in #settings input,
+body.vs-logged-in #settings select,
+body.vs-logged-in #settings textarea{
+    background:#132737 !important;
+    color:#f8fafc !important;
+    -webkit-text-fill-color:#f8fafc !important;
+}
+
+body.vs-logged-in #repairs .repair-issue-arrow{
+    display:none !important;
+}
+
+body.vs-logged-in #repairs .repair-issue-combo input{
+    padding-right:12px !important;
+}
+
+/* Repairs declutter: remove the nested-box look and keep only useful controls. */
+body.vs-logged-in #repairs.repairs-page,
+body.vs-logged-in #repairs .repairs-shell{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+}
+
+body.vs-logged-in #repairs .repairs-shell{
+    max-width:1320px !important;
+    gap:16px !important;
+}
+
+body.vs-logged-in #repairs .repairs-header{
+    padding:0 0 10px 0 !important;
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+}
+
+body.vs-logged-in #repairs .repairs-header h3{
+    margin:0 !important;
+    font-size:28px !important;
+}
+
+body.vs-logged-in #repairs .repairs-header p{
+    margin:6px 0 0 0 !important;
+}
+
+body.vs-logged-in #repairs .repair-no-box{
+    background:#111b23 !important;
+    border:1px solid #2b3d4a !important;
+    box-shadow:none !important;
+    border-radius:8px !important;
+    padding:12px 16px !important;
+}
+
+body.vs-logged-in #repairs .repairs-top-grid{
+    grid-template-columns:minmax(0,1fr) 300px !important;
+    gap:18px !important;
+}
+
+body.vs-logged-in #repairs .repairs-form-panel,
+body.vs-logged-in #repairs .repairs-side-panel,
+body.vs-logged-in #repairs .repairs-history-panel{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    border-radius:0 !important;
+    padding:0 !important;
+}
+
+body.vs-logged-in #repairs .repairs-form-grid{
+    gap:14px !important;
+}
+
+body.vs-logged-in #repairs .repairs-form-grid label,
+body.vs-logged-in #repairs .repairs-side-panel label{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    padding:0 !important;
+    color:#f8fafc !important;
+}
+
+body.vs-logged-in #repairs .repairs-side-panel{
+    gap:14px !important;
+}
+
+body.vs-logged-in #repairs .repairs-side-panel h3,
+body.vs-logged-in #repairs .repairs-history-title h3{
+    margin:0 !important;
+    font-size:24px !important;
+}
+
+body.vs-logged-in #repairs .repair-total-card{
+    background:#111b23 !important;
+    border:1px solid #2b3d4a !important;
+    box-shadow:none !important;
+    border-radius:8px !important;
+    padding:14px !important;
+}
+
+body.vs-logged-in #repairs .repair-actions{
+    margin-top:14px !important;
+}
+
+body.vs-logged-in #repairs .repairs-history-panel{
+    padding-top:8px !important;
+}
+
+body.vs-logged-in #repairs .repairs-history-title{
+    margin:0 0 8px 0 !important;
+    padding:0 !important;
+}
+
+body.vs-logged-in #repairs #repairHistoryList:empty{
+    display:none !important;
+}
+
+body.vs-logged-in #repairs .repair-record{
+    background:#141d25 !important;
+    border:1px solid #2b3d4a !important;
+    box-shadow:none !important;
+    border-radius:8px !important;
+}
+
+/* Hide accidental empty cards/boxes that older layout scripts leave behind. */
+body.vs-logged-in #dashboard .card:empty,
+body.vs-logged-in #products .card:empty,
+body.vs-logged-in #report .card:empty,
+body.vs-logged-in #settings .card:empty,
+body.vs-logged-in #repairs .card:empty,
+body.vs-logged-in #topProducts:empty,
+body.vs-logged-in #reportLow:empty,
+body.vs-logged-in #list:empty{
+    display:none !important;
+}
+
+/* Dashboard and settings cleanup. */
+body.vs-logged-in #topProducts p,
+body.vs-logged-in #reportLow p,
+body.vs-logged-in #topProducts div,
+body.vs-logged-in #reportLow div{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    padding:0 !important;
+}
+
+body.vs-logged-in #topProducts,
+body.vs-logged-in #reportLow{
+    min-height:0 !important;
+}
+
+body.vs-logged-in #topProducts:has(p:only-child),
+body.vs-logged-in #reportLow:has(p:only-child){
+    padding:16px 18px !important;
+}
+
+body.vs-logged-in #dashboard canvas:empty,
+body.vs-logged-in #dashboard #chart:empty{
+    display:none !important;
+}
+
+body.vs-logged-in #dashboard .card:empty,
+body.vs-logged-in #dashboard div:empty:not(.stats):not(.dashboard-grid):not(.report-grid){
+    display:none !important;
+}
+
+body.vs-logged-in #settings,
+body.vs-logged-in #settings.card,
+body.vs-logged-in #settings .settings-layout{
+    max-height:none !important;
+    height:auto !important;
+    overflow:visible !important;
+}
+
+body.vs-logged-in #settings .settings-content,
+body.vs-logged-in #settings .settings-tab-content{
+    max-height:none !important;
+    height:auto !important;
+    overflow:visible !important;
+    padding-bottom:80px !important;
+}
+
+body.vs-logged-in #settings .pref-grid{
+    align-items:start !important;
+}
+
+/* Remove remaining empty/helper wrapper boxes. */
+body.vs-logged-in #dashboard .report-grid,
+body.vs-logged-in #dashboard .dashboard-grid,
+body.vs-logged-in #report .report-grid,
+body.vs-logged-in #invoice .billing-helper-tools{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    padding:0 !important;
+}
+
+body.vs-logged-in #report .report-grid .card,
+body.vs-logged-in #dashboard .report-grid .card,
+body.vs-logged-in #dashboard .dashboard-grid .card{
+    box-shadow:none !important;
+}
+
+body.vs-logged-in #invoice .billing-helper-tools,
+body.vs-logged-in #billingHelperTools{
+    display:flex !important;
+    gap:12px !important;
+    margin:12px 0 16px 0 !important;
+}
+
+body.vs-logged-in #invoice .billing-helper-tools:empty,
+body.vs-logged-in #billingHelperTools:empty{
+    display:none !important;
+}
+
+body.vs-logged-in #topProducts p,
+body.vs-logged-in #reportLow p,
+body.vs-logged-in #topProducts > div,
+body.vs-logged-in #reportLow > div,
+body.vs-logged-in #topProducts .card,
+body.vs-logged-in #reportLow .card{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    padding:0 !important;
+    margin:0 !important;
+}
+
+body.vs-logged-in #topProducts,
+body.vs-logged-in #reportLow{
+    padding:16px 18px !important;
+}
+
+body.vs-logged-in #topProducts h3,
+body.vs-logged-in #reportLow h3{
+    margin:0 0 10px 0 !important;
+}
+
+body.vs-logged-in #salesChart:empty,
+body.vs-logged-in #chart:empty{
+    display:none !important;
+}
+
+body.vs-logged-in #dashboard .card:has(canvas:empty),
+body.vs-logged-in #dashboard .card:has(#salesChart:empty),
+body.vs-logged-in #dashboard .card:has(#chart:empty){
+    display:none !important;
+}
+
+body.vs-logged-in #dashboard .card:has(> h3:first-child:last-child),
+body.vs-logged-in #dashboard .card:has(> h3:first-child + p:last-child){
+    min-height:auto !important;
+}
+
+/* Final box cleanup for dashboard/report/billing helper layouts. */
+body.vs-logged-in #dashboard > .card:has(> .dashboard-grid),
+body.vs-logged-in #report > .card:has(> .report-grid),
+body.vs-logged-in #dashboard > .card:has(> .dashboard-main),
+body.vs-logged-in #invoice .card:has(> #billingHelperTools),
+body.vs-logged-in #invoice .card:has(> .billing-helper-tools){
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    padding:0 !important;
+}
+
+body.vs-logged-in #dashboard .dashboard-grid,
+body.vs-logged-in #report .report-grid{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    padding:0 !important;
+    overflow:visible !important;
+}
+
+body.vs-logged-in #billingHelperTools,
+body.vs-logged-in #invoice .billing-helper-tools{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    outline:0 !important;
+    padding:0 !important;
+    min-height:0 !important;
+}
+
+body.vs-logged-in #topProducts,
+body.vs-logged-in #reportLow,
+body.vs-logged-in .dashboard-list{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    outline:0 !important;
+    padding:0 !important;
+    min-height:0 !important;
+}
+
+body.vs-logged-in .dashboard-panel{
+    background:#151f28 !important;
+    border:1px solid #304353 !important;
+    box-shadow:none !important;
+}
+
+body.vs-logged-in #topProducts p,
+body.vs-logged-in #reportLow p,
+body.vs-logged-in #topProducts > *,
+body.vs-logged-in #reportLow > *{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    outline:0 !important;
+    padding:0 !important;
+    margin:0 !important;
+}
+
+body.vs-logged-in .dashboard-chart-panel{
+    display:block !important;
+    min-height:360px !important;
+}
+
+body.vs-logged-in .dashboard-chart-wrap{
+    height:300px !important;
+    min-height:300px !important;
+    background:#101a22 !important;
+    border:1px solid #304353 !important;
+    border-radius:8px !important;
+    padding:10px !important;
+}
+
+body.vs-logged-in #salesChart{
+    width:100% !important;
+    height:100% !important;
+}

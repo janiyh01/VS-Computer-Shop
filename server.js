@@ -2,7 +2,6 @@ const http = require("http");
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
-const sqlite3 = require("sqlite3").verbose();
 
 const ROOT = __dirname;
 const PORT = Number(process.env.PORT || 3000);
@@ -11,6 +10,9 @@ const HOST = process.env.HOST || (LAN_MODE ? "0.0.0.0" : "127.0.0.1");
 const BROWSER_PASSWORD_MODE = process.argv.includes("--browser-password") || process.env.BROWSER_PASSWORD === "1" || LAN_MODE;
 const WEB_USER = process.env.WEB_USER || "vs";
 const WEB_PASSWORD = process.env.WEB_PASSWORD || crypto.randomBytes(9).toString("base64url");
+const TURSO_DATABASE_URL = process.env.TURSO_DATABASE_URL || process.env.LIBSQL_URL || "";
+const TURSO_AUTH_TOKEN = process.env.TURSO_AUTH_TOKEN || process.env.LIBSQL_AUTH_TOKEN || "";
+const USE_TURSO = Boolean(TURSO_DATABASE_URL);
 const ELECTRON_DB_PATH = path.join(
     process.env.APPDATA || ROOT,
     "VS Software",
@@ -19,9 +21,19 @@ const ELECTRON_DB_PATH = path.join(
 );
 const DB_PATH = process.env.DB_PATH || ELECTRON_DB_PATH;
 
-fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+let db;
 
-const db = new sqlite3.Database(DB_PATH);
+if(USE_TURSO){
+    const { createClient } = require("@libsql/client");
+    db = createClient({
+        url: TURSO_DATABASE_URL,
+        authToken: TURSO_AUTH_TOKEN || undefined
+    });
+}else{
+    const sqlite3 = require("sqlite3").verbose();
+    fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+    db = new sqlite3.Database(DB_PATH);
+}
 
 const mimeTypes = {
     ".html": "text/html; charset=utf-8",
@@ -103,7 +115,25 @@ function normalizeParams(params){
     return Array.isArray(params) ? params : [];
 }
 
+function serializeDbValue(value){
+    if(typeof value === "bigint") return Number(value);
+    if(Array.isArray(value)) return value.map(serializeDbValue);
+    if(value && typeof value === "object"){
+        return Object.fromEntries(
+            Object.entries(value).map(([key, entry])=> [key, serializeDbValue(entry)])
+        );
+    }
+    return value;
+}
+
 function dbRun(sql, params){
+    if(USE_TURSO){
+        return db.execute({ sql, args: normalizeParams(params) }).then((result)=>({
+            lastID: serializeDbValue(result.lastInsertRowid || 0),
+            changes: serializeDbValue(result.rowsAffected || 0)
+        }));
+    }
+
     return new Promise((resolve, reject)=>{
         db.run(sql, normalizeParams(params), function(error){
             if(error) reject(error);
@@ -113,6 +143,12 @@ function dbRun(sql, params){
 }
 
 function dbGet(sql, params){
+    if(USE_TURSO){
+        return db.execute({ sql, args: normalizeParams(params) }).then((result)=>(
+            serializeDbValue(result.rows && result.rows[0] ? result.rows[0] : null)
+        ));
+    }
+
     return new Promise((resolve, reject)=>{
         db.get(sql, normalizeParams(params), (error, row)=>{
             if(error) reject(error);
@@ -122,6 +158,12 @@ function dbGet(sql, params){
 }
 
 function dbAll(sql, params){
+    if(USE_TURSO){
+        return db.execute({ sql, args: normalizeParams(params) }).then((result)=>(
+            serializeDbValue(result.rows || [])
+        ));
+    }
+
     return new Promise((resolve, reject)=>{
         db.all(sql, normalizeParams(params), (error, rows)=>{
             if(error) reject(error);
@@ -173,6 +215,7 @@ async function handleBackupExport(res){
             products,
             sales,
             categories: [],
+            database: USE_TURSO ? "turso" : "sqlite",
             exportDate: new Date().toLocaleString()
         };
         res.writeHead(200, {
@@ -189,8 +232,9 @@ function sendStatic(req, res){
     const requestUrl = new URL(req.url, "http://localhost");
     const cleanPath = decodeURIComponent(requestUrl.pathname === "/" ? "/index.html" : requestUrl.pathname);
     const filePath = path.normalize(path.join(ROOT, cleanPath));
+    const relativePath = path.relative(ROOT, filePath);
 
-    if(!filePath.startsWith(ROOT)){
+    if(relativePath.startsWith("..") || path.isAbsolute(relativePath)){
         res.writeHead(403);
         res.end("Forbidden");
         return;
@@ -224,8 +268,43 @@ const server = http.createServer((req, res)=>{
     sendJson(res, 405, { ok:false, error:"Method not allowed" });
 });
 
+function closeDb(callback){
+    if(USE_TURSO){
+        try{
+            if(typeof db.close === "function") db.close();
+        }catch(error){
+            console.error(error);
+        }
+        callback();
+        return;
+    }
+
+    db.close(callback);
+}
+
+server.on("error", (error)=>{
+    if(error && error.code === "EADDRINUSE"){
+        console.error(`Port ${PORT} is already in use. Start with another port, for example:`);
+        console.error(`  PORT=${PORT + 1} npm run web`);
+    }else{
+        console.error(error);
+    }
+
+    closeDb(()=> process.exit(1));
+});
+
+function shutdown(){
+    server.close(()=>{
+        closeDb(()=> process.exit(0));
+    });
+}
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
+
 server.listen(PORT, HOST, ()=>{
     console.log(`VS System web app running at http://localhost:${PORT}`);
+    console.log(`Database: ${USE_TURSO ? "Turso/libSQL" : DB_PATH}`);
     if(LAN_MODE) console.log(`Open on phone: http://<this-pc-ip-address>:${PORT}`);
     if(BROWSER_PASSWORD_MODE){
         console.log(`Browser login username: ${WEB_USER}`);
