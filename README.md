@@ -58,15 +58,12 @@ Render environment variables:
 
 ```text
 HOST=0.0.0.0
-BROWSER_PASSWORD=1
-WEB_USER=vs
-WEB_PASSWORD=<choose a strong browser password>
 TURSO_DATABASE_URL=<your Turso database URL>
 TURSO_AUTH_TOKEN=<your Turso auth token>
 ```
 
-Render also provides `PORT` automatically. Keep the browser password on for
-deployed usage, then use the normal app login after the browser prompt.
+Render also provides `PORT` automatically. The app opens directly to the normal
+VS System login screen.
 
 The included `render.yaml` contains the same deployment settings.
 
