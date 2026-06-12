@@ -2070,6 +2070,12 @@ function nav(btn, section){
     loadReports();
   }
 
+  if(section === "settings"){
+    try{ loadSettings(); }catch(e){ console.log(e); }
+    try{ loadNotificationSettings(); }catch(e){ console.log(e); }
+    try{ loadAutoBackupSettings(); }catch(e){ console.log(e); }
+  }
+
 }
 
 </script>

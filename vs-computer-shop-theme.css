@@ -1356,6 +1356,9 @@ body.vs-logged-in #salesChart{
 body.vs-logged-in #invoice input,
 body.vs-logged-in #invoice select,
 body.vs-logged-in #invoice textarea,
+body.vs-logged-in #products input,
+body.vs-logged-in #products select,
+body.vs-logged-in #products textarea,
 body.vs-logged-in #repairs input,
 body.vs-logged-in #repairs select,
 body.vs-logged-in #repairs textarea{
@@ -1367,12 +1370,25 @@ body.vs-logged-in #repairs textarea{
 }
 
 body.vs-logged-in #invoice input::selection,
+body.vs-logged-in #products input::selection,
 body.vs-logged-in #repairs input::selection,
 body.vs-logged-in #invoice textarea::selection,
+body.vs-logged-in #products textarea::selection,
 body.vs-logged-in #repairs textarea::selection{
     background:#2563eb !important;
     color:#ffffff !important;
     -webkit-text-fill-color:#ffffff !important;
+}
+
+body.vs-logged-in #invoice input:-webkit-autofill,
+body.vs-logged-in #products input:-webkit-autofill,
+body.vs-logged-in #repairs input:-webkit-autofill,
+body.vs-logged-in #invoice textarea:-webkit-autofill,
+body.vs-logged-in #products textarea:-webkit-autofill,
+body.vs-logged-in #repairs textarea:-webkit-autofill{
+    -webkit-box-shadow:0 0 0 1000px #102b3b inset !important;
+    -webkit-text-fill-color:#f4fbff !important;
+    caret-color:#f4fbff !important;
 }
 
 body.vs-logged-in #customerSuggestionBox{
@@ -1394,6 +1410,42 @@ body.vs-logged-in #customerSuggestionBox button:hover{
 
 body.vs-logged-in #customerSuggestionBox span{
     color:#a9c3d2 !important;
+}
+
+body.vs-logged-in #cleanCategoryOverlay{
+    background:rgba(0,0,0,.72) !important;
+    backdrop-filter:blur(4px) !important;
+}
+
+body.vs-logged-in #cleanCategoryOverlay > div{
+    background:#102638 !important;
+    color:#f4fbff !important;
+    border:1px solid #28506a !important;
+    box-shadow:0 28px 70px rgba(0,0,0,.55) !important;
+}
+
+body.vs-logged-in #cleanCategoryOverlay *,
+body.vs-logged-in #cleanCategoryOverlay h2,
+body.vs-logged-in #cleanCategoryOverlay h3,
+body.vs-logged-in #cleanCategoryOverlay label,
+body.vs-logged-in #cleanCategoryOverlay p,
+body.vs-logged-in #cleanCategoryOverlay span,
+body.vs-logged-in #cleanCategoryOverlay small{
+    color:#f4fbff !important;
+    -webkit-text-fill-color:#f4fbff !important;
+}
+
+body.vs-logged-in #cleanCategoryOverlay input,
+body.vs-logged-in #cleanCategoryOverlay select{
+    background:#0f2230 !important;
+    color:#f4fbff !important;
+    -webkit-text-fill-color:#f4fbff !important;
+    border:1px solid #31576e !important;
+}
+
+body.vs-logged-in #cleanCategoryOverlay .clean-category-row{
+    background:#142f42 !important;
+    border:1px solid #31576e !important;
 }
 
 /* Mobile repair page: prevent filter panel/form overlap. */

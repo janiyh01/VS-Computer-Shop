@@ -774,7 +774,9 @@ function writeProductWorkbook(filePath, rows){
 }
 
 async function exportProductsExcel(){
-    return runBusyAction("exportProductsExcel", (finish)=> db.all("SELECT * FROM products ORDER BY id ASC", [], async (err, products)=>{
+    return runBusyAction("exportProductsExcel", (finish)=> {
+        showToast("Preparing product Excel...", "#20c997");
+        return db.all("SELECT * FROM products ORDER BY id ASC", [], async (err, products)=>{
         if(err){
             console.log(err);
             showToast("Product export failed", "#ff4d4d");
@@ -797,11 +799,13 @@ async function exportProductsExcel(){
         }finally{
             finish();
         }
-    }));
+        });
+    });
 }
 
 async function downloadProductExcelTemplate(){
     return runBusyAction("downloadProductExcelTemplate", async ()=>{
+        showToast("Preparing Excel template...", "#20c997");
         const filePath = await ipcRenderer.invoke(
             "select-product-excel-export",
             "products_template.xlsx"
@@ -896,6 +900,7 @@ function saveImportedProduct(product){
 
 async function importProductsExcel(){
     return runBusyAction("importProductsExcel", async ()=>{
+    showToast("Opening Excel import...", "#20c997");
     try{
         let workbook;
 
@@ -7657,48 +7662,30 @@ confirmNoBtn.onclick = function(e){
 window.onload = () => {
 
     try{
-        loadProducts();
         ensureAppLayoutStyles();
-        ensureReportLayout();
         ensureAutoBackupTab();
     }catch(e){
         console.log(e);
     }
 
     try{
-    loadDashboard();
     loadTopBrand();
 }catch(e){
     console.log(e);
 }
 
     try{
-        loadSettings();
         ensureSettingsEnhancements();
         ensureSettingsNavigationHook();
-        loadNotificationSettings();
-        loadAutoBackupSettings();
-        startAutoBackup();
     }catch(e){
         console.log(e);
     }
 
 
     try{
-  loadCategoryDropdown();
+  if(document.getElementById("categoryFilter")) loadCategoryDropdown();
 }catch(e){
   console.log(e);
-}
-const manageBtn = document.getElementById("manageCategoriesBtn");
-
-if(manageBtn){
-  manageBtn.addEventListener("click", function(){
-    console.log("Manage Categories clicked");
-    showToast("Manage clicked");
-    showManageCategories();
-  });
-}else{
-  console.log("manageCategoriesBtn not found");
 }
 };
 
@@ -7746,7 +7733,7 @@ function deleteInvoice(invoiceNo){
 
                     loadProducts();
 loadDashboard();
-loadReport();
+loadReports();
 
                 }
             );
@@ -8088,7 +8075,7 @@ function deleteInvoice(invoiceNo){
                             loadSalesHistory();
                             loadProducts();
                             loadDashboard();
-                            loadReport();
+                            loadReports();
                         }
                     );
                 }
@@ -8507,7 +8494,9 @@ function importBackup(){
 }
 
 function exportBackup(){
-    return runBusyAction("exportBackup", (finish)=> collectBackupData((err, data)=>{
+    return runBusyAction("exportBackup", (finish)=> {
+        showToast("Preparing backup...", "#20c997");
+        return collectBackupData((err, data)=>{
         if(err){
             console.log(err);
             showToast("Backup export failed", "#ff4d4d");
@@ -8532,7 +8521,8 @@ function exportBackup(){
         if(lastBackup){ lastBackup.innerText = data.exportDate; }
         showToast("Backup Exported");
         finish();
-    }));
+        });
+    });
 }
 
 function createBackup(callback){
@@ -8693,6 +8683,7 @@ function bindManageCategoryButton(){
 window.openCategoryPopupDirect = openCategoryPopupDirect;
 window.showManageCategories = showManageCategories;
 window.addNewCategory = addNewCategory;
+bindManageCategoryButton();
 window.addEventListener("load", bindManageCategoryButton);
 window.addEventListener("focus", bindManageCategoryButton);
 setTimeout(bindManageCategoryButton, 500);
@@ -11529,6 +11520,7 @@ async function getFullReportData(){
 
 async function exportReportsExcel(){
     return runBusyAction("exportReportsExcel", async ()=>{
+    showToast("Preparing report Excel...", "#20c997");
     try{
         const filePath = await ipcRenderer.invoke("select-report-save-path", {
             defaultName: "vs_report_" + Date.now() + ".xlsx",
@@ -11629,6 +11621,7 @@ function addPdfLine(doc, text, x, y, options = {}){
 
 async function exportReportsPDF(){
     return runBusyAction("exportReportsPDF", async ()=>{
+    showToast("Preparing report PDF...", "#20c997");
     try{
         const filePath = await ipcRenderer.invoke("select-report-save-path", {
             defaultName: "vs_report_" + Date.now() + ".pdf",
