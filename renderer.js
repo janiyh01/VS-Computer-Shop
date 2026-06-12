@@ -2118,12 +2118,6 @@ document.getElementById("invoiceNumber").innerText =
 
 });
 
-loadDashboard();
-
-if(typeof loadProducts === "function"){
-loadProducts();
-}
-
 function printInvoice(){
 
     let content = document.getElementById("invoiceList").innerHTML;
@@ -7187,8 +7181,6 @@ function login(){
 
                 loadDashboard();
 loadTopBrand();
-loadProducts();
-loadAll();
 
             } else {
 

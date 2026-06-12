@@ -1181,11 +1181,6 @@ body.vs-logged-in #reportLow:has(p:only-child){
     padding:16px 18px !important;
 }
 
-body.vs-logged-in #dashboard canvas:empty,
-body.vs-logged-in #dashboard #chart:empty{
-    display:none !important;
-}
-
 body.vs-logged-in #dashboard .card:empty,
 body.vs-logged-in #dashboard div:empty:not(.stats):not(.dashboard-grid):not(.report-grid){
     display:none !important;
@@ -1261,17 +1256,6 @@ body.vs-logged-in #reportLow{
 body.vs-logged-in #topProducts h3,
 body.vs-logged-in #reportLow h3{
     margin:0 0 10px 0 !important;
-}
-
-body.vs-logged-in #salesChart:empty,
-body.vs-logged-in #chart:empty{
-    display:none !important;
-}
-
-body.vs-logged-in #dashboard .card:has(canvas:empty),
-body.vs-logged-in #dashboard .card:has(#salesChart:empty),
-body.vs-logged-in #dashboard .card:has(#chart:empty){
-    display:none !important;
 }
 
 body.vs-logged-in #dashboard .card:has(> h3:first-child:last-child),
@@ -1367,6 +1351,49 @@ body.vs-logged-in #salesChart{
 #loginPage .login-box::after{
     animation:none !important;
     transition:none !important;
+}
+
+body.vs-logged-in #invoice input,
+body.vs-logged-in #invoice select,
+body.vs-logged-in #invoice textarea,
+body.vs-logged-in #repairs input,
+body.vs-logged-in #repairs select,
+body.vs-logged-in #repairs textarea{
+    background:#102b3b !important;
+    color:#f4fbff !important;
+    -webkit-text-fill-color:#f4fbff !important;
+    caret-color:#f4fbff !important;
+    border-color:#28506a !important;
+}
+
+body.vs-logged-in #invoice input::selection,
+body.vs-logged-in #repairs input::selection,
+body.vs-logged-in #invoice textarea::selection,
+body.vs-logged-in #repairs textarea::selection{
+    background:#2563eb !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+}
+
+body.vs-logged-in #customerSuggestionBox{
+    background:#10202b !important;
+    color:#f4fbff !important;
+    border:1px solid #28506a !important;
+}
+
+body.vs-logged-in #customerSuggestionBox button{
+    background:#102b3b !important;
+    color:#f4fbff !important;
+    -webkit-text-fill-color:#f4fbff !important;
+    border-bottom:1px solid #25475d !important;
+}
+
+body.vs-logged-in #customerSuggestionBox button:hover{
+    background:#163a4f !important;
+}
+
+body.vs-logged-in #customerSuggestionBox span{
+    color:#a9c3d2 !important;
 }
 
 /* Mobile repair page: prevent filter panel/form overlap. */

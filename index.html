@@ -8,7 +8,6 @@
   <script src="./node_modules/jspdf/dist/jspdf.umd.min.js"></script>
   <script src="./node_modules/jsbarcode/dist/JsBarcode.all.min.js"></script>
   <link rel="stylesheet" href="./web-mobile-polish.css">
-  <link rel="stylesheet" href="./vs-computer-shop-theme.css">
   <script src="./web-adapter.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -2018,74 +2017,8 @@ display:block;
 </div>
 
 
-<script>
-
-function nav(btn, section){
-  
-  console.log("NAV CLICK:", section);
-
-  // remove active
-  document.querySelectorAll(".sidebar button").forEach(b=>{
-    b.classList.remove("active");
-  });
-
-  btn.classList.add("active");
-
-  // hide ALL sections
-  let sections = ["dashboard","products","invoice","report","settings","repairs"];
-
-  sections.forEach(id=>{
-    let el = document.getElementById(id);
-    if(el){
-      el.style.display = "none";
-    }
-  });
-
-  let current = document.getElementById(section);
-
-  if(current){
-    current.style.display = "block";
-     if(section === "settings"){
-        document.getElementById("mainTopbar").style.display = "none";
-    }else{
-        document.getElementById("mainTopbar").style.display = "flex";
-    }
-
-  } else {
-    console.log("❌ section not found:", section);
-  }
-
-  //  reload data when needed
-  if(section === "products"){
-    loadProducts();
-  }
-
-  if(section === "report"){
-    loadAll();
-  }
-  if(section === "report"){
-    loadReport();
-}
-
-}
-</script>
-
 <script src="./renderer.js"></script>
 <script>
-</script>
-<script>
-window.addEventListener("load", () => {
-
-  // first sidebar button click auto
-  let firstBtn = document.querySelector(".sidebar button");
-
-  if(firstBtn){
-    firstBtn.click();
-  } else {
-    console.log("❌ sidebar button not found");
-  }
-
-});
 </script>
 <script>
 
@@ -2138,17 +2071,6 @@ function nav(btn, section){
   }
 
 }
-
-window.addEventListener("load", ()=>{
-
-  let firstBtn =
-  document.querySelector(".sidebar button");
-
-  if(firstBtn){
-    firstBtn.click();
-  }
-
-});
 
 </script>
 <div id="toast"></div>
@@ -4888,6 +4810,7 @@ canvas {
     border-color:rgba(127,29,29,.45) !important;
   }
 </style>
+<link rel="stylesheet" href="./vs-computer-shop-theme.css">
 </body>
 </html>
 <script>
