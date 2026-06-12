@@ -553,7 +553,7 @@ function doLogin(){
 
       // delay to avoid crash
       setTimeout(()=>{
-        loadAll();
+        loadDashboard();
 
 // auto open dashboard
 document.getElementById("dashboard").style.display = "block";
@@ -965,7 +965,7 @@ async function importProductsExcel(){
         loadCategoryDropdown();
         loadProducts();
         loadDashboard();
-        loadReport();
+        loadReports();
         showToast(`Excel import done: ${inserted} added, ${updated} updated${failed ? ", " + failed + " skipped" : ""}`);
     }catch(err){
         console.log(err);
@@ -1422,7 +1422,7 @@ function saveSale(){
 
 loadDashboard();
 loadTopBrand();
-loadReport();
+loadReports();
 checkLowStockNotification();
         }
     );
@@ -4088,7 +4088,7 @@ let fileName = `invoice_${Date.now()}.pdf`;
         printInvoiceA4FromCurrent();
         loadProducts();
         loadDashboard();
-        loadReport();
+        loadReports();
         loadTopBrand();
 
     }
@@ -5410,12 +5410,13 @@ function ensureBillingLayout(){
             display:none !important;
             width:360px;
             max-width:100%;
-            background:#fff;
-            color:#111;
-            border-radius:0 0 8px 8px;
+            background:#10202b;
+            color:#f4fbff;
+            border:1px solid #28506a;
+            border-radius:8px;
             overflow:hidden;
             box-shadow:0 12px 24px rgba(0,0,0,.35);
-            margin:-4px 0 8px 5px;
+            margin:4px 0 8px 5px;
             position:relative;
             z-index:10000;
         }
@@ -5427,16 +5428,17 @@ function ensureBillingLayout(){
             border:0;
             border-radius:0;
             padding:8px 10px;
-            background:#fff;
-            color:#000 !important;
-                        text-align:left;
+            background:#102b3b;
+            color:#f4fbff !important;
+            -webkit-text-fill-color:#f4fbff !important;
+            text-align:left;
             box-shadow:none;
         }
         #customerSuggestionBox button:hover{
-            background:#eaf4ff;
+            background:#163a4f;
         }
         #customerSuggestionBox span{
-            color:#536273;
+            color:#a9c3d2;
             font-size:12px;
         }
         #billTable{
@@ -7161,6 +7163,28 @@ function resetAdminPasswordToDefault(){
 window.addEventListener("load", ensureForgotPasswordLink);
 window.addEventListener("focus", ensureForgotPasswordLink);
 function login(){
+    const loginButton = Array.from(document.querySelectorAll("#loginPage button"))
+        .find((button)=> button.getAttribute("onclick") === "login()" || button.textContent.trim().toLowerCase() === "login");
+
+    if(loginButton && loginButton.dataset.busy === "true"){
+        return;
+    }
+
+    if(loginButton){
+        loginButton.dataset.busy = "true";
+        loginButton.dataset.originalText = loginButton.textContent;
+        loginButton.textContent = "Logging in...";
+        loginButton.disabled = true;
+    }
+
+    const resetLoginButton = ()=>{
+        if(!loginButton){
+            return;
+        }
+        loginButton.dataset.busy = "false";
+        loginButton.textContent = loginButton.dataset.originalText || "Login";
+        loginButton.disabled = false;
+    };
 
     let username =
     document.getElementById("username").value;
@@ -7174,6 +7198,7 @@ function login(){
         (err, row) => {
 
             if(err){
+                resetLoginButton();
                 showToast("Login Error", "#ff4d4d");
                 return;
             }
@@ -7184,11 +7209,13 @@ function login(){
 
                 showToast("Login Success", "#4CAF50");
 
-                loadDashboard();
-loadTopBrand();
+                loadTopBrand();
+                setTimeout(()=>{ loadDashboard(); }, 0);
+                resetLoginButton();
 
             } else {
 
+                resetLoginButton();
                 showToast("Wrong Username or Password", "#ff4d4d");
 
             }
@@ -7287,7 +7314,7 @@ function importBackup(){
             );
             loadProducts();
 loadDashboard();
-loadReport();
+loadReports();
 loadSalesHistory();
 
 setTimeout(()=>{
@@ -7747,7 +7774,7 @@ function sortReports(type){
 
     reportSort = type;
 
-    loadAll();
+    loadReports();
 }
 function searchInvoices(){
 
@@ -8008,7 +8035,7 @@ function refreshApp(){
     try{ loadTopBrand(); }catch(e){ console.log(e); }
     try{ loadDashboard(); }catch(e){ console.log(e); }
     try{ loadProducts(); }catch(e){ console.log(e); }
-    try{ loadReport(); }catch(e){ console.log(e); }
+    try{ loadReports(); }catch(e){ console.log(e); }
     try{ loadSettings(); }catch(e){ console.log(e); }
     try{ loadNotificationSettings(); }catch(e){ console.log(e); }
 
@@ -8421,7 +8448,6 @@ function refreshAfterRestore(){
     try{ loadProducts(); }catch(e){ console.log(e); }
     try{ loadDashboard(); }catch(e){ console.log(e); }
     try{ if(typeof loadReports === "function"){ loadReports(); } }catch(e){ console.log(e); }
-    try{ if(typeof loadReport === "function"){ loadReport(); } }catch(e){ console.log(e); }
     try{ loadSalesHistory(); }catch(e){ console.log(e); }
     try{ loadCategoryDropdown(); }catch(e){ console.log(e); }
     try{ if(typeof loadRepairs === "function"){ loadRepairs(); } }catch(e){ console.log(e); }
