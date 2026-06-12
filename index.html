@@ -8,6 +8,7 @@
   <script src="./node_modules/jspdf/dist/jspdf.umd.min.js"></script>
   <script src="./node_modules/jsbarcode/dist/JsBarcode.all.min.js"></script>
   <link rel="stylesheet" href="./web-mobile-polish.css">
+  <link rel="stylesheet" href="./vs-computer-shop-theme.css">
   <script src="./web-adapter.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -2069,10 +2070,7 @@ function nav(btn, section){
 }
 </script>
 
-<link rel="stylesheet" href="./web-mobile-polish.css">
 <script src="./renderer.js"></script>
-<script src="./web-login-fix.js"></script>
-<script src="./web-finalize.js"></script>
 <script>
 </script>
 <script>
@@ -4890,69 +4888,10 @@ canvas {
     border-color:rgba(127,29,29,.45) !important;
   }
 </style>
-<script id="vs2FinalAshThemeRuntime">
-(function(){
-  if(document.getElementById("vsComputerShopThemeRuntime") || document.getElementById("vsComputerShopThemeLink")){
-    return;
-  }
-  function keepFinalAshThemeLast(){
-    var style = document.getElementById("vs2FinalAshTheme");
-    if(style && document.body && style !== document.body.lastElementChild){
-      document.body.appendChild(style);
-    }
-  }
-  if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", keepFinalAshThemeLast);
-  }else{
-    keepFinalAshThemeLast();
-  }
-  window.addEventListener("load", keepFinalAshThemeLast);
-  setTimeout(keepFinalAshThemeLast, 300);
-  setTimeout(keepFinalAshThemeLast, 1200);
-})();
-</script>
 </body>
 </html>
 <script>
 window.addEventListener("load", () => {
   document.body.focus();
 });
-</script>
-<script id="vsComputerShopThemeRuntime">
-(function(){
-  function keepComputerShopThemeLast(){
-    var id = "vsComputerShopThemeLink";
-    var link = document.getElementById(id);
-    if(!link){
-      link = document.createElement("link");
-      link.id = id;
-      link.rel = "stylesheet";
-      link.href = "./vs-computer-shop-theme.css";
-    }
-    if(document.body && link !== document.body.lastElementChild){
-      document.body.appendChild(link);
-    }else if(!document.body && document.head && !link.parentNode){
-      document.head.appendChild(link);
-    }
-  }
-  if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", keepComputerShopThemeLast);
-  }else{
-    keepComputerShopThemeLast();
-  }
-  window.addEventListener("load", keepComputerShopThemeLast);
-  setTimeout(keepComputerShopThemeLast, 300);
-  setTimeout(keepComputerShopThemeLast, 1200);
-  if(window.MutationObserver){
-    new MutationObserver(function(mutations){
-      if(mutations.some(function(mutation){
-        return Array.prototype.some.call(mutation.addedNodes || [], function(node){
-          return node && node.nodeType === 1 && /^(STYLE|LINK)$/i.test(node.tagName || "");
-        });
-      })){
-        keepComputerShopThemeLast();
-      }
-    }).observe(document.documentElement, { childList:true, subtree:true });
-  }
-})();
 </script>

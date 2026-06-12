@@ -1358,6 +1358,17 @@ body.vs-logged-in #salesChart{
     height:100% !important;
 }
 
+#loginPage,
+#loginPage *,
+#loginPage::before,
+#loginPage::after,
+#loginPage .login-box,
+#loginPage .login-box::before,
+#loginPage .login-box::after{
+    animation:none !important;
+    transition:none !important;
+}
+
 /* Mobile repair page: prevent filter panel/form overlap. */
 @media(max-width:760px){
     body.vs-logged-in #repairs.repairs-page,

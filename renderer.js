@@ -39,6 +39,30 @@ let salesChart = null;
 let chartInstance = null;
 var { jsPDF } = __vsRequire("jspdf");
 var path = __vsRequire("path");
+const vsBusyActions = new Set();
+
+function runBusyAction(key, action){
+    if(vsBusyActions.has(key)){
+        showToast("Please wait...", "#f59e0b");
+        return false;
+    }
+
+    vsBusyActions.add(key);
+
+    const finish = ()=> vsBusyActions.delete(key);
+
+    try{
+        const result = action(finish);
+        if(result && typeof result.then === "function"){
+            result.finally(finish);
+        }
+        return result;
+    }catch(error){
+        finish();
+        throw error;
+    }
+}
+
 const vs2ChartDarkCanvasPlugin = {
     id: "vs2ChartDarkCanvas",
     beforeDraw(chart){
@@ -750,53 +774,60 @@ function writeProductWorkbook(filePath, rows){
 }
 
 async function exportProductsExcel(){
-    db.all("SELECT * FROM products ORDER BY id ASC", [], async (err, products)=>{
+    return runBusyAction("exportProductsExcel", (finish)=> db.all("SELECT * FROM products ORDER BY id ASC", [], async (err, products)=>{
         if(err){
             console.log(err);
             showToast("Product export failed", "#ff4d4d");
+            finish();
             return;
         }
 
+        try{
+            const filePath = await ipcRenderer.invoke(
+                "select-product-excel-export",
+                "products_" + Date.now() + ".xlsx"
+            );
+
+            if(!filePath){
+                return;
+            }
+
+            writeProductWorkbook(filePath, getProductExcelRows(products));
+            showToast("Products exported to Excel");
+        }finally{
+            finish();
+        }
+    }));
+}
+
+async function downloadProductExcelTemplate(){
+    return runBusyAction("downloadProductExcelTemplate", async ()=>{
         const filePath = await ipcRenderer.invoke(
             "select-product-excel-export",
-            "products_" + Date.now() + ".xlsx"
+            "products_template.xlsx"
         );
 
         if(!filePath){
             return;
         }
 
-        writeProductWorkbook(filePath, getProductExcelRows(products));
-        showToast("Products exported to Excel");
+        writeProductWorkbook(filePath, [
+            {
+                "Name": "Power Supply",
+                "Code": "PSU-001",
+                "Barcode": "1234567890",
+                "Buy Price": 2500,
+                "Sell Price": 4500,
+                "Stock": 10,
+                "Category": "PSU",
+                "Warranty Days": 365,
+                "Warranty Note": "Company warranty",
+                "Image URL": ""
+            }
+        ]);
+
+        showToast("Excel template saved");
     });
-}
-
-async function downloadProductExcelTemplate(){
-    const filePath = await ipcRenderer.invoke(
-        "select-product-excel-export",
-        "products_template.xlsx"
-    );
-
-    if(!filePath){
-        return;
-    }
-
-    writeProductWorkbook(filePath, [
-        {
-            "Name": "Power Supply",
-            "Code": "PSU-001",
-            "Barcode": "1234567890",
-            "Buy Price": 2500,
-            "Sell Price": 4500,
-            "Stock": 10,
-            "Category": "PSU",
-            "Warranty Days": 365,
-            "Warranty Note": "Company warranty",
-            "Image URL": ""
-        }
-    ]);
-
-    showToast("Excel template saved");
 }
 
 function saveImportedProduct(product){
@@ -864,6 +895,7 @@ function saveImportedProduct(product){
 }
 
 async function importProductsExcel(){
+    return runBusyAction("importProductsExcel", async ()=>{
     try{
         let workbook;
 
@@ -934,6 +966,7 @@ async function importProductsExcel(){
         console.log(err);
         showToast("Excel import failed", "#ff4d4d");
     }
+    });
 }
 
 function ensureProductExcelTools(){
@@ -8482,10 +8515,11 @@ function importBackup(){
 }
 
 function exportBackup(){
-    collectBackupData((err, data)=>{
+    return runBusyAction("exportBackup", (finish)=> collectBackupData((err, data)=>{
         if(err){
             console.log(err);
             showToast("Backup export failed", "#ff4d4d");
+            finish();
             return;
         }
 
@@ -8505,7 +8539,8 @@ function exportBackup(){
         const lastBackup = document.getElementById("lastBackupDate");
         if(lastBackup){ lastBackup.innerText = data.exportDate; }
         showToast("Backup Exported");
-    });
+        finish();
+    }));
 }
 
 function createBackup(callback){
@@ -11501,6 +11536,7 @@ async function getFullReportData(){
 }
 
 async function exportReportsExcel(){
+    return runBusyAction("exportReportsExcel", async ()=>{
     try{
         const filePath = await ipcRenderer.invoke("select-report-save-path", {
             defaultName: "vs_report_" + Date.now() + ".xlsx",
@@ -11586,6 +11622,7 @@ async function exportReportsExcel(){
         console.log(error);
         showToast("Report Excel export failed", "#ff4d4d");
     }
+    });
 }
 
 function addPdfLine(doc, text, x, y, options = {}){
@@ -11599,6 +11636,7 @@ function addPdfLine(doc, text, x, y, options = {}){
 }
 
 async function exportReportsPDF(){
+    return runBusyAction("exportReportsPDF", async ()=>{
     try{
         const filePath = await ipcRenderer.invoke("select-report-save-path", {
             defaultName: "vs_report_" + Date.now() + ".pdf",
@@ -11673,6 +11711,7 @@ async function exportReportsPDF(){
         console.log(error);
         showToast("Report PDF export failed", "#ff4d4d");
     }
+    });
 }
 
 function ensureReportExportTools(){
