@@ -1357,3 +1357,85 @@ body.vs-logged-in #salesChart{
     width:100% !important;
     height:100% !important;
 }
+
+/* Mobile repair page: prevent filter panel/form overlap. */
+@media(max-width:760px){
+    body.vs-logged-in #repairs.repairs-page,
+    body.vs-logged-in #repairs .repairs-shell{
+        width:100% !important;
+        max-width:100% !important;
+        margin:0 !important;
+        padding:0 !important;
+        overflow:visible !important;
+    }
+
+    body.vs-logged-in #repairs .repairs-header,
+    body.vs-logged-in #repairs .repairs-form-panel,
+    body.vs-logged-in #repairs .repairs-side-panel,
+    body.vs-logged-in #repairs .repairs-history-panel{
+        width:100% !important;
+        max-width:100% !important;
+        min-width:0 !important;
+        margin:0 0 12px 0 !important;
+        padding:14px !important;
+        box-sizing:border-box !important;
+        overflow:visible !important;
+    }
+
+    body.vs-logged-in #repairs .repairs-top-grid{
+        display:flex !important;
+        flex-direction:column !important;
+        gap:12px !important;
+        width:100% !important;
+        max-width:100% !important;
+        min-width:0 !important;
+        overflow:visible !important;
+    }
+
+    body.vs-logged-in #repairs .repairs-form-grid{
+        display:grid !important;
+        grid-template-columns:1fr !important;
+        gap:10px !important;
+        width:100% !important;
+        max-width:100% !important;
+        min-width:0 !important;
+    }
+
+    body.vs-logged-in #repairs .repairs-form-grid > *,
+    body.vs-logged-in #repairs .repairs-side-panel > *,
+    body.vs-logged-in #repairs .repair-actions{
+        width:100% !important;
+        max-width:100% !important;
+        min-width:0 !important;
+        box-sizing:border-box !important;
+    }
+
+    body.vs-logged-in #repairs input,
+    body.vs-logged-in #repairs select,
+    body.vs-logged-in #repairs textarea{
+        width:100% !important;
+        max-width:100% !important;
+        min-width:0 !important;
+        margin:0 !important;
+        box-sizing:border-box !important;
+    }
+
+    body.vs-logged-in #repairs .repair-actions{
+        display:grid !important;
+        grid-template-columns:1fr 1fr !important;
+        gap:8px !important;
+    }
+
+    body.vs-logged-in #repairs .repair-actions button{
+        width:100% !important;
+        margin:0 !important;
+    }
+
+    body.vs-logged-in #repairs .repairs-side-panel{
+        order:2 !important;
+    }
+
+    body.vs-logged-in #repairs .repairs-form-panel{
+        order:1 !important;
+    }
+}

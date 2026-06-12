@@ -10085,10 +10085,102 @@ function ensureRepairsStyles(){
             gap:10px;
             margin-top:12px;
         }
-        @media (max-width:980px){
-            .repairs-top-grid{grid-template-columns:1fr;}
-            .repairs-form-grid{grid-template-columns:repeat(2,minmax(140px,1fr));}
-        }
+        @media (max-width:1180px), (pointer:coarse){
+    #repairs .repairs-shell{
+        width:100% !important;
+        max-width:100% !important;
+    }
+
+    #repairs .repairs-top-grid{
+        grid-template-columns:1fr !important;
+    }
+
+    #repairs .repairs-form-panel,
+    #repairs .repairs-side-panel,
+    #repairs .repairs-history-panel{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:100% !important;
+        position:static !important;
+        transform:none !important;
+        z-index:auto !important;
+    }
+
+    #repairs .repairs-side-panel{
+        order:2 !important;
+    }
+
+    #repairs .repairs-history-panel{
+        order:3 !important;
+    }
+}
+
+@media (max-width:760px), (pointer:coarse){
+    .content{
+        padding-left:10px !important;
+        padding-right:10px !important;
+        padding-bottom:135px !important;
+    }
+
+    #repairs .repairs-header{
+        flex-direction:column !important;
+        align-items:stretch !important;
+        padding:14px !important;
+        gap:10px !important;
+    }
+
+    #repairs .repair-no-box{
+        width:100% !important;
+        min-width:0 !important;
+        text-align:left !important;
+    }
+
+    #repairs .repairs-form-panel,
+    #repairs .repairs-side-panel,
+    #repairs .repairs-history-panel{
+        padding:14px !important;
+        border-radius:14px !important;
+    }
+
+    #repairs .repairs-form-grid{
+        grid-template-columns:1fr !important;
+        gap:12px !important;
+    }
+
+    #repairs .repair-wide{
+        grid-column:1 / -1 !important;
+    }
+
+    #repairs input,
+    #repairs select,
+    #repairs textarea{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:100% !important;
+        font-size:16px !important;
+        margin:0 !important;
+    }
+
+    #repairs .repair-actions{
+        display:grid !important;
+        grid-template-columns:1fr 1fr !important;
+        gap:8px !important;
+    }
+
+    #repairs .repair-actions button{
+        width:100% !important;
+        padding:11px 8px !important;
+    }
+
+    #repairs .repair-record{
+        grid-template-columns:1fr !important;
+    }
+
+    #repairs .repair-record-actions{
+        justify-content:flex-start !important;
+        min-width:0 !important;
+    }
+}
     `;
 
     document.head.appendChild(style);
